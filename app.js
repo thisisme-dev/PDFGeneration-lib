@@ -15,11 +15,22 @@ if (!fs.existsSync(PACKAGE_PATH)) {
   PACKAGE_PATH = '';
 }
 
+const TOP_OF_PAGE_Y = 80;
+const INCREMENT_MAIN_Y = 22;
+const INCREMENT_SUB_Y = 19;
+
+// add list for 
+
 const PDFDocumentLineType = {
+  DEFAULT_LINE: 0,
   HEADER_LINE: 1,
   KEY_VALUE_LINE: 2,
   EMPTY_LINE: 3,
   ADDRESS_LINE: 4,
+  SUB_INFO: 5,
+  SINGLE_COLUMN: 6,
+  DOUBLE_COLUMN: 7,
+  END_LINE: 8,
 };
 Object.freeze(PDFDocumentLineType);
 
@@ -58,10 +69,8 @@ module.exports = {
     const requestID = reportContent.requestId;
     docY.doc = createPDFDocument(requestID);
     docY.doc = addPageHeader(docY.doc, reportMeta.reportName);
-    // console.log(reportContent);
-    // console.log(reportMeta);
+
     docY = addDefaultLine(docY.doc, docY.y, 'Request Timestamp', reportContent['requestTimestamp'], false);
-    // docY = addDefaultLine(docY.doc, docY.y, 'Error', reportContent['error'], true);
     docY = addDefaultLine(docY.doc, docY.y, 'Report Generated For', reportContent['reportGeneratedFor'], false);
     docY = addDefaultLine(docY.doc, docY.y, 'Data Source', reportContent['dataSource'], false);
     docY = addDefaultLine(docY.doc, docY.y, 'Request Id', reportContent['requestId'], false);
@@ -69,6 +78,13 @@ module.exports = {
     docY = addPageDetail(docY, reportContent['searchParams'], false);
     docY = addDefaultLine(docY.doc, docY.y, 'Service Response:', '', true);
     docY = addPageDetail(docY, reportContent['dataFound'], false);
+
+    if (docY.y > 608) {
+      //create new page so footer can be displayed (otherwise it will be placed on top of data)
+      docY.doc.addPage();
+      docY.doc.fillColor('#888888');
+      docY.y = TOP_OF_PAGE_Y;
+    }
 
     docY.doc = addDisclaimer(docY.doc, reportMeta.disclaimer);
     docY.doc = await addPageFooter(docY.doc, requestID);
@@ -82,8 +98,6 @@ module.exports = {
     const requestID = reportContent.requestId;
     docY.doc = createPDFDocument(requestID);
     docY.doc = addPageHeader(docY.doc, reportMeta.reportName);
-    // console.log(reportContent);
-    // console.log(reportMeta);
     docY = addDefaultLine(docY.doc, docY.y, 'Request Timestamp', reportContent['requestTimestamp'], false);
     docY = addDefaultLine(docY.doc, docY.y, 'Error', reportContent['error'], false);
     docY = addDefaultLine(docY.doc, docY.y, 'Report Generated For', reportContent['reportGeneratedFor'], false);
@@ -130,78 +144,176 @@ function addPageHeader(doc, reportName) {
 }
 
 function addLine(doc, y, text, lineType, value, leaveEmpty) {
-  const incrementY = 22;
-  function newPageCheck(doc, y, incrementY) {
-    if (y > 670) {
-      doc.addPage();
-      doc.fillColor('#888888');
-      y = 80;
-    } else if ((y + incrementY) > 700) {
-      doc.addPage();
-      doc.fillColor('#888888');
-      y = 80;
+  function newPageCheck(doc, y, incrementY, rows, isSubHeader) {
+    const normalLimit = 670;
+    const headerLowest = 750;
+    const noFooterLimit = 800;
+    const isHeader = lineType === PDFDocumentLineType.HEADER_LINE || isSubHeader;
+    const limit = /* (rows === 1) || */ isHeader ? normalLimit : noFooterLimit;
+    if (isHeader) {
+      if (lineType === PDFDocumentLineType.HEADER_LINE) {
+        if ((rows * incrementY) + y > headerLowest) {
+          doc.addPage();
+          doc.fillColor('#888888');
+          y = TOP_OF_PAGE_Y;
+        } else {
+          y += incrementY;
+        }
+      } else {
+        if ((rows * incrementY) + y > noFooterLimit) {
+          doc.addPage();
+          doc.fillColor('#888888');
+          y = TOP_OF_PAGE_Y;
+        } else {
+          y += incrementY;
+        }
+      }
     } else {
-      y += incrementY;
+      if (y + incrementY > limit) {
+          doc.addPage();
+        doc.fillColor('#888888');
+        y = TOP_OF_PAGE_Y;
+      } else {
+        y += incrementY;
+      }
     }
+    return docY(doc, y);
+  }
+  function populateLine(doc, headerColor, text, value, x, xAdditionalWidth, y) {
+    doc.font('OpenSansSemiBold').fontSize(10).fillColor(headerColor).text(text, x, y);
+    doc.font('OpenSansLight').fontSize(10).text(value, x + xAdditionalWidth, y, {
+      width: 370,
+      lineGap: 10,
+      ellipsis: true,
+    });
+    return doc;
+  }
+  function underline(doc, x, y) {
+    return doc.moveTo(x, y + 18)
+    .lineTo(doc.page.width - 20, y + 18)
+    .strokeColor('#CCCCCC')
+    .lineWidth(.025)
+    .stroke();
+  }
+  function docY(doc, y) {
     return {
       doc: doc,
       y: y,
     };
   }
-  const x = 20;
-  if (!(lineType === PDFDocumentLineType.EMPTY_LINE)) {
-    if (lineType === PDFDocumentLineType.HEADER_LINE) {
-      const docY = newPageCheck(doc, y, incrementY);
+  let incrementY = INCREMENT_MAIN_Y;
+  let x = 20;
+  const headerColor = PDF_TEXT.REPORT_HEADERS.includes(text) || lineType === PDFDocumentLineType.HEADER_LINE ? 'black' : '#888888';
+
+  switch (lineType) {
+    case PDFDocumentLineType.END_LINE: {
+      const docY = newPageCheck(doc, y, incrementY, 1, false);
       doc = docY.doc;
       y = docY.y;
-      // console.log(`${text} ${y}`);
+      break;
     }
-    const headerColor = PDF_TEXT.REPORT_HEADERS.includes(text) ? 'black' : '#888888';
+    case PDFDocumentLineType.HEADER_LINE: {
+      const docY = newPageCheck(doc, y, incrementY, 1, false);
+      doc = docY.doc;
+      y = docY.y;
+      doc = populateLine(doc, headerColor, text, value, x, 180, y);
+      doc = underline(doc, x, y);
+      break;
+    }
+    case PDFDocumentLineType.ADDRESS_LINE: {
+      let addressParts = value.split(',');
+      addressParts = addressParts.map((s) => s.trim());
 
-    doc.font('OpenSansSemiBold').fontSize(10).fillColor(headerColor).text(text, x, y);
-    if (!(lineType === PDFDocumentLineType.HEADER_LINE || leaveEmpty)) {
-      if (value == '' || value == undefined) {
-        doc.font('OpenSansLitalic').fontSize(10).text('Not Supplied', x + 180, y);
-      } else {
-        switch (lineType) {
-          case PDFDocumentLineType.ADDRESS_LINE: {
-            let addressParts = value.split(',');
-            addressParts = addressParts.map((s) => s.trim());
-            for (let i = 0; i < addressParts.length; i++) {
-              const addressPart = addressParts[i];
-              doc.font('OpenSansLight').fontSize(10).text(addressPart, x + 180, y, {
-                width: 370,
-                lineGap: 10,
-                ellipsis: true,
-              });
-              if (i < addressParts.length - 1) {
-                doc.moveTo(x, y + 18)
-                    .lineTo(doc.page.width - 20, y + 18)
-                    .strokeColor('#CCCCCC')
-                    .lineWidth(.025)
-                    .stroke();
-                y += 22;
+      const docY = newPageCheck(doc, y, incrementY, addressParts.length, false);
+      doc = docY.doc;
+      y = docY.y;
+
+      doc = populateLine(doc, headerColor, text, '', x, 180, y);
+      for (let i = 0; i < addressParts.length; i++) {
+        const addressPart = addressParts[i];
+        doc = populateLine(doc, headerColor, '', addressPart, x, 180, y);
+        if (i < addressParts.length - 1) {
+          doc = underline(doc, x, y);
+          y += incrementY;
+        }
+        doc = underline(doc, x, y);
+      }
+      break;
+    }
+    case PDFDocumentLineType.SUB_INFO: {
+      if (value.length > 0) {
+        // SUB HEADER
+        const headerColor = PDF_TEXT.REPORT_HEADERS.includes(text) || lineType === PDFDocumentLineType.SUB_INFO ? 'black' : '#888888';
+        // WARNING: This is currently written with value being an Array
+        // const rows = (value.length/2);
+        let customRows = 1; // starts with one because of the Sub Header itself
+        if (Array.isArray(value)) {
+          for(let row = 0; row < value.length; row++) {
+            const rowData = value[row];
+            if ((rowData.lineType === PDFDocumentLineType.SINGLE_COLUMN) || (rowData.lineType === PDFDocumentLineType.END_LINE)) {
+              customRows++;
+              if (customRows % 1 !== 0) { // caters for when colums end unequal
+                customRows += 0.5;
               }
+            } else {
+              customRows += 0.5;
             }
-            break;
           }
-          default: {
-            doc.font('OpenSansLight').fontSize(10).text(value, x + 180, y, {
-              width: 370,
-              lineGap: 10,
-              ellipsis: true,
-            });
+          // console.log(`Value's length ${value.length} customRow's value ${customRows}`);
+        } else {
+          console.log("Value is not an Array as expected")
+        }
+
+        const docY = newPageCheck(doc, y, incrementY, customRows, true); // remember spacing change from below.... maybe revert that
+        doc = docY.doc;
+        y = docY.y;
+        doc.font('OpenSansSemiBold').fontSize(10).fillColor(headerColor).text(text, x, y);
+        incrementY = INCREMENT_SUB_Y; // TODO: figure the effect of this out
+        // SUB ITERATE INFO
+        let linesEnded = [];
+        let onlyFirsts = [];
+        let singleColumns = [];
+        for (let i = 0; i < value.length; i++) {
+          let column = (i - linesEnded.length - onlyFirsts.length - singleColumns.length) % 2;
+          const subLine = value[i];
+          if (subLine.lineType === PDFDocumentLineType.END_LINE) {
+            if (column === 1) {
+              onlyFirsts.push(true);
+            }
+            linesEnded.push(true);
+            y += incrementY;
+          } else {
+            if (subLine.lineType === PDFDocumentLineType.SINGLE_COLUMN) {
+              y += incrementY;
+              const headerColor = PDF_TEXT.REPORT_HEADERS.includes(subLine.text) || lineType === PDFDocumentLineType.HEADER_LINE ? 'black' : '#888888';
+              doc = populateLine(doc, headerColor, subLine.text, subLine.value, 20, 140, y);
+              singleColumns.push(true);
+            } else {
+              if (column === 0) {
+                const docY = newPageCheck(doc, y, incrementY, 1, false);
+                doc = docY.doc;
+                y = docY.y;
+                x = 20;
+              } else {
+                x = 300;
+              }
+              const headerColor = PDF_TEXT.REPORT_HEADERS.includes(subLine.text) || lineType === PDFDocumentLineType.HEADER_LINE ? 'black' : '#888888';
+              doc = populateLine(doc, headerColor, subLine.text, subLine.value, x, 140, y);
+            }
           }
         }
       }
+      break;
     }
-    doc.moveTo(x, y + 18)
-        .lineTo(doc.page.width - 20, y + 18)
-        .strokeColor('#CCCCCC')
-        .lineWidth(.025)
-        .stroke();
+    default: {
+      const docY = newPageCheck(doc, y, incrementY, 1, false);
+      doc = docY.doc;
+      y = docY.y;
+      doc = populateLine(doc, headerColor, text, value, x, 180, y);
+      doc = underline(doc, x, y);
+    }
   }
-  return newPageCheck(doc, y, incrementY);
+  return docY(doc, y);
 }
 
 function addDefaultLine(doc, y, text, value, leaveEmpty) {
@@ -212,7 +324,7 @@ function addPageDetail(docY, data, createNextPage) {
   if (createNextPage) {
     docY.doc.addPage();
     docY.doc.fillColor('#888888');
-    docY.y = 80;
+    docY.y = TOP_OF_PAGE_Y;
   }
   for (const prop in data) {
     if (Object.prototype.hasOwnProperty.call(data, prop)) {
@@ -299,14 +411,14 @@ const generateQRCode = (data) => {
         format: 'any',
       }, function(err, png) {
         if (err) {
-          console.log(err);
+          // console.log(err);
           reject(err);
         } else {
           resolve(png);
         }
       });
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       reject(err);
     }
   });
