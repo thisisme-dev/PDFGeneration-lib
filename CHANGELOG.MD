@@ -8,3 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.0.1] - 2020-07-17
 ### POC
 - This is the library in a POC state.
+
+## [1.0.0] - 2020-07-25
+### POC
+- This library is now being used by ThisIsMe's Company Credit Report v3 call.
