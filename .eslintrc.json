@@ -18,7 +18,7 @@
           "rules": {
             "require-jsdoc": "off",
             "valid-jsdoc": "off",
-            "max-len": ["error", {"code": 112}]
+            "max-len": ["error", {"code": 150}]
           }
         }
       ]
