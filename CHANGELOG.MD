@@ -12,3 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.0] - 2020-07-25
 ### POC
 - This library is now being used by ThisIsMe's Company Credit Report v3 call.
+
+## [2.0.0] - 2020-07-30
+### The Clean One
+- Previous code base was unstable and heading down a spaghetti code path, a lot of refactoring was done to avoid unnecessary errors and confusion, this version also supports more line types.
+- Library name also changed from `@ThisIsMe/pdfgeneration-lib` to `@thisisme/pdfgeneration-lib`.
