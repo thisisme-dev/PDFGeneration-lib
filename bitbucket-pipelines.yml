@@ -1,3 +1,4 @@
+# TODO: add a tag check pipeline to ensure package.json is referencing the correct tag version
 
 definitions:
   steps:
