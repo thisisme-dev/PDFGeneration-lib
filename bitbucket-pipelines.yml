@@ -1,0 +1,15 @@
+
+definitions:
+  steps:
+    - step: &Build-step
+        image: node:12.18.3-slim
+        name: Build and Test Library
+        caches:
+          - node
+        script:
+          - npm install
+          - npm run lint
+  
+pipelines:
+  default:
+    - step: *Build-step
