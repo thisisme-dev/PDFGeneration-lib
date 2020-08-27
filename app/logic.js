@@ -9,9 +9,14 @@ const s3 = new AWS.S3();
 AWS.config.update({region: process.env.AWS_DEFAULT_REGION});
 
 const constants = require('./constants');
-const lineCore = require('./logic-line-core');
+const setupPDFType = require('./logic-pdf-type').setupPDFType;
+const addLine = require('./logic-line-core').addLine;
+const PDFLimiter = require('./pdf-limitations').PDFLimiter;
+const pdfLimiter = new PDFLimiter();
 
 module.exports = {
+  pdfLimiter,
+  setupPDFType,
   createPDFDocument,
   defaultTop,
   addDefaultLine,
@@ -20,7 +25,7 @@ module.exports = {
   finalizePDFDocument,
 };
 
-function createPDFDocument(requestID, reportName) {
+function createPDFDocument(requestID, reportName, pageOfContents) {
   const doc = new PDFDocument({
     bufferPages: true,
     size: 'A4',
@@ -31,12 +36,19 @@ function createPDFDocument(requestID, reportName) {
     margin: 0,
   });
 
+  if (pageOfContents !== null) {
+    doc.on('pageAdded', () => {
+      pageOfContents.incrementPage();
+    });
+  }
+
   doc.registerFont('OpenSans', `${constants.PACKAGE_PATH}fonts/OpenSans-Regular.ttf`);
   doc.registerFont('OpenSansLight', `${constants.PACKAGE_PATH}fonts/OpenSans-Light.ttf`);
   doc.registerFont('OpenSansBold', `${constants.PACKAGE_PATH}fonts/OpenSans-Bold.ttf`);
   doc.registerFont('OpenSansSemiBold', `${constants.PACKAGE_PATH}fonts/OpenSans-SemiBold.ttf`);
   doc.registerFont('OpenSansXBold', `${constants.PACKAGE_PATH}fonts/OpenSans-ExtraBold.ttf`);
   doc.registerFont('OpenSansLitalic', `${constants.PACKAGE_PATH}fonts/OpenSans-LightItalic.ttf`);
+  doc.registerFont('DejaVuSans', `${constants.PACKAGE_PATH}fonts/DejaVuSans.ttf`);
 
   // PAGE HEADER
   doc.fillColor(constants.PDFColors.NORMAL_COLOR);
@@ -57,18 +69,18 @@ function defaultTop(docY, reportContent) {
   if (reportContent['error'] !== undefined && reportContent['error'] !== null) {
     docY = addDefaultLine(docY, 'Error', reportContent['error']);
   }
-  docY = lineCore.addLine(docY, null, null, constants.PDFDocumentLineType.EMPTY_LINE, false);
+  docY = addLine(docY, null, null, constants.PDFDocumentLineType.EMPTY_LINE, false);
   docY = addDefaultLine(docY, 'Search Parameters:', null);
   docY = addPageDetail(docY, reportContent['searchParams'], null);
-  docY = lineCore.addLine(docY, null, null, constants.PDFDocumentLineType.EMPTY_LINE, false);
+  docY = addLine(docY, null, null, constants.PDFDocumentLineType.EMPTY_LINE, false);
   return docY;
 }
 
 function addDefaultLine(docY, text, value) {
-  return lineCore.addLine(docY, text, value, constants.PDFDocumentLineType.KEY_VALUE_LINE, false);
+  return addLine(docY, text, value, constants.PDFDocumentLineType.KEY_VALUE_LINE, false);
 }
 
-function addPageDetail(docY, data, newPageHeaders) {
+function addPageDetail(docY, data, newPageHeaders, pageOfContents) {
   for (const prop in data) {
     if (Object.prototype.hasOwnProperty.call(data, prop)) {
       let isDefinedHeader = false;
@@ -81,13 +93,16 @@ function addPageDetail(docY, data, newPageHeaders) {
             // console.log('HEADER PAGE FOR HEADER');
             // console.log('-------------------------------');
             docY.doc.addPage();
-            docY.doc.fillColor(constants.PDFColors.NORMAL_COLOR);
+            // docY.doc.fillColor(constants.PDFColors.NORMAL_COLOR);
             docY.y = constants.TOP_OF_PAGE_Y;
             isDefinedHeader = true;
           }
+          if (pageOfContents !== null) {
+            pageOfContents.addPageDetails(row.text);
+          }
         }
       }
-      docY = lineCore.addLine(docY, row.text, row.value, row.lineType, isDefinedHeader);
+      docY = addLine(docY, row.text, row.value, row.lineType, isDefinedHeader);
     }
   }
   return docY;
@@ -101,7 +116,7 @@ async function addPageFooter(docY, requestID, disclaimer) {
   if (docY.y > 608) {
     // create new page so footer can be displayed (otherwise it will be placed on top of data)
     docY.doc.addPage();
-    docY.doc.fillColor(constants.PDFColors.NORMAL_COLOR);
+    // docY.doc.fillColor(constants.PDFColors.NORMAL_COLOR);
     docY.y = constants.TOP_OF_PAGE_Y;
   }
   const doc = addDisclaimer(docY.doc, disclaimer);
@@ -207,8 +222,36 @@ function addDisclaimer(doc, disclaimer) {
   return doc;
 }
 
-function finalizePDFDocument(doc, requestID, reportMeta) {
+function populatePageOfContents(doc, pageOfContents) {
+  if (pageOfContents !== null) {
+  // TODO: what if sections push this to add new page?? figure out how to create new page then
+    doc.switchToPage(1); // there will be cases where this is not 1
+    // console.log(pageOfContents.getPageOfContents());
+    let size = constants.NORMAL_FONT_SIZE;
+
+    size = constants.HEADER_FONT_SIZE;
+    const page = doc.page;
+    doc.rect(0, 25, page.width, 50).fillColor(constants.PDFColors.NORMAL_COLOR).strokeColor(constants.PDFColors.NORMAL_COLOR).fillAndStroke();
+    doc.font('OpenSansSemiBold').fontSize(size).fillColor(constants.PDFColors.TEXT_IN_NORMAL_COLOR).text('Table of Contents', constants.X_START, constants.TOP_OF_PAGE_Y - 40);
+
+    const content = pageOfContents.getPageOfContents();
+    let docY = {
+      doc: doc,
+      y: constants.TOP_OF_PAGE_Y,
+    };
+    for (let i = 0; i < content.length; i++) {
+      docY = addLine(docY, content[i].section, content[i].page, constants.PDFDocumentLineType.TABLE_OF_CONTENTS_LINE, false);
+    }
+    return docY.doc;
+  }
+  return doc;
+}
+
+function finalizePDFDocument(doc, requestID, reportMeta, pageOfContents) {
   const pages = doc.bufferedPageRange();
+
+  doc = populatePageOfContents(doc, pageOfContents);
+  // old code for page numbering
   for (let i = 0; i < pages.count; i++) {
     doc.switchToPage(i);
     // Footer: Add page number

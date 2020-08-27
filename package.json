@@ -6,12 +6,12 @@
   "dependencies": {
     "aws-sdk": "^2.702.0",
     "concat-stream": "^2.0.0",
-    "pdfkit": "^0.10.0",
+    "pdfkit": "^0.11.0",
     "fs": "0.0.1-security",
     "bwip-js": "^2.0.8"
   },
   "scripts": {
-    "lint": "node node_modules/.bin/eslint -c .eslintrc.js \"*.js\" \"**/*.js\" --ignore-pattern \"**/node_modules/*\""
+    "lint": "node node_modules/.bin/eslint -c .eslintrc.js \"*.js\" \"**/*.js\" --ignore-pattern \"**/node_modules/*\" --fix"
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
