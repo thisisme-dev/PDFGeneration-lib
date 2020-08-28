@@ -70,24 +70,4 @@ module.exports = Object.freeze({
     REPORT_AUTHOR: 'ThisIsMe (Pty) Ltd',
     REPORT_HEADERS: ['Search Parameters:', 'Service Response:'],
   },
-  textValueObj: (text, value, lineType) => {
-    return {
-      text: text,
-      value: value,
-      lineType: lineType,
-    };
-  },
-  getPDFContentTemplate: (requestTimestamp, event, dataSource, errMsg, newPageHeaders) => {
-    return {
-      requestTimestamp: requestTimestamp,
-      error: errMsg,
-      reportGeneratedFor: `${event.requester.client} @ ${event.requester.company}`,
-      dataSource: dataSource,
-      searchParams: {},
-      dataFound: {},
-      requestId: event.request_id,
-      newPageHeaders: newPageHeaders,
-      pdfType: PDFType.DEFAULT,
-    };
-  },
 });

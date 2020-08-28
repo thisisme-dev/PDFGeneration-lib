@@ -11,11 +11,8 @@ AWS.config.update({region: process.env.AWS_DEFAULT_REGION});
 const constants = require('./constants');
 const setupPDFType = require('./logic-pdf-type').setupPDFType;
 const addLine = require('./logic-line-core').addLine;
-const PDFLimiter = require('./pdf-limitations').PDFLimiter;
-const pdfLimiter = new PDFLimiter();
 
 module.exports = {
-  pdfLimiter,
   setupPDFType,
   createPDFDocument,
   defaultTop,
@@ -24,6 +21,7 @@ module.exports = {
   addPageFooter,
   finalizePDFDocument,
 };
+
 
 function createPDFDocument(requestID, reportName, pageOfContents) {
   const doc = new PDFDocument({

@@ -8,7 +8,8 @@
     "concat-stream": "^2.0.0",
     "pdfkit": "^0.11.0",
     "fs": "0.0.1-security",
-    "bwip-js": "^2.0.8"
+    "bwip-js": "^2.0.8",
+    "node-datetime": "^2.1.2"
   },
   "scripts": {
     "lint": "node node_modules/.bin/eslint -c .eslintrc.js \"*.js\" \"**/*.js\" --ignore-pattern \"**/node_modules/*\" --fix"

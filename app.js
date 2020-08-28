@@ -2,13 +2,37 @@
 const constants = require('./app/constants');
 const logic = require('./app/logic');
 
+const helpers = require('./app/pdf-helpers');
+
+const dateTime = require('node-datetime');
+const PDFLimiter = require('./app/pdf-limitations').PDFLimiter;
+
+const pdfLimiter = new PDFLimiter();
+
 module.exports = {
   constants,
-  pdfLimiter: logic.pdfLimiter,
-  createLimitationsDoc: logic.createLimitationsDoc,
-  destroyLimitationsDoc: logic.destroyLimitationsDoc,
-  getStringWidth: logic.getStringWidth,
-
+  pdfLimiter: pdfLimiter,
+  textValueObj: logic.textValueObj,
+  PDFHelpers: helpers.PDFHelpers,
+  getPDFContentTemplate: logic.getPDFContentTemplate,
+  generateReportData: (disclaimer, s3BucketName, reportName, debugMode) => {
+    const dt = dateTime.create();
+    const data = {
+      metaData: {
+        formatted: dt.format('d f Y'),
+        disclaimer: disclaimer,
+        s3BucketName: s3BucketName,
+        reportName: reportName,
+        DEBUG: debugMode,
+      },
+      requestTimestamp: dt.format('Y-m-d H:M:S'),
+    };
+    dt.offsetInDays(3);
+    data.expiryDate = `${dt.format('w, d n Y H:M:S')} UTC`;
+    console.log(data);
+    return data;
+  },
+  generateNoResultsPDFContent: logic.generateNoResultsPDFContent,
   generateReport: async (reportContent, reportMeta) => {
     const requestID = reportContent.requestId;
     const pageSetup = logic.setupPDFType(reportContent.pdfType);
