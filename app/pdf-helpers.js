@@ -1,8 +1,11 @@
 const constants = require('./constants');
 
 class PDFHelpers {
-  constructor(event) {
+  constructor(event, requestTimestamp, dataSource, serviceSearchParams) {
     this.event = event;
+    this.requestTimestamp = requestTimestamp;
+    this.dataSource = dataSource;
+    this.serviceSearchParams = serviceSearchParams;
   }
 
   textValueObj(text, value, lineType) {
@@ -10,6 +13,19 @@ class PDFHelpers {
       text: text,
       value: value,
       lineType: lineType,
+    };
+  }
+
+  headerLine(title) {
+    return {
+      text: title,
+      lineType: constants.PDFDocumentLineType.HEADER_LINE,
+    };
+  }
+
+  endSection() {
+    return {
+      lineType: constants.PDFDocumentLineType.END_LINE,
     };
   }
 
@@ -25,18 +41,22 @@ class PDFHelpers {
     return value;
   }
 
-  isSearchParameter(key, searchParams) {
-    return key in searchParams;
+  isSearchParameter(key) {
+    return key in this.serviceSearchParams;
   }
 
-  populateSearchParams(searchParams) {
+  populateSearchParams() {
     const data = {};
     for (const key in this.event) {
       if (Object.prototype.hasOwnProperty.call(this.event, key)) {
         const value = this.event[key];
-        if (this.isSearchParameter(key, searchParams) && value) {
+        if (this.isSearchParameter(key) && value) {
           if (value.length > 0 || value === true || value === false) {
-            data[key] = this.textValueObj(this.getDisplayableTextValue(key), value, constants.PDFDocumentLineType.DEFAULT_LINE);
+            data[key] = this.textValueObj(
+                this.getDisplayableTextValue(key),
+                value,
+                constants.PDFDocumentLineType.DEFAULT_LINE,
+            );
           }
         }
       }
@@ -44,19 +64,26 @@ class PDFHelpers {
     return data;
   }
 
-  generateNoResultsPDFContent(requestTimestamp, dataSource, serviceSearchParams) {
-    const content = this.getPDFContentTemplate(requestTimestamp, dataSource, 'No results were found using the below search criteria.', null, serviceSearchParams);
+  generateResultsFoundPDFStartingContent(reportHeaders, pdfType) {
+    const content = this.getPDFContentTemplate(null, reportHeaders);
+    if (pdfType !== null) {
+      content.pdfType = pdfType;
+    }
     return content;
   }
 
-  getPDFContentTemplate(requestTimestamp, dataSource, errMsg, headers, serviceSearchParams) {
-    // iterate pageheaders and build array of valid newPageHeaders
-    let newPageHeaders = [];
+  generateNoResultsPDFContent() {
+    const content = this.getPDFContentTemplate('No results were found using the below search criteria.', null);
+    return content;
+  }
+
+  getPDFContentTemplate(errMsg, headers) {
+    const newPageHeaders = [];
     if (headers !== null) {
       for (const prop in headers) {
         if (Object.prototype.hasOwnProperty.call(headers, prop)) {
-          const header = headers[prop]
-          if (Object.prototype.hasOwnProperty.call(header, 'new_page')){
+          const header = headers[prop];
+          if (Object.prototype.hasOwnProperty.call(header, 'new_page')) {
             if (header.new_page) {
               newPageHeaders.push(header.title);
             }
@@ -64,13 +91,12 @@ class PDFHelpers {
         }
       }
     }
-
     return {
-      requestTimestamp: requestTimestamp,
+      requestTimestamp: this.requestTimestamp,
       error: errMsg,
       reportGeneratedFor: `${this.event.requester.client} @ ${this.event.requester.company}`,
-      dataSource: dataSource,
-      searchParams: this.populateSearchParams(serviceSearchParams, this.event),
+      dataSource: this.dataSource,
+      searchParams: this.populateSearchParams(),
       dataFound: {},
       requestId: this.event.request_id,
       newPageHeaders: newPageHeaders,

@@ -15,7 +15,7 @@ const PDFType = {
   DEFAULT: 0, // old style search/response
   CONTENTS_OF_PAGE: 1,
   NO_SERVICE_RESPONSE_HEADER: 2,
-  // COVER_CONTENTS_OF_HEADER: 3, NEAR FUTURE
+  // COVER_AND_CONTENTS_OF_PAGE: 3, NEAR FUTURE
 };
 
 const PDFDocumentLineType = {
