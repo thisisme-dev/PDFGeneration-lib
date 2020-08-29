@@ -29,7 +29,7 @@ module.exports = {
     let doc = lineDocY.doc;
     let y = lineDocY.y;
     let incrementY = constants.INCREMENT_MAIN_Y;
-    let x = 20;
+    let x = constants.X_START;
     const headerColor = constants.PDF_TEXT.REPORT_HEADERS.includes(text) || lineType === constants.PDFDocumentLineType.HEADER_LINE ? constants.PDFColors.INDICATIVE_COLOR : constants.PDFColors.NORMAL_COLOR;
 
     // A type should ALWAYS start with the getDocY function to ensure you are correctly positioned
@@ -197,6 +197,25 @@ module.exports = {
         y += incrementY;
         break;
       }
+      case constants.PDFDocumentLineType.TABLE_OF_CONTENTS_LINE: {
+        const docY = getDocY(doc, y, incrementY, 1, false);
+        doc = docY.doc;
+        y = docY.y;
+        doc = populateLine(doc, headerColor, text, '', x, 180, y, false);
+        doc = populateLine(doc, headerColor, value, '', 550, 180, y, false);
+        doc = underline(doc, x, y);
+        y += incrementY;
+        break;
+      }
+      case constants.PDFDocumentLineType.KEY_LINK_LINE: {
+        const docY = getDocY(doc, y, incrementY, 1, false);
+        doc = docY.doc;
+        y = docY.y;
+        doc = populateLineLink(doc, headerColor, text, value, x, 180, y);
+        doc = underline(doc, x, y);
+        y += incrementY;
+        break;
+      }
       default: {
         const docY = getDocY(doc, y, incrementY, 1, false);
         doc = docY.doc;
@@ -270,12 +289,29 @@ function populateLine(doc, headerColor, text, value, x, xAdditionalWidth, y, isH
     doc.font('OpenSansSemiBold').fontSize(size).fillColor(constants.PDFColors.TEXT_IN_NORMAL_COLOR).text(text, x, y - 40);
   } else {
     doc.font('OpenSansSemiBold').fontSize(size).fillColor(headerColor).text(text, x, y);
+    doc.font('OpenSansLight').fontSize(size).text(value, x + xAdditionalWidth, y, {
+      width: 370,
+      lineGap: 10,
+      ellipsis: true,
+    });
   }
-  doc.font('OpenSansLight').fontSize(size).text(value, x + xAdditionalWidth, y, {
+
+  return doc;
+}
+
+
+function populateLineLink(doc, headerColor, text, value, x, xAdditionalWidth, y) {
+  const size = constants.NORMAL_FONT_SIZE;
+  doc.font('OpenSansSemiBold').fontSize(size).fillColor(headerColor).text(text, x, y);
+  // DejaVuSans russian chinese etc
+  // console.log(value)
+  doc.font('OpenSansLight').fontSize(size).text(value.piece, x + xAdditionalWidth, y, {
     width: 370,
     lineGap: 10,
     ellipsis: true,
+    link: value.link,
   });
+
   return doc;
 }
 
@@ -292,7 +328,7 @@ function createNewPage(doc) {
   // console.log('===================================');
 
   doc.addPage();
-  doc.fillColor(constants.PDFColors.NORMAL_COLOR);
+  // doc.fillColor(constants.PDFColors.NORMAL_COLOR); // whut TODO:
   return docYResponse(doc, constants.TOP_OF_PAGE_Y);
 }
 
