@@ -1,1 +1,3 @@
 .eslintrc.json
+.eslintrc
+bitbucket-pipelines.yml
