@@ -13,7 +13,7 @@ class PDFLimiter {
     doc.fontSize(constants.NORMAL_FONT_SIZE);
 
     this.doc = doc;
-    this.max = 379.62 /* max width */ - 20;
+    this.max = 375 /* max width */ - constants.X_START;
   }
 
   // destroyLimitationsDoc(doc) {
