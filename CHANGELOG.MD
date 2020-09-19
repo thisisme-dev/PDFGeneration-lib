@@ -47,3 +47,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Bug fix
 
 - width size of rows on pdf reduced to prevent lines going over to next.
+
+## [5.0.0] - 2020-10-08
+
+### Image and Indicative Bar (Score)
+
+- Some refactoring to ease reading and future maintainability
+- New types
