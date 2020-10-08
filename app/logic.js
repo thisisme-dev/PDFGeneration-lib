@@ -22,7 +22,6 @@ module.exports = {
   finalizePDFDocument,
 };
 
-
 function createPDFDocument(requestID, reportName, pageOfContents) {
   const doc = new PDFDocument({
     bufferPages: true,
@@ -59,26 +58,26 @@ function createPDFDocument(requestID, reportName, pageOfContents) {
   };
 }
 
-function defaultTop(docY, reportContent) {
-  docY = addDefaultLine(docY, 'Request Timestamp', reportContent['requestTimestamp']);
-  docY = addDefaultLine(docY, 'Report Generated For', reportContent['reportGeneratedFor']);
-  docY = addDefaultLine(docY, 'Data Source', reportContent['dataSource']);
-  docY = addDefaultLine(docY, 'Request Id', reportContent['requestId']);
+async function defaultTop(docY, reportContent) {
+  docY = await addDefaultLine(docY, 'Request Timestamp', reportContent['requestTimestamp']);
+  docY = await addDefaultLine(docY, 'Report Generated For', reportContent['reportGeneratedFor']);
+  docY = await addDefaultLine(docY, 'Data Source', reportContent['dataSource']);
+  docY = await addDefaultLine(docY, 'Request Id', reportContent['requestId']);
   if (reportContent['error'] !== undefined && reportContent['error'] !== null) {
-    docY = addDefaultLine(docY, 'Error', reportContent['error']);
+    docY = await addDefaultLine(docY, 'Error', reportContent['error']);
   }
-  docY = addLine(docY, null, null, constants.PDFDocumentLineType.EMPTY_LINE, false);
-  docY = addDefaultLine(docY, 'Search Parameters:', null);
-  docY = addPageDetail(docY, reportContent['searchParams'], null);
-  docY = addLine(docY, null, null, constants.PDFDocumentLineType.EMPTY_LINE, false);
+  docY = await addLine(docY, null, null, constants.PDFDocumentLineType.EMPTY_LINE, false);
+  docY = await addDefaultLine(docY, 'Search Parameters:', null);
+  docY = await addPageDetail(docY, reportContent['searchParams'], null);
+  docY = await addLine(docY, null, null, constants.PDFDocumentLineType.EMPTY_LINE, false);
   return docY;
 }
 
-function addDefaultLine(docY, text, value) {
-  return addLine(docY, text, value, constants.PDFDocumentLineType.KEY_VALUE_LINE, false);
+async function addDefaultLine(docY, text, value) {
+  return await addLine(docY, text, value, constants.PDFDocumentLineType.KEY_VALUE_LINE, false);
 }
 
-function addPageDetail(docY, data, newPageHeaders, pageOfContents) {
+async function addPageDetail(docY, data, newPageHeaders, pageOfContents) {
   for (const prop in data) {
     if (Object.prototype.hasOwnProperty.call(data, prop)) {
       let isDefinedHeader = false;
@@ -100,7 +99,7 @@ function addPageDetail(docY, data, newPageHeaders, pageOfContents) {
           }
         }
       }
-      docY = addLine(docY, row.text, row.value, row.lineType, isDefinedHeader);
+      docY = await addLine(docY, row.text, row.value, row.lineType, isDefinedHeader);
     }
   }
   return docY;
@@ -220,7 +219,7 @@ function addDisclaimer(doc, disclaimer) {
   return doc;
 }
 
-function populatePageOfContents(doc, pageOfContents) {
+async function populatePageOfContents(doc, pageOfContents) {
   if (pageOfContents !== null) {
   // TODO: what if sections push this to add new page?? figure out how to create new page then
     doc.switchToPage(1); // there will be cases where this is not 1
@@ -238,17 +237,17 @@ function populatePageOfContents(doc, pageOfContents) {
       y: constants.TOP_OF_PAGE_Y,
     };
     for (let i = 0; i < content.length; i++) {
-      docY = addLine(docY, content[i].section, content[i].page, constants.PDFDocumentLineType.TABLE_OF_CONTENTS_LINE, false);
+      docY = await addLine(docY, content[i].section, content[i].page, constants.PDFDocumentLineType.TABLE_OF_CONTENTS_LINE, false);
     }
     return docY.doc;
   }
   return doc;
 }
 
-function finalizePDFDocument(doc, requestID, reportMeta, pageOfContents) {
+async function finalizePDFDocument(doc, requestID, reportMeta, pageOfContents) {
   const pages = doc.bufferedPageRange();
 
-  doc = populatePageOfContents(doc, pageOfContents);
+  doc = await populatePageOfContents(doc, pageOfContents);
   // old code for page numbering
   for (let i = 0; i < pages.count; i++) {
     doc.switchToPage(i);
@@ -265,7 +264,7 @@ function finalizePDFDocument(doc, requestID, reportMeta, pageOfContents) {
   }
   const key = `${reportMeta.s3BucketName}/${reportMeta.formatted}/${requestID}.pdf`;
 
-  if (reportMeta.DEBUG) {
+  if (reportMeta.LOCAL_DEBUG) {
     const stream = doc.pipe(fs.createWriteStream('/tmp/' + requestID + '.pdf'));
 
     stream.on('error', function(error) {

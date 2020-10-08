@@ -32,6 +32,8 @@ const PDFDocumentLineType = {
   GRID: 10,
   TABLE_OF_CONTENTS_LINE: 11,
   KEY_LINK_LINE: 12,
+  INDICATIVE_BAR_LINE: 13,
+  IMAGE_LINE: 14,
 };
 
 module.exports = Object.freeze({

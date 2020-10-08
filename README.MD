@@ -6,7 +6,7 @@
 
 ## Getting started
 
-- Add the library in your package.json under dependencies `"@thisisme/pdfgeneration-lib": "git+ssh://git@bitbucket.org:thisisme-dev/pdfgeneration-lib.git#semver:4.0.0"
+- Add the library in your package.json under dependencies `"@thisisme/pdfgeneration-lib": "https://github.com/ThisIsMe-dev/PDFGeneration-lib#4.0.0"`
 - npm install to install all your dependencies for your project
 
 ### Examples
@@ -80,5 +80,7 @@ const PDFDocumentLineType = {
   GRID: 10, // Helps to create a list/table like display with columns, taking an array of objects
   TABLE_OF_CONTENTS_LINE: 11, // Line used to define table of contents page lines
   KEY_LINK_LINE: 12, // A line that allows the user to click to go to the provided URL
+  INDICATIVE_BAR_LINE: 13, // Indicative bars designed with Credit Scores in mind
+  IMAGE_LINE: 14, // A line that represents an image
 }
 ```
