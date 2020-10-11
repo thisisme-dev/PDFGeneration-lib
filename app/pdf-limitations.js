@@ -3,7 +3,6 @@ const constants = require('./constants');
 
 class PDFLimiter {
   constructor() {
-    console.log('constructed PDFLimiter');
     // move function to break into array here, add vars with a constructor?
     const doc = new PDFDocument({
       bufferPages: true,
