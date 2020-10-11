@@ -3,7 +3,6 @@ const fs = require('fs');
 const packageName = require('../package.json').name;
 
 function getPackagePath() {
-  console.log(packageName);
   let PACKAGE_PATH = `node_modules/${packageName}/`;
   if (!fs.existsSync(PACKAGE_PATH)) {
     PACKAGE_PATH = '';

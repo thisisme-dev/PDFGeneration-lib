@@ -30,7 +30,9 @@ module.exports = {
     };
     dt.offsetInDays(3);
     data.expiryDate = `${dt.format('w, d n Y H:M:S')} UTC`;
-    console.log(data);
+    if (debug) {
+      console.log(data);
+    }
     return data;
   },
   generateNoResultsPDFContent: logic.generateNoResultsPDFContent,

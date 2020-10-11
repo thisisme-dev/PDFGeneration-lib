@@ -265,7 +265,8 @@ async function finalizePDFDocument(doc, requestID, reportMeta, pageOfContents) {
   const key = `${reportMeta.s3BucketName}/${reportMeta.formatted}/${requestID}.pdf`;
 
   if (reportMeta.LOCAL_DEBUG) {
-    const stream = doc.pipe(fs.createWriteStream('/tmp/' + requestID + '.pdf'));
+    console.log('LOCAL_DEBUG enabled, service saving file to /tmp directory')
+    const stream = doc.pipe(fs.createWriteStream(`/tmp/${requestID}.pdf`));
 
     stream.on('error', function(error) {
       console.log(`stream error ${error.toString()}`);

@@ -6,7 +6,7 @@
 
 ## Getting started
 
-- Add the library in your package.json under dependencies `"@thisisme/pdfgeneration-lib": "https://github.com/ThisIsMe-dev/PDFGeneration-lib#4.0.0"`
+- Add the library in your package.json under dependencies `"@thisisme/pdfgeneration-lib": "https://github.com/ThisIsMe-dev/PDFGeneration-lib#5.0.1"`
 - npm install to install all your dependencies for your project
 
 ### Examples
