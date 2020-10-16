@@ -7,6 +7,7 @@ const bwipjs = require('bwip-js');
 const AWS = require('aws-sdk');
 const s3 = new AWS.S3();
 AWS.config.update({region: process.env.AWS_DEFAULT_REGION});
+const AWS_S3_REPORTS_BUCKET = process.env.AWS_S3_REPORTS_BUCKET;
 
 const constants = require('./constants');
 const setupPDFType = require('./logic-pdf-type').setupPDFType;
@@ -157,14 +158,14 @@ async function addPageFooter(docY, requestID, disclaimer) {
       );
 
   /**
-       * Here we specifically override the generation to include a
-       * QR Code barcode in the PDF to verify the authenticity of
-       * the request with ThisIsMe
-      */
+   * Here we specifically override the generation to include a
+   * QR Code barcode in the PDF to verify the authenticity of
+   * the request with ThisIsMe
+  */
 
   const base64data = Buffer.from(requestID).toString('base64');
 
-  const val = process.env.THISISME_HOST + 'verify_reqid/' + base64data;
+  const val = `${process.env.THISISME_HOST}verify_reqid/${base64data}`;
   const barcode = await generateQRCode(val);
   doc.font('OpenSansLitalic').fontSize(8).text(
       'Scan this code to verify this request authenticity on ThisIsMe.com',
@@ -179,7 +180,7 @@ async function addPageFooter(docY, requestID, disclaimer) {
 
 /**
    * Generate the QR Code Barcode
-  */
+*/
 const generateQRCode = (data) => {
   return new Promise((resolve, reject) => {
     try {
@@ -201,8 +202,8 @@ const generateQRCode = (data) => {
 };
 
 /**
-   * Generate the Disclaimer text included on the PDF Report.
-  */
+ * Generate the Disclaimer text included on the PDF Report.
+*/
 function addDisclaimer(doc, disclaimer) {
   const page = doc.page;
   doc.rect(
@@ -278,7 +279,7 @@ function finalizePDFDocument(doc, requestID, reportMeta, pageOfContents) {
   } else {
     doc.pipe(concat(function(data) {
       const params = {
-        Bucket: 'thisisme-reports',
+        Bucket: AWS_S3_REPORTS_BUCKET,
         Key: key,
         Body: data,
       };

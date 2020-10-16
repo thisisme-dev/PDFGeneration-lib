@@ -47,3 +47,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Bug fix
 
 - width size of rows on pdf reduced to prevent lines going over to next.
+
+## [4.1.1] - 2020-10-16
+
+- Report bucket setting changed to env var
