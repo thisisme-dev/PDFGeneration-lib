@@ -16,11 +16,11 @@ async function generateLineThatIsImage(doc, x, y, value, incrementY, getDocY) {
 }
 
 async function populateImage(doc, x, y, incrementY, imageOptions) {
-    const pdfImage = await generatePDFImage(imageOptions);
-    const imageWidth = imageOptions.imageRules.width;
-    const imageHeight = imageOptions.imageRules.height;
-    doc.image(pdfImage, x, y, {fit: [imageWidth, imageHeight]});
-    return sectionTypeLogic.docYResponse(doc, y + imageHeight + incrementY);
+  const pdfImage = await generatePDFImage(imageOptions);
+  const imageWidth = imageOptions.imageRules.width;
+  const imageHeight = imageOptions.imageRules.height;
+  doc.image(pdfImage, x, y, {fit: [imageWidth, imageHeight]});
+  return sectionTypeLogic.docYResponse(doc, y + imageHeight + incrementY);
 }
 
 function generatePDFImage(imageOptions) {
@@ -32,8 +32,8 @@ function generatePDFImage(imageOptions) {
             // return a cant be displayed image
             reject(err);
           } else {
-            resolve(result)
-          }     
+            resolve(result);
+          }
         });
       });
     } catch (err) {
@@ -41,18 +41,18 @@ function generatePDFImage(imageOptions) {
       reject(err);
     }
   });
-};
+}
 
 function examplePayload() {
-  const base64str = "R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="//base64 of a 1x1 black pixel
+  const base64str = 'R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=';// base64 of a 1x1 black pixel
   const buf = Buffer.from(base64str, 'base64');
   return {
     imageRules: {
       width: 200,
       height: 140,
-    }, 
+    },
     // data: buf,
-    // data: "path.jpg", 
-    data: "https://www.sciencemag.org/sites/default/files/styles/article_main_image_-_1280w__no_aspect_/public/dogs_1280p_0.jpg", 
-  }
+    // data: "path.jpg",
+    data: 'https://www.sciencemag.org/sites/default/files/styles/article_main_image_-_1280w__no_aspect_/public/dogs_1280p_0.jpg',
+  };
 }

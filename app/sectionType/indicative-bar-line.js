@@ -24,13 +24,13 @@ function populateIndicativeBar(doc, x, y, incrementY, label, barOptions) {
 
   let barAdditionalIncrementX = 0;
   if (Object.prototype.hasOwnProperty.call(barOptions, 'additionalIncrementX')) {
-    barAdditionalIncrementX = parseInt(barOptions.additionalIncrementX)
+    barAdditionalIncrementX = parseInt(barOptions.additionalIncrementX);
   }
 
   let pointerAdditionalIncrementX = 0;
   if (Object.prototype.hasOwnProperty.call(barOptions, 'pointer')) {
     if (Object.prototype.hasOwnProperty.call(barOptions['pointer'], 'additionalIncrementX')) {
-      pointerAdditionalIncrementX = parseInt(barOptions.pointer.additionalIncrementX)
+      pointerAdditionalIncrementX = parseInt(barOptions.pointer.additionalIncrementX);
     }
   }
 
@@ -64,12 +64,11 @@ function populateIndicativeBar(doc, x, y, incrementY, label, barOptions) {
 
   if (Object.prototype.hasOwnProperty.call(barOptions, 'bar')) {
     // define all colors in values, and the color, iterate properties and create butt for each key
-    const barProps = barOptions.bar
+    const barProps = barOptions.bar;
     for (const key in barProps) {
       const color = barProps[key].color;
       if (Object.prototype.hasOwnProperty.call(barProps, key)) {
-
-        const labelX = piece * parseInt(key) + barAdditionalIncrementX + fixPortion
+        const labelX = piece * parseInt(key) + barAdditionalIncrementX + fixPortion;
 
         // this is a description of the section
         doc.font('OpenSansBold').fillColor(constants.PDFColors.NORMAL_COLOR).fontSize(constants.NORMAL_FONT_SIZE).text(barProps[key].text, labelX, y - 70, {
@@ -89,11 +88,11 @@ function populateIndicativeBar(doc, x, y, incrementY, label, barOptions) {
 
         // this is the actual block creation for the bar
         doc.lineWidth(constants.HEADER_FONT_SIZE)
-          .lineCap('butt')
-          .moveTo((piece * parseInt(key)) + fixPortion, y - 20)
-          .lineTo(piece * (parseInt(key) + 1) + fixPortion, y - 20)
-          .fillOpacity(1)
-          .fillAndStroke(color, color);
+            .lineCap('butt')
+            .moveTo((piece * parseInt(key)) + fixPortion, y - 20)
+            .lineTo(piece * (parseInt(key) + 1) + fixPortion, y - 20)
+            .fillOpacity(1)
+            .fillAndStroke(color, color);
       }
     }
   }
@@ -107,19 +106,19 @@ function populateIndicativeBar(doc, x, y, incrementY, label, barOptions) {
   return sectionTypeLogic.docYResponse(doc, y);
 }
 
-function createBackgroundRectangle(doc, maxWidthLabel, y){
+function createBackgroundRectangle(doc, maxWidthLabel, y) {
   doc.rect(
-    20,
-    y,
-    maxWidthLabel - 40,
-    180,
+      20,
+      y,
+      maxWidthLabel - 40,
+      180,
   ).fillColor('#F9F9F9').strokeColor(constants.PDFColors.NORMAL_COLOR).fillAndStroke();
   return doc;
 }
 
 function getBarLength(barOptions) {
   if (Object.prototype.hasOwnProperty.call(barOptions, 'bar')) {
-    return Object.keys(barOptions.bar).length
+    return Object.keys(barOptions.bar).length;
   }
   return 1;
 }
@@ -144,32 +143,32 @@ function examplePayload() {
       0: {
         color: '#FF0000',
         text: 'VERY HIGH',
-        range: '<= 625',        
+        range: '<= 625',
       },
       1: {
         color: '#FF6666',
         text: 'HIGH',
-        range: '626-640',             
+        range: '626-640',
       },
       2: {
         color: '#f5bd1f',
         text: 'AVERAGE',
-        range: '641-654',    
+        range: '641-654',
       },
       3: {
         color: '#98ffa8',
         text: 'LOW',
-        range: '655-666',     
+        range: '655-666',
       },
       4: {
         color: '#66FF66',
         text: 'MINIMUM',
-        range: '> 666',        
+        range: '> 666',
       },
       5: {
         color: '#89cff0',
         text: 'INSUFFICIENT',
-        range: '?',        
+        range: '?',
       },
     },
     pointer: {
@@ -182,5 +181,5 @@ function examplePayload() {
       color: '#f5bd1f',
     },
     additionalIncrementX: 0,
-  }
+  };
 }

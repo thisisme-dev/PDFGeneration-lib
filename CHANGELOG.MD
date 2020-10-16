@@ -60,3 +60,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Bug fix
 
 - Minor logging corrections
+
+## [5.1.1] - 2020-10-16
+
+### Minor change
+
+- Report bucket setting changed env var

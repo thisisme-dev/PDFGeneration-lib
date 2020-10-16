@@ -7,6 +7,7 @@ const bwipjs = require('bwip-js');
 const AWS = require('aws-sdk');
 const s3 = new AWS.S3();
 AWS.config.update({region: process.env.AWS_DEFAULT_REGION});
+const AWS_S3_REPORTS_BUCKET = process.env.AWS_S3_REPORTS_BUCKET;
 
 const constants = require('./constants');
 const setupPDFType = require('./logic-pdf-type').setupPDFType;
@@ -163,7 +164,7 @@ async function addPageFooter(docY, requestID, disclaimer) {
 
   const base64data = Buffer.from(requestID).toString('base64');
 
-  const val = process.env.THISISME_HOST + 'verify_reqid/' + base64data;
+  const val = `${process.env.THISISME_HOST}verify_reqid/${base64data}`;
   const barcode = await generateQRCode(val);
   doc.font('OpenSansLitalic').fontSize(8).text(
       'Scan this code to verify this request authenticity on ThisIsMe.com',
@@ -265,7 +266,7 @@ async function finalizePDFDocument(doc, requestID, reportMeta, pageOfContents) {
   const key = `${reportMeta.s3BucketName}/${reportMeta.formatted}/${requestID}.pdf`;
 
   if (reportMeta.LOCAL_DEBUG) {
-    console.log('LOCAL_DEBUG enabled, service saving file to /tmp directory')
+    console.log('LOCAL_DEBUG enabled, service saving file to /tmp directory');
     const stream = doc.pipe(fs.createWriteStream(`/tmp/${requestID}.pdf`));
 
     stream.on('error', function(error) {
@@ -278,7 +279,7 @@ async function finalizePDFDocument(doc, requestID, reportMeta, pageOfContents) {
   } else {
     doc.pipe(concat(function(data) {
       const params = {
-        Bucket: 'thisisme-reports',
+        Bucket: AWS_S3_REPORTS_BUCKET,
         Key: key,
         Body: data,
       };
