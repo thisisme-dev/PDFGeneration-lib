@@ -66,3 +66,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Minor change
 
 - Report bucket setting changed env var
+
+## [5.2.1] - 2020-10-16
+
+### Minor change
+
+- AWS_DEFAULT_REGION reference changed to TIM_AWS_DEFAULT_REGION
