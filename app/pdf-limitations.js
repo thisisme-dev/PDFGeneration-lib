@@ -1,4 +1,4 @@
-const PDFDocument = require('pdfkit');
+const PDFDocument = require('./library-override/pdfkit-customized');
 const constants = require('./constants');
 
 class PDFLimiter {

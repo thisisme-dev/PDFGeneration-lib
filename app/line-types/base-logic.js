@@ -3,6 +3,7 @@ const constants = require('../constants');
 module.exports = {
   docYResponse,
   populateLine,
+  populateHeaderLine,
   underline,
   createNewPage,
 };
@@ -16,24 +17,34 @@ function docYResponse(doc, y) {
 }
 
 // populateLine : populates a line with the stipulated text and settings
-function populateLine(doc, headerColor, text, value, x, xAdditionalWidth, y, isHeaderType /* isDefinedHeader or HEADER_LINE*/) {
+function populateLine(doc, headerColor, text, value, x, xAdditionalWidth, y) {
+  const size = constants.NORMAL_FONT_SIZE;
+
+  doc.font('OpenSansSemiBold').fontSize(size).fillColor(headerColor).text(text, x, y);
+  doc.font('OpenSansLight').fontSize(size).text(value, x + xAdditionalWidth, y, {
+    width: 370,
+    lineGap: 10,
+    ellipsis: true,
+  });
+
+  return doc;
+}
+
+// populateHeaderLine : populates a line with the stipulated text and settings
+function populateHeaderLine(doc, headerColor, text, value, x, xAdditionalWidth, y, isFancyHeader) {
   let size = constants.NORMAL_FONT_SIZE;
-  if (isHeaderType) {
-    size = constants.HEADER_FONT_SIZE;
-    const page = doc.page;
-    // TODO: CHOOSE HEADER
-    // full block
-    // doc.rect(0, 0, page.width, constants.INCREMENT_MAIN_Y + 15).fillColor(constants.PDFColors.NORMAL_COLOR).strokeColor(constants.PDFColors.NORMAL_COLOR).fillAndStroke();
-    // thin block
+  // console.log(isHeaderType)
+  size = constants.HEADER_FONT_SIZE;
+  const page = doc.page;
+  // TODO: CHOOSE HEADER
+  // full block
+  // doc.rect(0, 0, page.width, constants.INCREMENT_MAIN_Y + 15).fillColor(constants.PDFColors.NORMAL_COLOR).strokeColor(constants.PDFColors.NORMAL_COLOR).fillAndStroke();
+  // thin block
+  if (isFancyHeader) {
     doc.rect(0, 25, page.width, 50).fillColor(constants.PDFColors.NORMAL_COLOR).strokeColor(constants.PDFColors.NORMAL_COLOR).fillAndStroke();
     doc.font('OpenSansSemiBold').fontSize(size).fillColor(constants.PDFColors.TEXT_IN_NORMAL_COLOR).text(text, x, y - 40);
   } else {
-    doc.font('OpenSansSemiBold').fontSize(size).fillColor(headerColor).text(text, x, y);
-    doc.font('OpenSansLight').fontSize(size).text(value, x + xAdditionalWidth, y, {
-      width: 370,
-      lineGap: 10,
-      ellipsis: true,
-    });
+    doc.font('OpenSansSemiBold').fontSize(size).fillColor(constants.PDFColors.NORMAL_COLOR).text(text, x, y);
   }
 
   return doc;

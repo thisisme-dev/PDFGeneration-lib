@@ -42,7 +42,7 @@ function generateLineThatIsObject(doc, x, y, text, value, lineType, incrementY, 
             if (column !== 0) { // I HATE THIS, might have had dual column before this, that only had one column in, so increment never took place
               y += incrementY;
             }
-            doc = sectionTypeLogic.populateLine(doc, constants.PDFColors.NORMAL_COLOR, subLine.text, subLine.value, 20, 140, y, false);
+            doc = sectionTypeLogic.populateLine(doc, constants.PDFColors.NORMAL_COLOR, subLine.text, subLine.value, 20, 140, y);
             // doc = underline(doc, x, y); this was for testing
             y += incrementY;
             singleColumns.push(true);
@@ -57,7 +57,7 @@ function generateLineThatIsObject(doc, x, y, text, value, lineType, incrementY, 
               finalIncrementYRequired = false;
             }
             // const headerColor = lineType === constants.PDFDocumentLineType.HEADER_LINE ? constants.PDFColors.INDICATIVE_COLOR : constants.PDFColors.NORMAL_COLOR;
-            doc = sectionTypeLogic.populateLine(doc, constants.PDFColors.NORMAL_COLOR, subLine.text, subLine.value, x, 140, y, false);
+            doc = sectionTypeLogic.populateLine(doc, constants.PDFColors.NORMAL_COLOR, subLine.text, subLine.value, x, 140, y);
             // doc = underline(doc, x, y); this was for testing
             if (column !== 0) {
               y += incrementY;

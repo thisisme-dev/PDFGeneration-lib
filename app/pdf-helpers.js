@@ -1,5 +1,7 @@
 const constants = require('./constants');
 
+const coverPDFLogic = require('./pdf-types/cover-logic');
+
 class PDFHelpers {
   constructor(event, requestTimestamp, dataSource, serviceSearchParams) {
     this.event = event;
@@ -27,6 +29,38 @@ class PDFHelpers {
     return {
       lineType: constants.PDFDocumentLineType.END_LINE,
     };
+  }
+
+  emptyLine() {
+    return {
+      lineType: constants.PDFDocumentLineType.EMPTY_LINE,
+    };
+  }
+
+  moveToNextPage() {
+    return {
+      lineType: constants.PDFDocumentLineType.PAGE_BREAK,
+    };
+  }
+
+  getDefaultCoverPageSetup(coverReportName) {
+    const searchParams = {
+      headers: ['', ''],
+      rows: [],
+    };
+    for (const [key] of Object.entries(this.serviceSearchParams)) {
+      let value = this.event[key];
+      if (value === undefined || value === null || value.trim().length === 0) {
+        value = 'Not Supplied';
+      } else {
+        value = this.event[key];
+      }
+      searchParams.rows.push([
+        {text: this.getDisplayableTextValue(key), align: constants.PDFTableColumnTextAlign.LEFT},
+        {text: value, align: constants.PDFTableColumnTextAlign.RIGHT},
+      ]);
+    }
+    return coverPDFLogic.getDefaultCoverDesign(coverReportName, searchParams);
   }
 
   getDisplayableTextValue(value) {
