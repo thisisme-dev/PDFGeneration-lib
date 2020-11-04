@@ -72,3 +72,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Minor change
 
 - AWS_DEFAULT_REGION reference changed to TIM_AWS_DEFAULT_REGION
+
+## [5.3.0] - 2020-11-04
+
+### Cover Page & Bug fixes
+
+- Code restructure
+- Cover Page added as a PDF Type
+- Fixed headers that aren't selected as new page headers
+- Fixed async issue with older PDF Types
+- Added functionality to build tables

@@ -13,10 +13,8 @@ function generateLineThatIsGrid(doc, x, y, text, value, isDefinedHeader, increme
   doc = docY.doc;
   y = docY.y;
 
-  doc = sectionTypeLogic.populateLine(doc, constants.PDFColors.INDICATIVE_COLOR, text, null, x, 180, y, isDefinedHeader);
-  if (!isDefinedHeader) {
-    y += incrementY;
-  }
+  doc = sectionTypeLogic.populateHeaderLine(doc, constants.PDFColors.INDICATIVE_COLOR, text, null, x, 180, y, isDefinedHeader);
+
   const gridHeaders = value[0];
   const columnWidth = {};
   const columnXStart = {};

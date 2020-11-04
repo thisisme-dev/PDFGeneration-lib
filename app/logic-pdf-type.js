@@ -1,44 +1,33 @@
 const constants = require('./constants');
+const contentsPDFLogic = require('./pdf-types/page-of-contents-logic');
+
+function setupPDFType(type) {
+  function pdfSetupResponse(pageOfContents, addBasicResponseHeader) {
+    return {
+      pageOfContents: pageOfContents,
+      addBasicResponseHeader: addBasicResponseHeader,
+      hasCover: false,
+    };
+  }
+
+  switch (type) {
+    case constants.PDFType.CONTENTS_OF_PAGE: {
+      return pdfSetupResponse(new contentsPDFLogic.PageOfContents(), false);
+    }
+    case constants.PDFType.COVER_AND_CONTENTS_OF_PAGE: {
+      const pageSetup = pdfSetupResponse(new contentsPDFLogic.PageOfContents(), false);
+      pageSetup.hasCover = true;
+      return pageSetup;
+    }
+    case constants.PDFType.NO_SERVICE_RESPONSE_HEADER: {
+      return pdfSetupResponse(null, false);
+    }
+    default: {
+      return pdfSetupResponse(null, true);
+    }
+  }
+}
 
 module.exports = {
-  setupPDFType: (type) => {
-    switch (type) {
-      case constants.PDFType.CONTENTS_OF_PAGE: {
-        return pdfSetupResponse(new PageOfContents(), false);
-      }
-      case constants.PDFType.NO_SERVICE_RESPONSE_HEADER: {
-        return pdfSetupResponse(null, false);
-      }
-      default: {
-        return pdfSetupResponse(null, true);
-      }
-    }
-  },
+  setupPDFType,
 };
-
-function pdfSetupResponse(pageOfContents, addBasicResponseHeader) {
-  return {
-    pageOfContents: pageOfContents,
-    addBasicResponseHeader: addBasicResponseHeader,
-  };
-}
-class PageOfContents {
-  constructor() {
-    this.details = [];
-    this.pagePosition = 1;
-  }
-  incrementPage() {
-    this.pagePosition++;
-  }
-  addPageDetails(section) {
-    const details = {
-      'section': section,
-      'page': this.pagePosition,
-    };
-
-    this.details.push(details);
-  }
-  getPageOfContents() {
-    return this.details;
-  }
-}

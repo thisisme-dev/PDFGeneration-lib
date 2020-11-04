@@ -14,7 +14,7 @@ const PDFType = {
   DEFAULT: 0, // old style search/response
   CONTENTS_OF_PAGE: 1,
   NO_SERVICE_RESPONSE_HEADER: 2,
-  // COVER_AND_CONTENTS_OF_PAGE: 3, NEAR FUTURE
+  COVER_AND_CONTENTS_OF_PAGE: 3,
 };
 
 const PDFDocumentLineType = {
@@ -33,6 +33,17 @@ const PDFDocumentLineType = {
   KEY_LINK_LINE: 12,
   INDICATIVE_BAR_LINE: 13,
   IMAGE_LINE: 14,
+  PAGE_BREAK: 15,
+};
+
+const PDFTableType = {
+  DEFAULT: 0,
+  COVER: 1,
+};
+
+const PDFTableColumnTextAlign = {
+  LEFT: 0,
+  RIGHT: 1,
 };
 
 module.exports = Object.freeze({
@@ -55,6 +66,8 @@ module.exports = Object.freeze({
 
   PDFType,
   PDFDocumentLineType,
+  PDFTableType,
+  PDFTableColumnTextAlign,
 
   // Colors used in Footer and Disclaimer are not currently covered here
   PDFColors: {

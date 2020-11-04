@@ -1,6 +1,8 @@
 const fs = require('fs');
 
-const PDFDocument = require('pdfkit');
+const PDFDocument = require('./library-override/pdfkit-customized');
+const coverPDFLogic = require('./pdf-types/cover-logic');
+
 const concat = require('concat-stream');
 const bwipjs = require('bwip-js');
 
@@ -13,17 +15,7 @@ const constants = require('./constants');
 const setupPDFType = require('./logic-pdf-type').setupPDFType;
 const addLine = require('./logic-line-core').addLine;
 
-module.exports = {
-  setupPDFType,
-  createPDFDocument,
-  defaultTop,
-  addDefaultLine,
-  addPageDetail,
-  addPageFooter,
-  finalizePDFDocument,
-};
-
-function createPDFDocument(requestID, reportName, pageOfContents) {
+function createPDFDocument(requestID, reportName, pageOfContents, coverPage) {
   const doc = new PDFDocument({
     bufferPages: true,
     size: 'A4',
@@ -50,9 +42,14 @@ function createPDFDocument(requestID, reportName, pageOfContents) {
 
   // PAGE HEADER
   doc.fillColor(constants.PDFColors.NORMAL_COLOR);
-  doc.image(`${constants.PACKAGE_PATH}images/tim_logo_large.png`, 20, 20, {width: 170});
-  doc.font('OpenSansSemiBold').fontSize(20).text(reportName, 150, 26, {width: 430, align: 'right'});
 
+  if (coverPage) {
+    doc.image(`${constants.PACKAGE_PATH}images/tim_logo_large.png`, 100, 80, {width: 400});
+    // doc.font('OpenSansSemiBold').fontSize(20).text(reportName, 150, 26, {width: 430, align: 'right'}); incorporate this
+  } else {
+    doc.image(`${constants.PACKAGE_PATH}images/tim_logo_large.png`, 20, 20, {width: 170});
+    doc.font('OpenSansSemiBold').fontSize(20).text(reportName, 150, 26, {width: 430, align: 'right'});
+  }
   return {
     doc: doc,
     y: constants.TOP_OF_PAGE_Y,
@@ -81,11 +78,12 @@ async function addDefaultLine(docY, text, value) {
 async function addPageDetail(docY, data, newPageHeaders, pageOfContents) {
   for (const prop in data) {
     if (Object.prototype.hasOwnProperty.call(data, prop)) {
-      let isDefinedHeader = false;
+      let isFancyHeader = false;
       const row = data[prop];
       if (newPageHeaders !== null) {
         // console.log(`Searching ${row.text}`);
         if (newPageHeaders.includes(row.text)) {
+          // console.log(`Found ${row.text}`);
           if (docY.y > constants.TOP_OF_PAGE_Y) {
             // console.log(`${row.text} is a header`);
             // console.log('HEADER PAGE FOR HEADER');
@@ -93,14 +91,17 @@ async function addPageDetail(docY, data, newPageHeaders, pageOfContents) {
             docY.doc.addPage();
             // docY.doc.fillColor(constants.PDFColors.NORMAL_COLOR);
             docY.y = constants.TOP_OF_PAGE_Y;
-            isDefinedHeader = true;
           }
+          isFancyHeader = true;
           if (pageOfContents !== null) {
             pageOfContents.addPageDetails(row.text);
           }
         }
       }
-      docY = await addLine(docY, row.text, row.value, row.lineType, isDefinedHeader);
+      // console.log(row.text)
+      // console.log(isDefinedHeader)
+
+      docY = await addLine(docY, row.text, row.value, row.lineType, isFancyHeader);
     }
   }
   return docY;
@@ -245,12 +246,15 @@ async function populatePageOfContents(doc, pageOfContents) {
   return doc;
 }
 
-async function finalizePDFDocument(doc, requestID, reportMeta, pageOfContents) {
+async function finalizePDFDocument(doc, requestID, reportMeta, pageOfContents, coverPage) {
   const pages = doc.bufferedPageRange();
 
   doc = await populatePageOfContents(doc, pageOfContents);
   // old code for page numbering
   for (let i = 0; i < pages.count; i++) {
+    if (coverPage) {
+      continue;
+    }
     doc.switchToPage(i);
     // Footer: Add page number
     const oldBottomMargin = doc.page.margins.bottom;
@@ -296,3 +300,14 @@ async function finalizePDFDocument(doc, requestID, reportMeta, pageOfContents) {
     'formatted': reportMeta.formatted,
   };
 }
+
+module.exports = {
+  setupPDFType,
+  createPDFDocument,
+  addCoverPage: coverPDFLogic.addCoverPage,
+  defaultTop,
+  addDefaultLine,
+  addPageDetail,
+  addPageFooter,
+  finalizePDFDocument,
+};

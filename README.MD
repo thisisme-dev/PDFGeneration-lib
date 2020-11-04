@@ -6,7 +6,7 @@
 
 ## Getting started
 
-- Add the library in your package.json under dependencies `"@thisisme/pdfgeneration-lib": "https://github.com/ThisIsMe-dev/PDFGeneration-lib#5.0.1"`
+- Add the library in your package.json under dependencies `"@thisisme/pdfgeneration-lib": "https://github.com/ThisIsMe-dev/PDFGeneration-lib#5.3.0"`
 - npm install to install all your dependencies for your project
 
 ### Examples
@@ -23,11 +23,9 @@ const pdfHelpers = new pdf.PDFHelpers(event, requestTimestamp, dataSource, reque
 const reportHeaders = {
     businessInformation: {title: 'Business Information', new_page: true},
     linkedAddress: {title: 'Linked Addresses', new_page: true},
-    aliases: {title: 'Known Aliases', new_page: true},
-    articles: {title: 'Articles', new_page: true},
-    sanctions: {title: 'Sanctions', new_page: true},
+    aliases: {title: 'Known Aliases', new_page: false},
     notes: {title: 'Notes', new_page: true},
-    linkedBusinesses: {title: 'Linked Businesses', new_page: true},
+    linkedBusinesses: {title: 'Linked Businesses', new_page: false},
     linkedPersons: {title: 'Known Associates', new_page: true},
 }; // These are custom headers for you service that the PDF needs to know are headers so it can adjust the look accordingly
 const content = pdfHelpers.generateResultsFoundPDFStartingContent(reportHeaders, constants.PDFType.CONTENTS_OF_PAGE);
@@ -60,6 +58,7 @@ const PDFType = {
   DEFAULT: 0, // old style search/response
   CONTENTS_OF_PAGE: 1,
   NO_SERVICE_RESPONSE_HEADER: 2,
+  COVER_AND_CONTENTS_OF_PAGE: 3,
 };
 ```
 
@@ -82,5 +81,6 @@ const PDFDocumentLineType = {
   KEY_LINK_LINE: 12, // A line that allows the user to click to go to the provided URL
   INDICATIVE_BAR_LINE: 13, // Indicative bars designed with Credit Scores in mind
   IMAGE_LINE: 14, // A line that represents an image
+  PAGE_BREAK: 15, // Skips to the top of a new page
 }
 ```

@@ -40,24 +40,32 @@ module.exports = {
     const requestID = reportContent.requestId;
     const pageSetup = logic.setupPDFType(reportContent.pdfType);
     const pageOfContents = pageSetup.pageOfContents;
-    let docY = logic.createPDFDocument(requestID, reportMeta.reportName, pageOfContents);
-    docY = await logic.defaultTop(docY, reportContent);
-    if (pageOfContents !== null) {
-      docY.doc.addPage(); // create blank page for page of contents
+    let docY = logic.createPDFDocument(requestID, reportMeta.reportName, pageOfContents, pageSetup.hasCover);
+    if (pageSetup.hasCover) {
+      docY = await logic.addCoverPage(docY, reportContent['coverDetails']);
+      if (pageOfContents !== null) {
+        docY.doc.addPage(); // create blank page for page of contents
+      }
+    } else {
+      docY = await logic.defaultTop(docY, reportContent);
+      if (pageOfContents !== null) {
+        docY.doc.addPage(); // create blank page for page of contents
+      }
+      if (pageSetup.addBasicResponseHeader && !pageSetup.hasCover) {
+        docY = await logic.addDefaultLine(docY, 'Service Response:', null);
+      }
     }
-    if (pageSetup.addBasicResponseHeader) {
-      docY = logic.addDefaultLine(docY, 'Service Response:', null);
-    }
-    docY = await logic.addPageDetail(docY, reportContent['dataFound'], reportContent.newPageHeaders, pageOfContents);
+    docY = await logic.addPageDetail(docY, reportContent['dataFound'], reportContent.newPageHeaders, pageOfContents, pageSetup.hasCover);
     docY.doc = await logic.addPageFooter(docY, requestID, reportMeta.disclaimer);
-    return await logic.finalizePDFDocument(docY.doc, requestID, reportMeta, pageOfContents);
+    return await logic.finalizePDFDocument(docY.doc, requestID, reportMeta, pageOfContents, pageSetup.hasCover);
   },
   generateNoResultsReport: async (reportContent, reportMeta) => {
     const requestID = reportContent.requestId;
+    const pageSetup = logic.setupPDFType(reportContent.pdfType);
     const pageOfContents = null;
-    let docY = logic.createPDFDocument(requestID, reportMeta.reportName, pageOfContents);
+    let docY = logic.createPDFDocument(requestID, reportMeta.reportName, pageOfContents, pageSetup.hasCover);
     docY = await logic.defaultTop(docY, reportContent);
     docY.doc = await logic.addPageFooter(docY, requestID, reportMeta.disclaimer);
-    return await logic.finalizePDFDocument(docY.doc, requestID, reportMeta, pageOfContents);
+    return await logic.finalizePDFDocument(docY.doc, requestID, reportMeta, pageOfContents, pageSetup.hasCover);
   },
 };
