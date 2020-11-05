@@ -60,21 +60,29 @@ class PDFLimiter {
         if (piece.trim().length === 0) {
           continue;
         }
-        const possibleNewLine = `${lines[line]}${splitter}${piece}`;
+        const possibleNewLine = (lines[line] === undefined) ? `${splitter}${piece}` : `${lines[line]}${splitter}${piece}`;
         if (this.getStringWidth(possibleNewLine) <= this.max) {
           lines[`${line}`] = possibleNewLine;
         } else {
-          line++;
-          lines[`${line}`] = `${piece}`;
+          if (this.getStringWidth(piece) >= this.max) {
+            const wordPieces = this.splitLongWord(piece);
+            line++;
+            for (let j = 0; j < wordPieces.length; j++) {
+              lines[`${line-1}.${j+1}`] = wordPieces[j];
+            }
+          } else {
+            line++;
+            lines[`${line}`] = `${piece}`;
+          }
         }
       }
     }
-
+    const keysSorted = Object.keys(lines).sort(function(a, b) {
+      return parseFloat(a)-parseFloat(b);
+    });
     const array = [];
-    for (const prop in lines) {
-      if (Object.prototype.hasOwnProperty.call(lines, prop)) {
-        array.push(lines[prop]);
-      }
+    for (let j = 0; j < keysSorted.length; j++) {
+      array.push(lines[keysSorted[j]].trim());
     }
     return array;
   }

@@ -82,3 +82,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed headers that aren't selected as new page headers
 - Fixed async issue with older PDF Types
 - Added functionality to build tables
+
+## [5.3.1] - 2020-11-05
+
+### Bug fix
+
+- splitLongText function fixed, was not catering for long words
