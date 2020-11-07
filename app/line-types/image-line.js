@@ -16,7 +16,7 @@ async function generateLineThatIsImage(doc, x, y, value, incrementY, getDocY) {
 }
 
 async function populateImage(doc, x, y, incrementY, imageOptions) {
-  if (imageOptions.data.isArray()){
+  if (Array.isArray(imageOptions.data)){
     /* Images in the array will be placed side by side -- MONTY */
     const running_width = x;
     const heighest_image = 0;
