@@ -18,9 +18,9 @@ function docYResponse(doc, y) {
 
 // populateLine : populates a line with the stipulated text and settings
 function populateLine(doc, headerColor, text, value, x, xAdditionalWidth, y, font) {
-  const size = constants.NORMAL_FONT_SIZE;
-  const bold_font = 'OpenSansSemiBold'
-  const light_font = 'OpenSansLight'
+  var size = constants.NORMAL_FONT_SIZE;
+  var bold_font = 'OpenSansSemiBold'
+  var light_font = 'OpenSansLight'
 
   if (font !== undefined){
     if (font.size !== undefined)

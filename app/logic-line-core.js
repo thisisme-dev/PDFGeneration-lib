@@ -92,6 +92,7 @@ async function addLine(lineDocY, text, value, lineType, isFancyHeader, font) {
       break;
     }
     case constants.PDFDocumentLineType.GRID: { // TODO: requires validating new headers for page space
+
       const sectionResponse = gridLine.generateLineThatIsGrid(doc, x, y, text, value, isFancyHeader, incrementY, headerColor, getDocY, font);
       doc = sectionResponse.doc;
       y = sectionResponse.y;
@@ -132,7 +133,7 @@ async function addLine(lineDocY, text, value, lineType, isFancyHeader, font) {
       break;
     }
     default: {
-      const sectionResponse = textLine.generateLineThatIsText(doc, x, y, text, value, incrementY, headerColor, getDocY, font);
+      const sectionResponse = textLine.generateLineThatIsText(doc, x, y, text, value, incrementY, headerColor, getDocY);
       doc = sectionResponse.doc;
       y = sectionResponse.y;
       break;
