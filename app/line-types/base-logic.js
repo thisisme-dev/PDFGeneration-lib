@@ -22,15 +22,16 @@ function populateLine(doc, headerColor, text, value, x, xAdditionalWidth, y, fon
   const bold_font = 'OpenSansSemiBold'
   const light_font = 'OpenSansLight'
 
-  if (font.size !== undefined)
-    size = font.size
-  
-  if (font.bold_font !== undefined)
-    bold_font = font.bold_font
-  
-  if (font.light_font !== undefined)
-    light_font = font.light_font
-
+  if (font !== undefined){
+    if (font.size !== undefined)
+      size = font.size
+    
+    if (font.bold_font !== undefined)
+      bold_font = font.bold_font
+    
+    if (font.light_font !== undefined)
+      light_font = font.light_font
+  }
   doc.font(bold_font).fontSize(size).fillColor(headerColor).text(text, x, y);
   doc.font(light_font).fontSize(size).text(value, x + xAdditionalWidth, y, {
     width: 370,
@@ -47,14 +48,16 @@ function populateHeaderLine(doc, headerColor, text, value, x, xAdditionalWidth, 
   // console.log(isHeaderType)
   size = constants.HEADER_FONT_SIZE;
 
-  if (font.size !== undefined)
-    size = font.size
-  
-  if (font.bold_font !== undefined)
-    bold_font = font.bold_font
-  
-  if (font.light_font !== undefined)
-    light_font = font.light_font
+  if (font !== undefined){
+    if (font.size !== undefined)
+      size = font.size
+    
+    if (font.bold_font !== undefined)
+      bold_font = font.bold_font
+    
+    if (font.light_font !== undefined)
+      light_font = font.light_font
+  }
   
   const page = doc.page;
   // TODO: CHOOSE HEADER
