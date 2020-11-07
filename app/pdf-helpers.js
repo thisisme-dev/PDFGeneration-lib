@@ -12,7 +12,7 @@ class PDFHelpers {
 
   textValueObj(text, value, lineType, font) {
     return {
-      text: text,
+      text: text, // to avoid confusion, perhaps rename to label?
       value: value,
       lineType: lineType,
       font: font
