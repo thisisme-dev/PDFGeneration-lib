@@ -10,11 +10,12 @@ class PDFHelpers {
     this.serviceSearchParams = serviceSearchParams;
   }
 
-  textValueObj(text, value, lineType) {
+  textValueObj(text, value, lineType, font) {
     return {
       text: text,
       value: value,
       lineType: lineType,
+      font: font
     };
   }
 
