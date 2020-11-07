@@ -18,15 +18,20 @@ async function generateLineThatIsImage(doc, x, y, value, incrementY, getDocY) {
 async function populateImage(doc, x, y, incrementY, imageOptions) {
   if (imageOptions.data.isArray()){
     /* Images in the array will be placed side by side -- MONTY */
+    const running_width = x;
+    const heighest_image = 0;
     for (var img_number = 0; img_number < imageOptions.data; img_number++){
-      const pdfImage = await generatePDFImage(imageOptions);
-      const imageWidth = imageOptions.imageRules.width;
-      const imageHeight = imageOptions.imageRules.height;
-      doc.image(pdfImage, x + imageWidth * img_number, y, {fit: [imageWidth, imageHeight]});
-      return sectionTypeLogic.docYResponse(doc, y + imageHeight + incrementY);
+      const pdfImage = await generatePDFImage(imageOptions.data[img_number]);
+      const imageWidth = imageOptions.imageRules[img_number].width;
+      const imageHeight = imageOptions.imageRules[img_number].height;
+      doc.image(pdfImage, running_width, y, {fit: [imageWidth, imageHeight]});
+      running_width = running_width + imageWidth
+      if (heighest_image < imageHeight)
+        heighest_image = imageHeight 
     }
+    return sectionTypeLogic.docYResponse(doc, y + heighest_image + incrementY);
   } else {
-    const pdfImage = await generatePDFImage(imageOptions);
+    const pdfImage = await generatePDFImage(imageOptions.data);
     const imageWidth = imageOptions.imageRules.width;
     const imageHeight = imageOptions.imageRules.height;
     doc.image(pdfImage, x, y, {fit: [imageWidth, imageHeight]});
@@ -34,10 +39,10 @@ async function populateImage(doc, x, y, incrementY, imageOptions) {
   }
 }
 
-function generatePDFImage(imageOptions) {
+function generatePDFImage(data) {
   return new Promise((resolve, reject) => {
     try {
-      Jimp.read(imageOptions.data).then((image) => {
+      Jimp.read(data).then((image) => {
         image.getBuffer(Jimp.MIME_JPEG, (err, result) => {
           if (err !== null) {
             // return a cant be displayed image
