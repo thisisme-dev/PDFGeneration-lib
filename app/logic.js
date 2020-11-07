@@ -81,13 +81,8 @@ async function addPageDetail(docY, data, newPageHeaders, pageOfContents) {
       let isFancyHeader = false;
       const row = data[prop];
       if (newPageHeaders !== null) {
-        // console.log(`Searching ${row.text}`);
         if (newPageHeaders.includes(row.text)) {
-          // console.log(`Found ${row.text}`);
           if (docY.y > constants.TOP_OF_PAGE_Y) {
-            // console.log(`${row.text} is a header`);
-            // console.log('HEADER PAGE FOR HEADER');
-            // console.log('-------------------------------');
             docY.doc.addPage();
             // docY.doc.fillColor(constants.PDFColors.NORMAL_COLOR);
             docY.y = constants.TOP_OF_PAGE_Y;
@@ -98,8 +93,6 @@ async function addPageDetail(docY, data, newPageHeaders, pageOfContents) {
           }
         }
       }
-      // console.log(row.text)
-      // console.log(isDefinedHeader)
 
       docY = await addLine(docY, row.text, row.value, row.lineType, isFancyHeader);
     }
