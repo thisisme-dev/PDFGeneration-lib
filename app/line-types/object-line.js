@@ -5,7 +5,7 @@ module.exports = {
   generateLineThatIsObject,
 };
 
-function generateLineThatIsObject(doc, x, y, text, value, lineType, incrementY, getDocY) {
+function generateLineThatIsObject(doc, x, y, text, value, lineType, incrementY, getDocY, font) {
   if (value.length > 0) {
     const sections = generateSections(value);
     let sectionHeaderPrinted = false;
@@ -22,7 +22,7 @@ function generateLineThatIsObject(doc, x, y, text, value, lineType, incrementY, 
         }
         if (!sectionHeaderPrinted) {
           const isFancyHeader = (lineType === constants.PDFDocumentLineType.COLUMN_INFO);
-          doc = sectionTypeLogic.populateLine(doc, constants.PDFColors.INDICATIVE_COLOR, text, null, x, 180, y, isFancyHeader);
+          doc = sectionTypeLogic.populateLine(doc, constants.PDFColors.INDICATIVE_COLOR, text, null, x, 180, y, isFancyHeader, font);
           sectionHeaderPrinted = true;
           if (!isFancyHeader) {
             y += (lineType === constants.PDFDocumentLineType.COLUMN_INFO) ? constants.INCREMENT_MAIN_Y : constants.INCREMENT_SUB_Y;
@@ -42,7 +42,7 @@ function generateLineThatIsObject(doc, x, y, text, value, lineType, incrementY, 
             if (column !== 0) { // I HATE THIS, might have had dual column before this, that only had one column in, so increment never took place
               y += incrementY;
             }
-            doc = sectionTypeLogic.populateLine(doc, constants.PDFColors.NORMAL_COLOR, subLine.text, subLine.value, 20, 140, y);
+            doc = sectionTypeLogic.populateLine(doc, constants.PDFColors.NORMAL_COLOR, subLine.text, subLine.value, 20, 140, y, font);
             // doc = underline(doc, x, y); this was for testing
             y += incrementY;
             singleColumns.push(true);
@@ -57,7 +57,7 @@ function generateLineThatIsObject(doc, x, y, text, value, lineType, incrementY, 
               finalIncrementYRequired = false;
             }
             // const headerColor = lineType === constants.PDFDocumentLineType.HEADER_LINE ? constants.PDFColors.INDICATIVE_COLOR : constants.PDFColors.NORMAL_COLOR;
-            doc = sectionTypeLogic.populateLine(doc, constants.PDFColors.NORMAL_COLOR, subLine.text, subLine.value, x, 140, y);
+            doc = sectionTypeLogic.populateLine(doc, constants.PDFColors.NORMAL_COLOR, subLine.text, subLine.value, x, 140, y, font);
             // doc = underline(doc, x, y); this was for testing
             if (column !== 0) {
               y += incrementY;
