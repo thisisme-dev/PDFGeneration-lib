@@ -15,7 +15,7 @@ module.exports = {
 };
 
 // addLine : This function builds the line/section to display on the PDF document
-async function addLine(lineDocY, text, value, lineType, isFancyHeader) {
+async function addLine(lineDocY, text, value, lineType, isFancyHeader, font) {
   function getDocY(doc, currentY, incrementY, sectionRows, isSubHeader) {
     // this function needs the lineType for the object,
     // we have case where we don't just deal with lines,
@@ -57,7 +57,7 @@ async function addLine(lineDocY, text, value, lineType, isFancyHeader) {
     }
     case constants.PDFDocumentLineType.HEADER_LINE: {
       // console.log(`Header line: ${text} -- ${headerColor} ${y} ${isFancyHeader}`)
-      const sectionResponse = headerLine.generateLineThatIsHeader(doc, x, y, isFancyHeader, text, incrementY, headerColor, getDocY);
+      const sectionResponse = headerLine.generateLineThatIsHeader(doc, x, y, isFancyHeader, text, incrementY, headerColor, getDocY, font);
       doc = sectionResponse.doc;
       y = sectionResponse.y;
       break;
@@ -71,10 +71,10 @@ async function addLine(lineDocY, text, value, lineType, isFancyHeader) {
       doc = docY.doc;
       y = docY.y;
 
-      doc = sectionTypeLogic.populateLine(doc, headerColor, text, '', x, 180, y);
+      doc = sectionTypeLogic.populateLine(doc, headerColor, text, '', x, 180, y, font);
       for (let i = 0; i < addressParts.length; i++) {
         const addressPart = addressParts[i];
-        doc = sectionTypeLogic.populateLine(doc, headerColor, '', addressPart, x, 180, y);
+        doc = sectionTypeLogic.populateLine(doc, headerColor, '', addressPart, x, 180, y, font);
         if (i < addressParts.length - 1) {
           doc = sectionTypeLogic.underline(doc, x, y);
           y += incrementY;
@@ -86,13 +86,13 @@ async function addLine(lineDocY, text, value, lineType, isFancyHeader) {
     }
     case constants.PDFDocumentLineType.COLUMN_INFO:
     case constants.PDFDocumentLineType.META_INFO: {
-      const sectionResponse = objectLine.generateLineThatIsObject(doc, x, y, text, value, lineType, incrementY, getDocY);
+      const sectionResponse = objectLine.generateLineThatIsObject(doc, x, y, text, value, lineType, incrementY, getDocY, font);
       doc = sectionResponse.doc;
       y = sectionResponse.y;
       break;
     }
     case constants.PDFDocumentLineType.GRID: { // TODO: requires validating new headers for page space
-      const sectionResponse = gridLine.generateLineThatIsGrid(doc, x, y, text, value, isFancyHeader, incrementY, headerColor, getDocY);
+      const sectionResponse = gridLine.generateLineThatIsGrid(doc, x, y, text, value, isFancyHeader, incrementY, headerColor, getDocY, font);
       doc = sectionResponse.doc;
       y = sectionResponse.y;
       break;
@@ -132,7 +132,7 @@ async function addLine(lineDocY, text, value, lineType, isFancyHeader) {
       break;
     }
     default: {
-      const sectionResponse = textLine.generateLineThatIsText(doc, x, y, text, value, incrementY, headerColor, getDocY);
+      const sectionResponse = textLine.generateLineThatIsText(doc, x, y, text, value, incrementY, headerColor, getDocY, font);
       doc = sectionResponse.doc;
       y = sectionResponse.y;
       break;
