@@ -18,9 +18,9 @@ async function generateLineThatIsImage(doc, x, y, value, incrementY, getDocY) {
 async function populateImage(doc, x, y, incrementY, imageOptions) {
   if (Array.isArray(imageOptions.data)){
     /* Images in the array will be placed side by side -- MONTY */
-    const running_width = x;
-    const heighest_image = 0;
-    for (var img_number = 0; img_number < imageOptions.data; img_number++){
+    var running_width = x;
+    var heighest_image = 0;
+    for (var img_number = 0; img_number < imageOptions.data.length; img_number++){
       const pdfImage = await generatePDFImage(imageOptions.data[img_number]);
       const imageWidth = imageOptions.imageRules[img_number].width;
       const imageHeight = imageOptions.imageRules[img_number].height;
