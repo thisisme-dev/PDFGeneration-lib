@@ -5,15 +5,16 @@ module.exports = {
   generateLineThatIsGrid,
 };
 
-function generateLineThatIsGrid(doc, x, y, text, value, isDefinedHeader, incrementY, headerColor, getDocY) {
+function generateLineThatIsGrid(doc, x, y, text, value, isDefinedHeader, incrementY, headerColor, getDocY, font) {
   const itemCountToFormRow = (Object.keys(value[0]).length + 1); // keys + END_LINE to go to next row
   const gridRowsWithoutHeader = ((value.length - 1)/itemCountToFormRow);
   const headerRow = isDefinedHeader ? 0 : 1;
   const docY = getDocY(doc, y, incrementY, gridRowsWithoutHeader + headerRow, true);
+
   doc = docY.doc;
   y = docY.y;
 
-  doc = sectionTypeLogic.populateHeaderLine(doc, constants.PDFColors.INDICATIVE_COLOR, text, null, x, 180, y, isDefinedHeader);
+  doc = sectionTypeLogic.populateHeaderLine(doc, constants.PDFColors.INDICATIVE_COLOR, text, null, x, 180, y, isDefinedHeader, font);
 
   const gridHeaders = value[0];
   const columnWidth = {};

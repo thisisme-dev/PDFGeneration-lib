@@ -16,11 +16,22 @@ async function generateLineThatIsImage(doc, x, y, value, incrementY, getDocY) {
 }
 
 async function populateImage(doc, x, y, incrementY, imageOptions) {
-  const pdfImage = await generatePDFImage(imageOptions);
-  const imageWidth = imageOptions.imageRules.width;
-  const imageHeight = imageOptions.imageRules.height;
-  doc.image(pdfImage, x, y, {fit: [imageWidth, imageHeight]});
-  return sectionTypeLogic.docYResponse(doc, y + imageHeight + incrementY);
+  if (imageOptions.data.isArray()){
+    /* Images in the array will be placed side by side -- MONTY */
+    for (var img_number = 0; img_number < imageOptions.data; img_number++){
+      const pdfImage = await generatePDFImage(imageOptions);
+      const imageWidth = imageOptions.imageRules.width;
+      const imageHeight = imageOptions.imageRules.height;
+      doc.image(pdfImage, x + imageWidth * img_number, y, {fit: [imageWidth, imageHeight]});
+      return sectionTypeLogic.docYResponse(doc, y + imageHeight + incrementY);
+    }
+  } else {
+    const pdfImage = await generatePDFImage(imageOptions);
+    const imageWidth = imageOptions.imageRules.width;
+    const imageHeight = imageOptions.imageRules.height;
+    doc.image(pdfImage, x, y, {fit: [imageWidth, imageHeight]});
+    return sectionTypeLogic.docYResponse(doc, y + imageHeight + incrementY);
+  }
 }
 
 function generatePDFImage(imageOptions) {

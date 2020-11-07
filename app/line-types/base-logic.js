@@ -17,11 +17,22 @@ function docYResponse(doc, y) {
 }
 
 // populateLine : populates a line with the stipulated text and settings
-function populateLine(doc, headerColor, text, value, x, xAdditionalWidth, y) {
+function populateLine(doc, headerColor, text, value, x, xAdditionalWidth, y, font) {
   const size = constants.NORMAL_FONT_SIZE;
+  const bold_font = 'OpenSansSemiBold'
+  const light_font = 'OpenSansLight'
 
-  doc.font('OpenSansSemiBold').fontSize(size).fillColor(headerColor).text(text, x, y);
-  doc.font('OpenSansLight').fontSize(size).text(value, x + xAdditionalWidth, y, {
+  if (font.size !== undefined)
+    size = font.size
+  
+  if (font.bold_font !== undefined)
+    bold_font = font.bold_font
+  
+  if (font.light_font !== undefined)
+    light_font = font.light_font
+
+  doc.font(bold_font).fontSize(size).fillColor(headerColor).text(text, x, y);
+  doc.font(light_font).fontSize(size).text(value, x + xAdditionalWidth, y, {
     width: 370,
     lineGap: 10,
     ellipsis: true,
@@ -31,10 +42,20 @@ function populateLine(doc, headerColor, text, value, x, xAdditionalWidth, y) {
 }
 
 // populateHeaderLine : populates a line with the stipulated text and settings
-function populateHeaderLine(doc, headerColor, text, value, x, xAdditionalWidth, y, isFancyHeader) {
+function populateHeaderLine(doc, headerColor, text, value, x, xAdditionalWidth, y, isFancyHeader, font) {
   let size = constants.NORMAL_FONT_SIZE;
   // console.log(isHeaderType)
   size = constants.HEADER_FONT_SIZE;
+
+  if (font.size !== undefined)
+    size = font.size
+  
+  if (font.bold_font !== undefined)
+    bold_font = font.bold_font
+  
+  if (font.light_font !== undefined)
+    light_font = font.light_font
+  
   const page = doc.page;
   // TODO: CHOOSE HEADER
   // full block
