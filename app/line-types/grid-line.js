@@ -19,6 +19,19 @@ function generateLineThatIsGrid(doc, x, y, text, value, isDefinedHeader, increme
   const gridHeaders = value[0];
   const columnWidth = {};
   const columnXStart = {};
+
+  var font_size = constants.NORMAL_FONT_SIZE
+  if (font !== undefined){
+    if (font.size !== undefined)
+      font_size = font.size
+    
+    if (font.bold_font !== undefined)
+      bold_font = font.bold_font
+    
+    if (font.light_font !== undefined)
+      light_font = font.light_font
+  }
+
   let index = 0;
   for (const gridHeader in gridHeaders) {
     if (Object.prototype.hasOwnProperty.call(gridHeaders, gridHeader)) {
@@ -26,7 +39,7 @@ function generateLineThatIsGrid(doc, x, y, text, value, isDefinedHeader, increme
       x = index === 0 ? x : x + (header.size + 100); // TODO: the + 100 can differ for size ranges perhaps
       columnXStart[gridHeader] = x;
       columnWidth[gridHeader] = (header.size + 100);
-      doc.font('OpenSansSemiBold').fontSize(constants.NORMAL_FONT_SIZE).fillColor(headerColor)
+      doc.font('OpenSansSemiBold').fontSize(font_size).fillColor(headerColor)
           .text(header.name, columnXStart[gridHeader], y, {
             width: (header.size + 100),
             align: 'right',
@@ -41,7 +54,7 @@ function generateLineThatIsGrid(doc, x, y, text, value, isDefinedHeader, increme
     if (gridObject.lineType === constants.PDFDocumentLineType.END_LINE) {
       y += constants.INCREMENT_SUB_Y;
     }
-    doc.font('OpenSansLight').fontSize(constants.NORMAL_FONT_SIZE).fillColor(headerColor)
+    doc.font('OpenSansLight').fontSize(font_size).fillColor(headerColor)
         .text(gridObject.value, columnXStart[gridObject['column']], y, {
           width: columnWidth[gridObject['column']],
           align: 'right',
