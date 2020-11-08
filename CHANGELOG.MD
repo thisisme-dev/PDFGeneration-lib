@@ -88,3 +88,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Bug fix
 
 - splitLongText function fixed, was not catering for long words
+
+## [5.4.0] - 2020-11-08
+
+### Image functionality improvements and Grid font selection
+
+- images will be placed side by side when array of images
+- custom font adjustments specifically for Grid types
+
