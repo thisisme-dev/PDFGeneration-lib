@@ -46,6 +46,11 @@ const PDFTableColumnTextAlign = {
   RIGHT: 1,
 };
 
+const PDFImageType = {
+  DEFAULT: 0,
+  CENTER: 1,
+};
+
 module.exports = Object.freeze({
   PACKAGE_PATH: getPackagePath(),
   // Where the page starts
@@ -68,6 +73,7 @@ module.exports = Object.freeze({
   PDFDocumentLineType,
   PDFTableType,
   PDFTableColumnTextAlign,
+  PDFImageType,
 
   // Colors used in Footer and Disclaimer are not currently covered here
   PDFColors: {

@@ -96,3 +96,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - images will be placed side by side when array of images
 - custom font adjustments specifically for Grid types
 
+## [5.5.0] - 2020-11-17
+
+### Image functionality improvements
+
+- Image types added (Default and Center)
+- Center adds image in the center of the focused line
+- Helper functions added for image creation
+- Fixed some camel case occurrences
+

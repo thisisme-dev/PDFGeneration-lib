@@ -15,7 +15,7 @@ class PDFHelpers {
       text: text, // to avoid confusion, perhaps rename to label?
       value: value,
       lineType: lineType,
-      font: font
+      font: font,
     };
   }
 
@@ -24,6 +24,23 @@ class PDFHelpers {
       text: title,
       lineType: constants.PDFDocumentLineType.HEADER_LINE,
     };
+  }
+
+  addImageLineFromPath(imageURL, imageType) {
+    const imageObj = {
+      imageType: imageType,
+      imageRules: {
+        width: 200,
+        height: 140,
+      },
+      data: imageURL,
+    };
+    return this.textValueObj('', imageObj, constants.PDFDocumentLineType.IMAGE_LINE);
+  }
+
+  addImageLineFromBase64(base64str, imageType) {
+    const buf = Buffer.from(base64str, 'base64');
+    return this.addImageLineFromPath(buf, imageType);
   }
 
   endSection() {

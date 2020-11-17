@@ -84,3 +84,12 @@ const PDFDocumentLineType = {
   PAGE_BREAK: 15, // Skips to the top of a new page
 }
 ```
+
+### PDF Image Types
+
+```JavaScript
+const PDFImageType = {
+  DEFAULT: 0, // Image(s) placed next to each other
+  CENTER: 1, // Image positioned in the center of the line
+}
+```

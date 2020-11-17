@@ -90,16 +90,3 @@ module.exports = {
   addCoverPage,
   getDefaultCoverDesign,
 };
-
-function examplePayload() {
-  const coverReportName = 'COMMERCIAL CREDIT REPORT';
-  const searchParams = {
-    headers: ['', ''],
-    rows: [
-      ['value 1', 'test'],
-      ['value 2', 'result'],
-      ['value 3', 'value'],
-    ],
-  };
-  return getDefaultCoverDesign(coverReportName, searchParams);
-}

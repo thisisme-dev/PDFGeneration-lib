@@ -66,8 +66,8 @@ function populateIndicativeBar(doc, x, y, incrementY, label, barOptions) {
     // define all colors in values, and the color, iterate properties and create butt for each key
     const barProps = barOptions.bar;
     for (const key in barProps) {
-      const color = barProps[key].color;
       if (Object.prototype.hasOwnProperty.call(barProps, key)) {
+        const color = barProps[key].color;
         const labelX = piece * parseInt(key) + barAdditionalIncrementX + fixPortion;
 
         // this is a description of the section
@@ -134,52 +134,4 @@ function createIndicativeTriangle(doc, incrementIndicator, y) {
 
   doc.lineWidth(6).polygon([xTop, yTop], [xLeft, yBottom], [xRight, yBottom]).fillOpacity(1).fillAndStroke('white', 'white');
   return doc;
-}
-
-// example valueObject
-function examplePayload() {
-  return {
-    bar: {
-      0: {
-        color: '#FF0000',
-        text: 'VERY HIGH',
-        range: '<= 625',
-      },
-      1: {
-        color: '#FF6666',
-        text: 'HIGH',
-        range: '626-640',
-      },
-      2: {
-        color: '#f5bd1f',
-        text: 'AVERAGE',
-        range: '641-654',
-      },
-      3: {
-        color: '#98ffa8',
-        text: 'LOW',
-        range: '655-666',
-      },
-      4: {
-        color: '#66FF66',
-        text: 'MINIMUM',
-        range: '> 666',
-      },
-      5: {
-        color: '#89cff0',
-        text: 'INSUFFICIENT',
-        range: '?',
-      },
-    },
-    pointer: {
-      target: 5,
-      additionalIncrementX: 0,
-    },
-    text: {
-      value: 644,
-      description: 'AVERAGE RISK',
-      color: '#f5bd1f',
-    },
-    additionalIncrementX: 0,
-  };
 }

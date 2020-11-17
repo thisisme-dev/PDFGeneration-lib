@@ -1,6 +1,7 @@
 // WARNING: this is a WIP, need to break this so we can handle errors correctly
 const sectionTypeLogic = require('./base-logic');
 const Jimp = require('jimp');
+const constants = require('../constants');
 
 module.exports = {
   generateLineThatIsImage,
@@ -16,26 +17,37 @@ async function generateLineThatIsImage(doc, x, y, value, incrementY, getDocY) {
 }
 
 async function populateImage(doc, x, y, incrementY, imageOptions) {
-  if (Array.isArray(imageOptions.data)){
-    /* Images in the array will be placed side by side -- MONTY */
-    var running_width = x;
-    var heighest_image = 0;
-    for (var img_number = 0; img_number < imageOptions.data.length; img_number++){
-      const pdfImage = await generatePDFImage(imageOptions.data[img_number]);
-      const imageWidth = imageOptions.imageRules[img_number].width;
-      const imageHeight = imageOptions.imageRules[img_number].height;
-      doc.image(pdfImage, running_width, y, {fit: [imageWidth, imageHeight]});
-      running_width = running_width + imageWidth
-      if (heighest_image < imageHeight)
-        heighest_image = imageHeight 
-    }
-    return sectionTypeLogic.docYResponse(doc, y + heighest_image + incrementY);
-  } else {
+  if (imageOptions['imageType'] && imageOptions['imageType'] === constants.PDFImageType.CENTER) {
     const pdfImage = await generatePDFImage(imageOptions.data);
     const imageWidth = imageOptions.imageRules.width;
     const imageHeight = imageOptions.imageRules.height;
-    doc.image(pdfImage, x, y, {fit: [imageWidth, imageHeight]});
+    doc.image(pdfImage, x + (doc.page.width - imageWidth) /2, y, {
+      fit: [imageWidth, imageHeight],
+    });
     return sectionTypeLogic.docYResponse(doc, y + imageHeight + incrementY);
+  } else {
+    if (Array.isArray(imageOptions.data)) {
+      /* Images in the array will be placed side by side -- MONTY */
+      let runningWidth = x;
+      let heighestImage = 0;
+      for (let imgNumber = 0; imgNumber < imageOptions.data.length; imgNumber++) {
+        const pdfImage = await generatePDFImage(imageOptions.data[imgNumber]);
+        const imageWidth = imageOptions.imageRules[imgNumber].width;
+        const imageHeight = imageOptions.imageRules[imgNumber].height;
+        doc.image(pdfImage, runningWidth, y, {fit: [imageWidth, imageHeight]});
+        runningWidth = runningWidth + imageWidth;
+        if (heighestImage < imageHeight) {
+          heighestImage = imageHeight;
+        }
+      }
+      return sectionTypeLogic.docYResponse(doc, y + heighestImage + incrementY);
+    } else {
+      const pdfImage = await generatePDFImage(imageOptions.data);
+      const imageWidth = imageOptions.imageRules.width;
+      const imageHeight = imageOptions.imageRules.height;
+      doc.image(pdfImage, x, y, {fit: [imageWidth, imageHeight]});
+      return sectionTypeLogic.docYResponse(doc, y + imageHeight + incrementY);
+    }
   }
 }
 
@@ -57,18 +69,4 @@ function generatePDFImage(data) {
       reject(err);
     }
   });
-}
-
-function examplePayload() {
-  const base64str = 'R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=';// base64 of a 1x1 black pixel
-  const buf = Buffer.from(base64str, 'base64');
-  return {
-    imageRules: {
-      width: 200,
-      height: 140,
-    },
-    // data: buf,
-    // data: "path.jpg",
-    data: 'https://www.sciencemag.org/sites/default/files/styles/article_main_image_-_1280w__no_aspect_/public/dogs_1280p_0.jpg',
-  };
 }
