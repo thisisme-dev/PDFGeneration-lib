@@ -3,6 +3,7 @@ const constants = require('./constants');
 const sectionTypeLogic = require('./line-types/base-logic');
 const headerLine = require('./line-types/header-line');
 const emptyLine = require('./line-types/empty-line');
+const chartLine = require('./line-types/chart-line');
 const textLine = require('./line-types/text-line');
 const linkLine = require('./line-types/link-line');
 const objectLine = require('./line-types/object-line');
@@ -128,6 +129,12 @@ async function addLine(lineDocY, text, value, lineType, isFancyHeader, font) {
     case constants.PDFDocumentLineType.PAGE_BREAK: {
       doc.addPage();
       y = 80;
+      break;
+    }
+    case constants.PDFDocumentLineType.CHART_LINE: {
+      const sectionResponse = await chartLine.generateChart(doc, y, text, value, incrementY, getDocY);
+      doc = sectionResponse.doc;
+      y = sectionResponse.y;
       break;
     }
     default: {

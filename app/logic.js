@@ -39,6 +39,7 @@ function createPDFDocument(requestID, reportName, pageOfContents, coverPage) {
   doc.registerFont('OpenSansXBold', `${constants.PACKAGE_PATH}fonts/OpenSans-ExtraBold.ttf`);
   doc.registerFont('OpenSansLitalic', `${constants.PACKAGE_PATH}fonts/OpenSans-LightItalic.ttf`);
   doc.registerFont('DejaVuSans', `${constants.PACKAGE_PATH}fonts/DejaVuSans.ttf`);
+  doc.registerFont('OpenSansSemiBitalic', `${constants.PACKAGE_PATH}fonts/OpenSans-SemiBoldItalic.ttf`);
 
   // PAGE HEADER
   doc.fillColor(constants.PDFColors.NORMAL_COLOR);

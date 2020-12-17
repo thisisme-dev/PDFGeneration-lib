@@ -34,6 +34,7 @@ const PDFDocumentLineType = {
   INDICATIVE_BAR_LINE: 13,
   IMAGE_LINE: 14,
   PAGE_BREAK: 15,
+  CHART_LINE: 16,
 };
 
 const PDFTableType = {

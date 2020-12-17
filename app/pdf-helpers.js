@@ -19,6 +19,21 @@ class PDFHelpers {
     };
   }
 
+  chartObj(label, results, incrementX, hasMore, isSameLine) {
+    const obj = {
+      text: label,
+      value: results,
+      lineType: constants.PDFDocumentLineType.CHART_LINE,
+    };
+
+    obj.value['coords'] = {
+      incrementX: incrementX,
+      hasMore: hasMore,
+      isSameLine: isSameLine,
+    };
+    return obj;
+  }
+
   headerLine(title) {
     return {
       text: title,
