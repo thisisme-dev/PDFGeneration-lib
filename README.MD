@@ -3,6 +3,7 @@
 ## Rules
 
 - Add your version/tag release information on the [change log](CHANGELOG.MD)
+- If you require the Charts Type install `"vega": "5.17.0"`
 
 ## Getting started
 

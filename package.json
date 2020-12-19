@@ -10,8 +10,7 @@
     "fs": "0.0.1-security",
     "bwip-js": "^2.0.8",
     "node-datetime": "^2.1.2",
-    "jimp": "^0.16.1",
-    "vega": "^5.17.0"
+    "jimp": "^0.16.1"
   },
   "scripts": {
     "lint": "node node_modules/.bin/eslint -c .eslintrc.js \"*.js\" \"**/*.js\" --ignore-pattern \"**/node_modules/*\" --fix"

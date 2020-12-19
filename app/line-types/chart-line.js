@@ -1,19 +1,19 @@
 const constants = require('../constants');
 const sectionTypeLogic = require('./base-logic');
 
-const vega = require('vega');
-vega.scheme('myscheme', ['#708090', '#fff', '#00f', '#ff0', '#f0f', '#0ff']);
-
 async function generateChart(doc, y, chartLabel, results, incrementY, getDocY) {
   if (!results.coords['isSameLine']) {
     const docY = getDocY(doc, y, incrementY, 1, false);
     doc = docY.doc;
     y = docY.y;
   }
-  return await addChart(doc, chartLabel, results, y);
+  return await addChart(doc, chartLabel, results, y, incrementY);
 }
 
-async function addChart(doc, chartLabel, results, y) {
+async function addChart(doc, chartLabel, results, y, incrementY) {
+  const vega = require('vega');
+  vega.scheme('myscheme', ['#708090', '#fff', '#00f', '#ff0', '#f0f', '#0ff']);
+
   doc.fillColor(constants.PDFColors.NORMAL_COLOR);
   const coords = results.coords;
   delete results.coords;
@@ -30,12 +30,13 @@ async function addChart(doc, chartLabel, results, y) {
   const canvasX = x + 60;
   const canvasY = y + 40;
 
-  view.toCanvas().then(function(canvas) {
-    doc.image(canvas.toBuffer(), canvasX, canvasY, {width: 150});
+  view.toImageURL('png').then((base64) => {
+    doc.image(base64, canvasX, canvasY, {width: 150});
   }).catch(function(err) {
     console.log('Error encountered when adding chart to pdf');
     console.log(err);
   });
+
   doc.font('OpenSansSemiBitalic').fontSize(20).text(results.score, x + 120, y + 98);
   let t = y + 220;
   doc.font('OpenSansSemiBitalic').fontSize(8).text('Notes: ', x + 33, t + 10);
@@ -45,7 +46,7 @@ async function addChart(doc, chartLabel, results, y) {
     doc.font('OpenSansLight').fontSize(8).text(element['reasonDescription'], x + 65, t);
   });
   // increase next line y coord with valid reasons length
-  const nextLineYCoord = (coords.hasMore ? y : y + t);
+  const nextLineYCoord = (coords.hasMore ? y : t + incrementY);
   return sectionTypeLogic.docYResponse(doc, nextLineYCoord);
 }
 
