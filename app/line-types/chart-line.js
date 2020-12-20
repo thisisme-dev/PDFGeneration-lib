@@ -30,12 +30,8 @@ async function addChart(doc, chartLabel, results, y, incrementY) {
   const canvasX = x + 60;
   const canvasY = y + 40;
 
-  view.toImageURL('png').then((base64) => {
-    doc.image(base64, canvasX, canvasY, {width: 150});
-  }).catch(function(err) {
-    console.log('Error encountered when adding chart to pdf');
-    console.log(err);
-  });
+  const pdfImage = await generatePDFImage(view);
+  doc.image(pdfImage, canvasX, canvasY, {width: 150})
 
   doc.font('OpenSansSemiBitalic').fontSize(20).text(results.score, x + 120, y + 98);
   let t = y + 220;
@@ -48,6 +44,29 @@ async function addChart(doc, chartLabel, results, y, incrementY) {
   // increase next line y coord with valid reasons length
   const nextLineYCoord = (coords.hasMore ? y : t + incrementY);
   return sectionTypeLogic.docYResponse(doc, nextLineYCoord);
+}
+
+function generatePDFImage(view) {
+  const sharp = require('sharp');
+  return new Promise((resolve, reject) => {
+    try {
+      view.toSVG().then((svg) => {
+        sharp(Buffer.from(svg)).png().toBuffer().then((buffer) => {
+          console.log(buffer)
+          resolve(buffer);
+        }).catch(function(err) {
+          console.log('Error encountered creating buffer from svg');
+          console.log(err);
+        });
+      }).catch(function(err) {
+        console.log('Error encountered when adjusting view to SVG');
+        console.log(err);
+      });
+    } catch (err) {
+      console.log('Error encountered when trying to create SVG/PNG image with Vega');
+      reject(err);
+    }
+  });
 }
 
 module.exports = {
