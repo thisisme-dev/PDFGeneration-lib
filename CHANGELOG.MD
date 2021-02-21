@@ -105,3 +105,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Helper functions added for image creation
 - Fixed some camel case occurrences
 
+## [5.6.4] - 2021-02-21
+
+### Bug fix
+
+- Bug fix, "bwip-js": "2.0.12" introduces an `undefined` value bug, locking version to 2.0.11.

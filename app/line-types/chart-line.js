@@ -31,7 +31,7 @@ async function addChart(doc, chartLabel, results, y, incrementY) {
   const canvasY = y + 40;
 
   const pdfImage = await generatePDFImage(view);
-  doc.image(pdfImage, canvasX, canvasY, {width: 150})
+  doc.image(pdfImage, canvasX, canvasY, {width: 150});
 
   doc.font('OpenSansSemiBitalic').fontSize(20).text(results.score, x + 120, y + 98);
   let t = y + 220;
@@ -52,7 +52,6 @@ function generatePDFImage(view) {
     try {
       view.toSVG().then((svg) => {
         sharp(Buffer.from(svg)).png().toBuffer().then((buffer) => {
-          console.log(buffer)
           resolve(buffer);
         }).catch(function(err) {
           console.log('Error encountered creating buffer from svg');
