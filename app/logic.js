@@ -68,8 +68,8 @@ async function defaultTop(docY, reportContent) {
   docY = await addLine(docY, null, null, constants.PDFDocumentLineType.EMPTY_LINE, false);
 
   const searchParams = reportContent['searchParams'];
-  // if (Object.keys(searchParams).length) {
-  if (searchParams !== null) {
+  if (Object.keys(searchParams).length) {
+  // if (searchParams !== null) {
     docY = await addDefaultLine(docY, 'Search Parameters:', null);
     docY = await addPageDetail(docY, searchParams, null);
     docY = await addLine(docY, null, null, constants.PDFDocumentLineType.EMPTY_LINE, false);
