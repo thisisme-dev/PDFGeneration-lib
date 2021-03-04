@@ -41,13 +41,14 @@ class PDFHelpers {
     };
   }
 
-  addImageLineFromPath(imageURL, imageType) {
+  addImageLineFromPath(imageURL, imageType, imageDescriptions) {
     const imageObj = {
       imageType: imageType,
       imageRules: {
         width: 200,
         height: 140,
       },
+      imageDescriptions: imageDescriptions,
       data: imageURL,
     };
     return this.textValueObj('', imageObj, constants.PDFDocumentLineType.IMAGE_LINE);
