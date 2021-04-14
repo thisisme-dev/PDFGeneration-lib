@@ -1,3 +1,5 @@
+'use strict';
+
 // WARNING: this is a WIP, need to break this so we can handle errors correctly
 const sectionTypeLogic = require('./base-logic');
 const Jimp = require('jimp');

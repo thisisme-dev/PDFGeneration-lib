@@ -123,7 +123,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - allow front page without search params | checks object length
 
-## [5.7.0] - 2021-03-02
+## [5.7.0] - 2021-03-4
 
 ## Image descriptions
 
@@ -136,4 +136,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Pdf responds when upload complete
 
-- The PDF location will now be received when upload to s3 was succesful
+- The PDF location will now be received when upload to s3 was successful
+
+## [5.9.0] - 2021-04-14
+
+## QRCode generation fix | Unit tests added
+
+- `Jest` added for unit tests
+- `'use strict'` above all .js files
+- QRCode generation function fixed, covered by unit test

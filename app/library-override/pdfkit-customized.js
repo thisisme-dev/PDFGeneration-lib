@@ -1,3 +1,5 @@
+'use strict';
+
 const PDFDocument = require('pdfkit');
 
 const constants = require('../constants');

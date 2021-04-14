@@ -1,3 +1,5 @@
+'use strict';
+
 const constants = require('./constants');
 const contentsPDFLogic = require('./pdf-types/page-of-contents-logic');
 

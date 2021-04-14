@@ -1,3 +1,5 @@
+'use strict';
+
 // WARNING: this is a WIP, this was created for 6 bar elements, less than that the indicator will not be placed correctly
 const constants = require('../constants');
 const sectionTypeLogic = require('./base-logic');

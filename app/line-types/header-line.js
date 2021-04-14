@@ -1,3 +1,5 @@
+'use strict';
+
 const sectionTypeLogic = require('./base-logic');
 
 module.exports = {

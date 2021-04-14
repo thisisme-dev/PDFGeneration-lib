@@ -1,3 +1,5 @@
+'use strict';
+
 const fs = require('fs');
 
 const PDFDocument = require('./library-override/pdfkit-customized');
@@ -180,14 +182,13 @@ async function addPageFooter(docY, requestID, disclaimer) {
 /**
    * Generate the QR Code Barcode
   */
-const generateQRCode = (data) => {
+async function generateQRCode(data) {
   return new Promise((resolve, reject) => {
     try {
       bwipjs.toBuffer({
         bcid: 'qrcode', // Barcode type
         text: data, // Text to encode
-        format: 'any',
-      }, function(err, png) {
+      }, (err, png) => {
         if (err) {
           reject(err);
         } else {
@@ -198,7 +199,7 @@ const generateQRCode = (data) => {
       reject(err);
     }
   });
-};
+}
 
 /**
    * Generate the Disclaimer text included on the PDF Report.
@@ -319,4 +320,5 @@ module.exports = {
   addPageDetail,
   addPageFooter,
   finalizePDFDocument,
+  generateQRCode,
 };

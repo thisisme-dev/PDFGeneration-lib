@@ -1,3 +1,4 @@
+'use strict';
 
 const constants = require('./app/constants');
 const logic = require('./app/logic');

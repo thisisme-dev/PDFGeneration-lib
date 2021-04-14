@@ -1,6 +1,6 @@
 {
   "name": "@thisisme/pdfgeneration-lib",
-  "version": "5.8.0",
+  "version": "5.9.0",
   "private": true,
   "main": "app.js",
   "dependencies": {
@@ -13,11 +13,14 @@
     "pdfkit": "0.12.1"
   },
   "scripts": {
-    "lint": "node node_modules/.bin/eslint -c .eslintrc.js \"*.js\" \"**/*.js\" --ignore-pattern \"**/node_modules/*\" --fix"
+    "lint": "node node_modules/.bin/eslint -c .eslintrc.js \"*.js\" \"**/*.js\" --ignore-pattern \"**/node_modules/*\" --fix",
+    "test": "jest",
+    "prepare": "npm run lint && jest"
   },
   "devDependencies": {
     "babel-eslint": "10.1.0",
     "eslint": "7.24.0",
-    "eslint-config-google": "0.14.0"
+    "eslint-config-google": "0.14.0",
+    "jest": "^26.6.3"
   }
 }

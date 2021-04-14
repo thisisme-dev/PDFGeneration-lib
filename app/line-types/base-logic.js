@@ -58,6 +58,7 @@ function populateHeaderLine(doc, headerColor, text, value, x, xAdditionalWidth, 
       fontSize = font.size;
     }
 
+    /* eslint-disable */
     if (font.bold_font !== undefined) {
       boldFont = font.bold_font;
     }
@@ -65,6 +66,7 @@ function populateHeaderLine(doc, headerColor, text, value, x, xAdditionalWidth, 
     if (font.light_font !== undefined) {
       lightFont = font.light_font;
     }
+    /* eslint-enable */
   }
 
   const page = doc.page;

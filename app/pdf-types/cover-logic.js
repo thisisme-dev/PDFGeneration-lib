@@ -1,3 +1,5 @@
+'use strict';
+
 const constants = require('../constants');
 
 // cover disclaimer label

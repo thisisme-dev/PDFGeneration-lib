@@ -29,6 +29,7 @@ function generateLineThatIsGrid(doc, x, y, text, value, isDefinedHeader, increme
       fontSize = font.size;
     }
 
+    /* eslint-disable */
     if (font.bold_font !== undefined) {
       boldFont = font.bold_font;
     }
@@ -36,6 +37,7 @@ function generateLineThatIsGrid(doc, x, y, text, value, isDefinedHeader, increme
     if (font.light_font !== undefined) {
       lightFont = font.light_font;
     }
+    /* eslint-enable */
   }
 
   let index = 0;
