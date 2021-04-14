@@ -110,3 +110,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Bug fix
 
 - Bug fix, "bwip-js": "2.0.12" introduces an `undefined` value bug, locking version to 2.0.11.
+
+## [5.6.5] - 2021-03-02
+
+## Allow front page with Search Params
+
+- allow front page without search params | checks null state
+
+## [5.6.6] - 2021-03-02
+
+## Allow front page with Search Params - Fix for 5.64
+
+- allow front page without search params | checks object length
+
+## [5.7.0] - 2021-03-02
+
+## Image descriptions
+
+- y increments for images fixed, extending base pdfkit
+- Single images now cater for descriptions
+- Centered fixed
+- Image code refactor
+
+## [5.8.0] - 2021-04-14
+
+## Pdf responds when upload complete
+
+- The PDF location will now be received when upload to s3 was succesful

@@ -268,36 +268,46 @@ async function finalizePDFDocument(doc, requestID, reportMeta, pageOfContents, c
   }
   const key = `${reportMeta.s3BucketName}/${reportMeta.formatted}/${requestID}.pdf`;
 
-  if (reportMeta.LOCAL_DEBUG) {
-    console.log('LOCAL_DEBUG enabled, service saving file to /tmp directory');
-    const stream = doc.pipe(fs.createWriteStream(`/tmp/${requestID}.pdf`));
+  return new Promise((resolve, reject) => {
+    if (reportMeta.LOCAL_DEBUG) {
+      console.log('LOCAL_DEBUG enabled, service saving file to /tmp directory');
+      const stream = doc.pipe(fs.createWriteStream(`/tmp/${requestID}.pdf`));
 
-    stream.on('error', function(error) {
-      console.log(`stream error ${error.toString()}`);
-    });
-
-    stream.on('finish', function() {
-      console.log(`Saved to: /tmp/${requestID}.pdf`);
-    });
-  } else {
-    doc.pipe(concat(function(data) {
-      const params = {
-        Bucket: AWS_S3_REPORTS_BUCKET,
-        Key: key,
-        Body: data,
-      };
-      s3.putObject(params, function(err, data) {
-        if (err) console.log(err, err.stack); // an error occurred
-        else console.log(data); // successful response
+      stream.on('error', (error) => {
+        console.log(`stream error ${error.toString()}`);
+        return reject(error);
       });
-    }));
-  }
-  doc.end();
 
-  return {
-    'filename': requestID,
-    'formatted': reportMeta.formatted,
-  };
+      stream.on('finish', () => {
+        console.log(`Saved to: /tmp/${requestID}.pdf`);
+        return resolve({
+          'filename': requestID,
+          'formatted': reportMeta.formatted,
+        });
+      });
+    } else {
+      doc.pipe(concat((data) => {
+        const params = {
+          Bucket: AWS_S3_REPORTS_BUCKET,
+          Key: key,
+          Body: data,
+        };
+        s3.putObject(params, (err, data) => {
+          if (err) {
+            console.log(err, err.stack); // an error occurred
+            return reject(err);
+          } else {
+            console.log(data); // successful response
+            return resolve({
+              'filename': requestID,
+              'formatted': reportMeta.formatted,
+            });
+          }
+        });
+      }));
+    }
+    doc.end();
+  });
 }
 
 module.exports = {
