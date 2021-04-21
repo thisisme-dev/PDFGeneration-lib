@@ -1,9 +1,11 @@
 'use strict';
 
+const Jimp = require('jimp');
+
+const constants = require('../constants');
+
 // WARNING: this is a WIP, need to break this so we can handle errors correctly
 const sectionTypeLogic = require('./base-logic');
-const Jimp = require('jimp');
-const constants = require('../constants');
 
 module.exports = {
   generateLineThatIsImage,

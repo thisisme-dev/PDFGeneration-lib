@@ -1,7 +1,8 @@
 'use strict';
 
 const fs = require('fs');
-const appLogic = require('../app/logic');
+
+const appLogic = require('../../app/logic');
 
 test('Test if QRCode generation responds', () => {
   appLogic.generateQRCode('fake_data').then((data) => {

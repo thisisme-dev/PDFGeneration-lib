@@ -1,21 +1,21 @@
 'use strict';
 
 const fs = require('fs');
+const concat = require('concat-stream');
+const bwipjs = require('bwip-js');
+const AWS = require('aws-sdk');
+const s3 = new AWS.S3();
 
 const PDFDocument = require('./library-override/pdfkit-customized');
 const coverPDFLogic = require('./pdf-types/cover-logic');
 
-const concat = require('concat-stream');
-const bwipjs = require('bwip-js');
-
-const AWS = require('aws-sdk');
-const s3 = new AWS.S3();
-AWS.config.update({region: process.env.TIM_AWS_DEFAULT_REGION});
-const AWS_S3_REPORTS_BUCKET = process.env.AWS_S3_REPORTS_BUCKET;
-
+const configs = require('./configs');
 const constants = require('./constants');
 const setupPDFType = require('./logic-pdf-type').setupPDFType;
 const addLine = require('./logic-line-core').addLine;
+
+AWS.config.update({region: configs.AWS_DEFAULT_REGION});
+const AWS_S3_REPORTS_BUCKET = configs.AWS_S3_REPORTS_BUCKET;
 
 function createPDFDocument(requestID, reportName, pageOfContents, coverPage) {
   const doc = new PDFDocument({
@@ -166,7 +166,7 @@ async function addPageFooter(docY, requestID, disclaimer) {
 
   const base64data = Buffer.from(requestID).toString('base64');
 
-  const val = `${process.env.THISISME_HOST}verify_reqid/${base64data}`;
+  const val = `${configs.THISISME_HOST}verify_reqid/${base64data}`;
   const barcode = await generateQRCode(val);
   doc.font('OpenSansLitalic').fontSize(8).text(
       'Scan this code to verify this request authenticity on ThisIsMe.com',

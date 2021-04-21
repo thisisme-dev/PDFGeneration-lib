@@ -145,3 +145,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Jest` added for unit tests
 - `'use strict'` above all .js files
 - QRCode generation function fixed, covered by unit test
+
+## [5.10.0] - 2021-04-21
+
+## imageDescriptions support for addImageLineFromBase64 
+
+- added imageDescriptions support to addImageLineFromBase64 
+- re-ordered the import modules to match external, internal flow

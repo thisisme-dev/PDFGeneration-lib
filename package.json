@@ -1,6 +1,6 @@
 {
   "name": "@thisisme/pdfgeneration-lib",
-  "version": "5.9.0",
+  "version": "5.10.0",
   "private": true,
   "main": "app.js",
   "dependencies": {
@@ -21,6 +21,6 @@
     "babel-eslint": "10.1.0",
     "eslint": "7.24.0",
     "eslint-config-google": "0.14.0",
-    "jest": "^26.6.3"
+    "jest": "26.6.3"
   }
 }

@@ -1,11 +1,10 @@
 'use strict';
 
+const dateTime = require('node-datetime');
+
 const constants = require('./app/constants');
 const logic = require('./app/logic');
-
 const helpers = require('./app/pdf-helpers');
-
-const dateTime = require('node-datetime');
 const PDFLimiter = require('./app/pdf-limitations').PDFLimiter;
 
 const pdfLimiter = new PDFLimiter();

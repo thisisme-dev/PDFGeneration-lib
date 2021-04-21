@@ -1,8 +1,8 @@
 'use strict';
 
-const constants = require('./constants');
-
 const coverPDFLogic = require('./pdf-types/cover-logic');
+
+const constants = require('./constants');
 
 class PDFHelpers {
   constructor(event, requestTimestamp, dataSource, serviceSearchParams) {
@@ -56,9 +56,9 @@ class PDFHelpers {
     return this.textValueObj('', imageObj, constants.PDFDocumentLineType.IMAGE_LINE);
   }
 
-  addImageLineFromBase64(base64str, imageType) {
+  addImageLineFromBase64(base64str, imageType, imageDescriptions) {
     const buf = Buffer.from(base64str, 'base64');
-    return this.addImageLineFromPath(buf, imageType);
+    return this.addImageLineFromPath(buf, imageType, imageDescriptions);
   }
 
   endSection() {

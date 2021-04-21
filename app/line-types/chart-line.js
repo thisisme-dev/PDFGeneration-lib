@@ -1,6 +1,7 @@
 'use strict';
 
 const constants = require('../constants');
+
 const sectionTypeLogic = require('./base-logic');
 
 async function generateChart(doc, y, chartLabel, results, incrementY, getDocY) {
