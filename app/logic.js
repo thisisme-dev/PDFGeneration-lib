@@ -158,23 +158,23 @@ async function addPageFooter(docY, requestID, disclaimer) {
           {width: page.width - 80},
       );
 
-  /**
-       * Here we specifically override the generation to include a
-       * QR Code barcode in the PDF to verify the authenticity of
-       * the request with ThisIsMe
-      */
+  // /**
+  //      * Here we specifically override the generation to include a
+  //      * QR Code barcode in the PDF to verify the authenticity of
+  //      * the request with ThisIsMe
+  //     */
 
-  const base64data = Buffer.from(requestID).toString('base64');
+  // const base64data = Buffer.from(requestID).toString('base64');
 
-  const val = `${configs.THISISME_HOST}verify_reqid/${base64data}`;
-  const barcode = await generateQRCode(val);
-  doc.font('OpenSansLitalic').fontSize(8).text(
-      'Scan this code to verify this request authenticity on ThisIsMe.com',
-      370,
-      page.height - 90,
-      {width: 180},
-  );
-  doc.image(barcode, page.width - 50, page.height - 90, {width: 30, link: val});
+  // const val = `${configs.THISISME_HOST}verify_reqid/${base64data}`;
+  // const barcode = await generateQRCode(val);
+  // doc.font('OpenSansLitalic').fontSize(8).text(
+  //     'Scan this code to verify this request authenticity on ThisIsMe.com',
+  //     370,
+  //     page.height - 90,
+  //     {width: 180},
+  // );
+  // doc.image(barcode, page.width - 50, page.height - 90, {width: 30, link: val});
 
   return doc;
 }
