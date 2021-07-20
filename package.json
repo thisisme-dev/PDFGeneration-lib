@@ -1,11 +1,12 @@
 {
   "name": "@thisisme/pdfgeneration-lib",
-  "version": "5.10.1",
+  "version": "5.10.2",
   "private": true,
   "main": "app.js",
   "dependencies": {
     "aws-sdk": "2.886.0",
     "bwip-js": "2.1.3",
+    "cloc": "^2.8.0",
     "concat-stream": "2.0.0",
     "fs": "0.0.1-security",
     "jimp": "0.16.1",
@@ -15,7 +16,8 @@
   "scripts": {
     "lint": "node node_modules/.bin/eslint -c .eslintrc.js \"*.js\" \"**/*.js\" --ignore-pattern \"**/node_modules/*\" --fix",
     "test": "jest",
-    "prepare": "npm run lint && jest"
+    "prepare": "npm run lint && jest",
+    "cloc": "cloc --exclude-list-file=.clocignore ."
   },
   "devDependencies": {
     "babel-eslint": "10.1.0",

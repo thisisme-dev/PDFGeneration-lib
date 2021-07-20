@@ -164,7 +164,7 @@ class PDFHelpers {
     return {
       requestTimestamp: this.requestTimestamp,
       error: errMsg,
-      reportGeneratedFor: `${this.event.requester.client} @ ${this.event.requester.company}`,
+      reportGeneratedFor: `${this.event.requester.client || this.event.requester.user} @ ${this.event.requester.company}`,
       dataSource: this.dataSource,
       searchParams: this.populateSearchParams(),
       dataFound: {},
