@@ -1,11 +1,11 @@
-'use strict';
+"use strict";
 
-const Jimp = require('jimp');
+const Jimp = require("jimp");
 
-const constants = require('../constants');
+const constants = require("../constants");
 
 // WARNING: this is a WIP, need to break this so we can handle errors correctly
-const sectionTypeLogic = require('./base-logic');
+const sectionTypeLogic = require("./base-logic");
 
 module.exports = {
   generateLineThatIsImage,
@@ -39,12 +39,12 @@ async function populateImage(doc, x, y, incrementY, imageOptions) {
     }
     return sectionTypeLogic.docYResponse(doc, y + heighestImage + incrementY);
   } else {
-    const isCentered = imageOptions['imageType'] && imageOptions['imageType'] === constants.PDFImageType.CENTER;
+    const isCentered = imageOptions["imageType"] && imageOptions["imageType"] === constants.PDFImageType.CENTER;
     const pdfImage = await generatePDFImage(imageOptions.data);
     const imageWidth = imageOptions.imageRules.width;
     const imageHeight = imageOptions.imageRules.height;
     if (isCentered) {
-      x = x + (doc.page.width - imageWidth)/2 -20;
+      x = x + (doc.page.width - imageWidth) / 2 - 20;
     }
     doc.image(pdfImage, x, y, {
       fit: [imageWidth, imageHeight],
@@ -61,8 +61,8 @@ async function populateImage(doc, x, y, incrementY, imageOptions) {
 
 function addDescriptionLine(doc, description, maxLabelWidth, y, x) {
   const fontSize = constants.NORMAL_FONT_SIZE - 3;
-  const boldFont = 'OpenSansSemiBold';
-  const lightFont = 'OpenSansLight';
+  const boldFont = "OpenSansSemiBold";
+  const lightFont = "OpenSansLight";
 
   doc.font(boldFont).fontSize(fontSize).fillColor(constants.PDFColors.NORMAL_COLOR).text(`${description.label}:`, x, y);
   doc.font(lightFont).fontSize(fontSize).text(`${description.value}`, x + maxLabelWidth + 12, y, {

@@ -1,8 +1,8 @@
-'use strict';
+"use strict";
 
-const coverPDFLogic = require('./pdf-types/cover-logic');
+const coverPDFLogic = require("./pdf-types/cover-logic");
 
-const constants = require('./constants');
+const constants = require("./constants");
 
 class PDFHelpers {
   constructor(event, requestTimestamp, dataSource, serviceSearchParams) {
@@ -28,7 +28,7 @@ class PDFHelpers {
       lineType: constants.PDFDocumentLineType.CHART_LINE,
     };
 
-    obj.value['coords'] = {
+    obj.value["coords"] = {
       incrementX: incrementX,
       hasMore: hasMore,
       isSameLine: isSameLine,
@@ -53,11 +53,11 @@ class PDFHelpers {
       imageDescriptions: imageDescriptions,
       data: imageURL,
     };
-    return this.textValueObj('', imageObj, constants.PDFDocumentLineType.IMAGE_LINE);
+    return this.textValueObj("", imageObj, constants.PDFDocumentLineType.IMAGE_LINE);
   }
 
   addImageLineFromBase64(base64str, imageType, imageDescriptions) {
-    const buf = Buffer.from(base64str, 'base64');
+    const buf = Buffer.from(base64str, "base64");
     return this.addImageLineFromPath(buf, imageType, imageDescriptions);
   }
 
@@ -81,13 +81,13 @@ class PDFHelpers {
 
   getDefaultCoverPageSetup(coverReportName) {
     const searchParams = {
-      headers: ['', ''],
+      headers: ["", ""],
       rows: [],
     };
     for (const [key] of Object.entries(this.serviceSearchParams)) {
       let value = this.event[key];
       if (value === undefined || value === null || value.trim().length === 0) {
-        value = 'Not Supplied';
+        value = "Not Supplied";
       } else {
         value = this.event[key];
       }
@@ -105,8 +105,8 @@ class PDFHelpers {
         return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
       });
     }
-    value = value.replace(/_/g, ' ');
-    value = value.replace(/([a-z](?=[A-Z]))/g, '$1 ');
+    value = value.replace(/_/g, " ");
+    value = value.replace(/([a-z](?=[A-Z]))/g, "$1 ");
     value = startOfWordsToUpperCase(value);
     return value;
   }
@@ -143,7 +143,7 @@ class PDFHelpers {
   }
 
   generateNoResultsPDFContent() {
-    const content = this.getPDFContentTemplate('No results were found using the below search criteria.', null);
+    const content = this.getPDFContentTemplate("No results were found using the below search criteria.", null);
     return content;
   }
 
@@ -153,7 +153,7 @@ class PDFHelpers {
       for (const prop in headers) {
         if (Object.prototype.hasOwnProperty.call(headers, prop)) {
           const header = headers[prop];
-          if (Object.prototype.hasOwnProperty.call(header, 'new_page')) {
+          if (Object.prototype.hasOwnProperty.call(header, "new_page")) {
             if (header.new_page) {
               newPageHeaders.push(header.title);
             }

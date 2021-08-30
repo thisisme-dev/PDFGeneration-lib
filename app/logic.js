@@ -1,18 +1,18 @@
-'use strict';
+"use strict";
 
-const fs = require('fs');
-const concat = require('concat-stream');
-const bwipjs = require('bwip-js');
-const AWS = require('aws-sdk');
+const fs = require("fs");
+const concat = require("concat-stream");
+const bwipjs = require("bwip-js");
+const AWS = require("aws-sdk");
 const s3 = new AWS.S3();
 
-const PDFDocument = require('./library-override/pdfkit-customized');
-const coverPDFLogic = require('./pdf-types/cover-logic');
+const PDFDocument = require("./library-override/pdfkit-customized");
+const coverPDFLogic = require("./pdf-types/cover-logic");
 
-const configs = require('./configs');
-const constants = require('./constants');
-const setupPDFType = require('./logic-pdf-type').setupPDFType;
-const addLine = require('./logic-line-core').addLine;
+const configs = require("./configs");
+const constants = require("./constants");
+const setupPDFType = require("./logic-pdf-type").setupPDFType;
+const addLine = require("./logic-line-core").addLine;
 
 AWS.config.update({region: configs.AWS_DEFAULT_REGION});
 const AWS_S3_REPORTS_BUCKET = configs.AWS_S3_REPORTS_BUCKET;
@@ -20,7 +20,7 @@ const AWS_S3_REPORTS_BUCKET = configs.AWS_S3_REPORTS_BUCKET;
 function createPDFDocument(requestID, reportName, pageOfContents, coverPage) {
   const doc = new PDFDocument({
     bufferPages: true,
-    size: 'A4',
+    size: "A4",
     info: {
       Title: requestID,
       Author: constants.PDF_TEXT.REPORT_AUTHOR,
@@ -29,19 +29,19 @@ function createPDFDocument(requestID, reportName, pageOfContents, coverPage) {
   });
 
   if (pageOfContents !== null) {
-    doc.on('pageAdded', () => {
+    doc.on("pageAdded", () => {
       pageOfContents.incrementPage();
     });
   }
 
-  doc.registerFont('OpenSans', `${constants.PACKAGE_PATH}fonts/OpenSans-Regular.ttf`);
-  doc.registerFont('OpenSansLight', `${constants.PACKAGE_PATH}fonts/OpenSans-Light.ttf`);
-  doc.registerFont('OpenSansBold', `${constants.PACKAGE_PATH}fonts/OpenSans-Bold.ttf`);
-  doc.registerFont('OpenSansSemiBold', `${constants.PACKAGE_PATH}fonts/OpenSans-SemiBold.ttf`);
-  doc.registerFont('OpenSansXBold', `${constants.PACKAGE_PATH}fonts/OpenSans-ExtraBold.ttf`);
-  doc.registerFont('OpenSansLitalic', `${constants.PACKAGE_PATH}fonts/OpenSans-LightItalic.ttf`);
-  doc.registerFont('DejaVuSans', `${constants.PACKAGE_PATH}fonts/DejaVuSans.ttf`);
-  doc.registerFont('OpenSansSemiBitalic', `${constants.PACKAGE_PATH}fonts/OpenSans-SemiBoldItalic.ttf`);
+  doc.registerFont("OpenSans", `${constants.PACKAGE_PATH}fonts/OpenSans-Regular.ttf`);
+  doc.registerFont("OpenSansLight", `${constants.PACKAGE_PATH}fonts/OpenSans-Light.ttf`);
+  doc.registerFont("OpenSansBold", `${constants.PACKAGE_PATH}fonts/OpenSans-Bold.ttf`);
+  doc.registerFont("OpenSansSemiBold", `${constants.PACKAGE_PATH}fonts/OpenSans-SemiBold.ttf`);
+  doc.registerFont("OpenSansXBold", `${constants.PACKAGE_PATH}fonts/OpenSans-ExtraBold.ttf`);
+  doc.registerFont("OpenSansLitalic", `${constants.PACKAGE_PATH}fonts/OpenSans-LightItalic.ttf`);
+  doc.registerFont("DejaVuSans", `${constants.PACKAGE_PATH}fonts/DejaVuSans.ttf`);
+  doc.registerFont("OpenSansSemiBitalic", `${constants.PACKAGE_PATH}fonts/OpenSans-SemiBoldItalic.ttf`);
 
   // PAGE HEADER
   doc.fillColor(constants.PDFColors.NORMAL_COLOR);
@@ -51,7 +51,7 @@ function createPDFDocument(requestID, reportName, pageOfContents, coverPage) {
     // doc.font('OpenSansSemiBold').fontSize(20).text(reportName, 150, 26, {width: 430, align: 'right'}); incorporate this
   } else {
     doc.image(`${constants.PACKAGE_PATH}images/tim_logo_large.png`, 20, 20, {width: 170});
-    doc.font('OpenSansSemiBold').fontSize(20).text(reportName, 150, 26, {width: 430, align: 'right'});
+    doc.font("OpenSansSemiBold").fontSize(20).text(reportName, 150, 26, {width: 430, align: "right"});
   }
   return {
     doc: doc,
@@ -60,19 +60,19 @@ function createPDFDocument(requestID, reportName, pageOfContents, coverPage) {
 }
 
 async function defaultTop(docY, reportContent) {
-  docY = await addDefaultLine(docY, 'Request Timestamp', reportContent['requestTimestamp']);
-  docY = await addDefaultLine(docY, 'Report Generated For', reportContent['reportGeneratedFor']);
-  docY = await addDefaultLine(docY, 'Data Source', reportContent['dataSource']);
-  docY = await addDefaultLine(docY, 'Request Id', reportContent['requestId']);
-  if (reportContent['error'] !== undefined && reportContent['error'] !== null) {
-    docY = await addDefaultLine(docY, 'Error', reportContent['error']);
+  docY = await addDefaultLine(docY, "Request Timestamp", reportContent["requestTimestamp"]);
+  docY = await addDefaultLine(docY, "Report Generated For", reportContent["reportGeneratedFor"]);
+  docY = await addDefaultLine(docY, "Data Source", reportContent["dataSource"]);
+  docY = await addDefaultLine(docY, "Request Id", reportContent["requestId"]);
+  if (reportContent["error"] !== undefined && reportContent["error"] !== null) {
+    docY = await addDefaultLine(docY, "Error", reportContent["error"]);
   }
   docY = await addLine(docY, null, null, constants.PDFDocumentLineType.EMPTY_LINE, false);
 
-  const searchParams = reportContent['searchParams'];
+  const searchParams = reportContent["searchParams"];
   if (Object.keys(searchParams).length) {
   // if (searchParams !== null) {
-    docY = await addDefaultLine(docY, 'Search Parameters:', null);
+    docY = await addDefaultLine(docY, "Search Parameters:", null);
     docY = await addPageDetail(docY, searchParams, null);
     docY = await addLine(docY, null, null, constants.PDFDocumentLineType.EMPTY_LINE, false);
   }
@@ -124,35 +124,35 @@ async function addPageFooter(docY, requestID, disclaimer) {
   doc.rect(0, page.height - 100, page.width, page.height)
       .lineWidth(0.2)
       .fillOpacity(0.1)
-      .fill('#CCCCCC');
+      .fill("#CCCCCC");
 
-  doc.font('OpenSansSemiBold')
+  doc.font("OpenSansSemiBold")
       .fontSize(12)
       .fillOpacity(1)
-      .fillColor('#000')
-      .strokeColor('#000')
+      .fillColor("#000")
+      .strokeColor("#000")
       .fontSize(8)
-      .text('ThisIsMe (Pty) Ltd', 30, page.height - 90, {width: page.width - 80});
+      .text("ThisIsMe (Pty) Ltd", 30, page.height - 90, {width: page.width - 80});
 
-  doc.font('OpenSansLight')
+  doc.font("OpenSansLight")
       .fontSize(8)
       .fillOpacity(1)
-      .fillColor('#000')
-      .strokeColor('#000')
+      .fillColor("#000")
+      .strokeColor("#000")
       .fontSize(7)
-      .text('Registration Number: 2014/136237/07', 30, page.height - 78, {width: page.width - 80})
-      .text('Vat Registration: 4170271870', 30, page.height - 67, {width: page.width - 80})
-      .text('Tel: +27 21 422 3995', 30, page.height - 56, {width: page.width - 80})
-      .text('Email: info@thisisme.com', 30, page.height - 45, {width: page.width - 80});
+      .text("Registration Number: 2014/136237/07", 30, page.height - 78, {width: page.width - 80})
+      .text("Vat Registration: 4170271870", 30, page.height - 67, {width: page.width - 80})
+      .text("Tel: +27 21 422 3995", 30, page.height - 56, {width: page.width - 80})
+      .text("Email: info@thisisme.com", 30, page.height - 45, {width: page.width - 80});
 
-  doc.font('OpenSansLight')
+  doc.font("OpenSansLight")
       .fontSize(7)
       .fillOpacity(1)
-      .fillColor('#000')
-      .strokeColor('#000')
+      .fillColor("#000")
+      .strokeColor("#000")
       .fontSize(6.5)
       .text(
-          'Copyright © ThisIsMe (Pty) Ltd. All rights reserved',
+          "Copyright © ThisIsMe (Pty) Ltd. All rights reserved",
           30,
           page.height - 20,
           {width: page.width - 80},
@@ -186,7 +186,7 @@ async function generateQRCode(data) {
   return new Promise((resolve, reject) => {
     try {
       bwipjs.toBuffer({
-        bcid: 'qrcode', // Barcode type
+        bcid: "qrcode", // Barcode type
         text: data, // Text to encode
       }, (err, png) => {
         if (err) {
@@ -211,8 +211,8 @@ function addDisclaimer(doc, disclaimer) {
       page.height - 210,
       page.width - 40,
       100,
-  ).fillColor('#F9F9F9').strokeColor(constants.PDFColors.NORMAL_COLOR).fillAndStroke();
-  doc.font('OpenSansLight').fontSize(8).fillColor('#333333').text(
+  ).fillColor("#F9F9F9").strokeColor(constants.PDFColors.NORMAL_COLOR).fillAndStroke();
+  doc.font("OpenSansLight").fontSize(8).fillColor("#333333").text(
       disclaimer.trim(),
       25,
       page.height - 205,
@@ -231,7 +231,7 @@ async function populatePageOfContents(doc, pageOfContents) {
     size = constants.HEADER_FONT_SIZE;
     const page = doc.page;
     doc.rect(0, 25, page.width, 50).fillColor(constants.PDFColors.NORMAL_COLOR).strokeColor(constants.PDFColors.NORMAL_COLOR).fillAndStroke();
-    doc.font('OpenSansSemiBold').fontSize(size).fillColor(constants.PDFColors.TEXT_IN_NORMAL_COLOR).text('Table of Contents', constants.X_START, constants.TOP_OF_PAGE_Y - 40);
+    doc.font("OpenSansSemiBold").fontSize(size).fillColor(constants.PDFColors.TEXT_IN_NORMAL_COLOR).text("Table of Contents", constants.X_START, constants.TOP_OF_PAGE_Y - 40);
 
     const content = pageOfContents.getPageOfContents();
     let docY = {
@@ -271,19 +271,19 @@ async function finalizePDFDocument(doc, requestID, reportMeta, pageOfContents, c
 
   return new Promise((resolve, reject) => {
     if (reportMeta.LOCAL_DEBUG) {
-      console.log('LOCAL_DEBUG enabled, service saving file to /tmp directory');
+      console.log("LOCAL_DEBUG enabled, service saving file to /tmp directory");
       const stream = doc.pipe(fs.createWriteStream(`/tmp/${requestID}.pdf`));
 
-      stream.on('error', (error) => {
+      stream.on("error", (error) => {
         console.log(`stream error ${error.toString()}`);
         return reject(error);
       });
 
-      stream.on('finish', () => {
+      stream.on("finish", () => {
         console.log(`Saved to: /tmp/${requestID}.pdf`);
         return resolve({
-          'filename': requestID,
-          'formatted': reportMeta.formatted,
+          "filename": requestID,
+          "formatted": reportMeta.formatted,
         });
       });
     } else {
@@ -300,8 +300,8 @@ async function finalizePDFDocument(doc, requestID, reportMeta, pageOfContents, c
           } else {
             console.log(data); // successful response
             return resolve({
-              'filename': requestID,
-              'formatted': reportMeta.formatted,
+              "filename": requestID,
+              "formatted": reportMeta.formatted,
             });
           }
         });

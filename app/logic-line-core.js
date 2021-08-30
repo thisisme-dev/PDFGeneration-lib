@@ -1,17 +1,17 @@
-'use strict';
+"use strict";
 
-const constants = require('./constants');
+const constants = require("./constants");
 
-const sectionTypeLogic = require('./line-types/base-logic');
-const headerLine = require('./line-types/header-line');
-const emptyLine = require('./line-types/empty-line');
-const chartLine = require('./line-types/chart-line');
-const textLine = require('./line-types/text-line');
-const linkLine = require('./line-types/link-line');
-const objectLine = require('./line-types/object-line');
-const gridLine = require('./line-types/grid-line');
-const indicativeLine = require('./line-types/indicative-bar-line');
-const imageLine = require('./line-types/image-line');
+const sectionTypeLogic = require("./line-types/base-logic");
+const headerLine = require("./line-types/header-line");
+const emptyLine = require("./line-types/empty-line");
+const chartLine = require("./line-types/chart-line");
+const textLine = require("./line-types/text-line");
+const linkLine = require("./line-types/link-line");
+const objectLine = require("./line-types/object-line");
+const gridLine = require("./line-types/grid-line");
+const indicativeLine = require("./line-types/indicative-bar-line");
+const imageLine = require("./line-types/image-line");
 
 module.exports = {
   addLine,
@@ -66,7 +66,7 @@ async function addLine(lineDocY, text, value, lineType, isFancyHeader, font) {
       break;
     }
     case constants.PDFDocumentLineType.ADDRESS_LINE: {
-      let addressParts = value.split(',');
+      let addressParts = value.split(",");
       addressParts = addressParts.map((s) => s.trim());
       addressParts = addressParts.filter((s) => s.length > 0);
 
@@ -74,10 +74,10 @@ async function addLine(lineDocY, text, value, lineType, isFancyHeader, font) {
       doc = docY.doc;
       y = docY.y;
 
-      doc = sectionTypeLogic.populateLine(doc, headerColor, text, '', x, 180, y, font);
+      doc = sectionTypeLogic.populateLine(doc, headerColor, text, "", x, 180, y, font);
       for (let i = 0; i < addressParts.length; i++) {
         const addressPart = addressParts[i];
-        doc = sectionTypeLogic.populateLine(doc, headerColor, '', addressPart, x, 180, y, font);
+        doc = sectionTypeLogic.populateLine(doc, headerColor, "", addressPart, x, 180, y, font);
         if (i < addressParts.length - 1) {
           doc = sectionTypeLogic.underline(doc, x, y);
           y += incrementY;
@@ -104,8 +104,8 @@ async function addLine(lineDocY, text, value, lineType, isFancyHeader, font) {
       const docY = getDocY(doc, y, incrementY, 1, false);
       doc = docY.doc;
       y = docY.y;
-      doc = sectionTypeLogic.populateLine(doc, headerColor, text, '', x, 180, y);
-      doc = sectionTypeLogic.populateLine(doc, headerColor, value, '', 550, 180, y);
+      doc = sectionTypeLogic.populateLine(doc, headerColor, text, "", x, 180, y);
+      doc = sectionTypeLogic.populateLine(doc, headerColor, value, "", 550, 180, y);
       doc = sectionTypeLogic.underline(doc, x, y);
       y += incrementY;
       break;

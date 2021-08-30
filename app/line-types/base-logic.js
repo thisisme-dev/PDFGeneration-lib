@@ -1,4 +1,4 @@
-const constants = require('../constants');
+const constants = require("../constants");
 
 module.exports = {
   docYResponse,
@@ -19,8 +19,8 @@ function docYResponse(doc, y) {
 // populateLine : populates a line with the stipulated text and settings
 function populateLine(doc, headerColor, text, value, x, xAdditionalWidth, y, font) {
   let fontSize = constants.NORMAL_FONT_SIZE;
-  let boldFont = 'OpenSansSemiBold';
-  let lightFont = 'OpenSansLight';
+  let boldFont = "OpenSansSemiBold";
+  let lightFont = "OpenSansLight";
 
   if (font !== undefined) {
     if (font.size !== undefined) {
@@ -72,9 +72,9 @@ function populateHeaderLine(doc, headerColor, text, value, x, xAdditionalWidth, 
   const page = doc.page;
   if (isFancyHeader) {
     doc.rect(0, 25, page.width, 50).fillColor(constants.PDFColors.NORMAL_COLOR).strokeColor(constants.PDFColors.NORMAL_COLOR).fillAndStroke();
-    doc.font('OpenSansSemiBold').fontSize(fontSize).fillColor(constants.PDFColors.TEXT_IN_NORMAL_COLOR).text(text, x, y - 40);
+    doc.font("OpenSansSemiBold").fontSize(fontSize).fillColor(constants.PDFColors.TEXT_IN_NORMAL_COLOR).text(text, x, y - 40);
   } else {
-    doc.font('OpenSansSemiBold').fontSize(fontSize).fillColor(constants.PDFColors.NORMAL_COLOR).text(text, x, y);
+    doc.font("OpenSansSemiBold").fontSize(fontSize).fillColor(constants.PDFColors.NORMAL_COLOR).text(text, x, y);
   }
 
   return doc;
@@ -84,7 +84,7 @@ function populateHeaderLine(doc, headerColor, text, value, x, xAdditionalWidth, 
 function underline(doc, x, y) {
   return doc.moveTo(x, y + constants.INCREMENT_UNDERLINE)
       .lineTo(doc.page.width - 20, y + constants.INCREMENT_UNDERLINE)
-      .strokeColor('#CCCCCC')
+      .strokeColor("#CCCCCC")
       .lineWidth(.025)
       .stroke();
 }

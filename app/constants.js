@@ -1,13 +1,13 @@
-'use strict';
+"use strict";
 
-const fs = require('fs');
+const fs = require("fs");
 
-const packageName = require('../package.json').name;
+const packageName = require("../package.json").name;
 
 function getPackagePath() {
   let PACKAGE_PATH = `node_modules/${packageName}/`;
   if (!fs.existsSync(PACKAGE_PATH)) {
-    PACKAGE_PATH = '';
+    PACKAGE_PATH = "";
   }
   return PACKAGE_PATH;
 }
@@ -80,9 +80,9 @@ module.exports = Object.freeze({
 
   // Colors used in Footer and Disclaimer are not currently covered here
   PDFColors: {
-    NORMAL_COLOR: '#888888',
-    INDICATIVE_COLOR: 'black',
-    TEXT_IN_NORMAL_COLOR: 'white',
+    NORMAL_COLOR: "#888888",
+    INDICATIVE_COLOR: "black",
+    TEXT_IN_NORMAL_COLOR: "white",
   },
 
   PDFDocumentLineRules: { // Future Idea
@@ -90,7 +90,7 @@ module.exports = Object.freeze({
   },
 
   PDF_TEXT: {
-    REPORT_AUTHOR: 'ThisIsMe (Pty) Ltd',
-    REPORT_HEADERS: ['Search Parameters:', 'Service Response:'],
+    REPORT_AUTHOR: "ThisIsMe (Pty) Ltd",
+    REPORT_HEADERS: ["Search Parameters:", "Service Response:"],
   },
 });

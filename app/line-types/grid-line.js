@@ -1,6 +1,6 @@
-const constants = require('../constants');
+const constants = require("../constants");
 
-const sectionTypeLogic = require('./base-logic');
+const sectionTypeLogic = require("./base-logic");
 
 module.exports = {
   generateLineThatIsGrid,
@@ -8,7 +8,7 @@ module.exports = {
 
 function generateLineThatIsGrid(doc, x, y, text, value, isDefinedHeader, incrementY, headerColor, getDocY, font) {
   const itemCountToFormRow = (Object.keys(value[0]).length + 1); // keys + END_LINE to go to next row
-  const gridRowsWithoutHeader = ((value.length - 1)/itemCountToFormRow);
+  const gridRowsWithoutHeader = ((value.length - 1) / itemCountToFormRow);
   const headerRow = isDefinedHeader ? 0 : 1;
   const docY = getDocY(doc, y, incrementY, gridRowsWithoutHeader + headerRow, true);
 
@@ -48,10 +48,10 @@ function generateLineThatIsGrid(doc, x, y, text, value, isDefinedHeader, increme
       x = index === 0 ? x : x + (header.size + 100); // TODO: the + 100 can differ for size ranges perhaps
       columnXStart[gridHeader] = x;
       columnWidth[gridHeader] = (header.size + 100);
-      doc.font('OpenSansSemiBold').fontSize(fontSize).fillColor(headerColor)
+      doc.font("OpenSansSemiBold").fontSize(fontSize).fillColor(headerColor)
           .text(header.name, columnXStart[gridHeader], y, {
             width: (header.size + 100),
-            align: 'right',
+            align: "right",
           });
       index++;
     }
@@ -63,10 +63,10 @@ function generateLineThatIsGrid(doc, x, y, text, value, isDefinedHeader, increme
     if (gridObject.lineType === constants.PDFDocumentLineType.END_LINE) {
       y += constants.INCREMENT_SUB_Y;
     }
-    doc.font('OpenSansLight').fontSize(fontSize).fillColor(headerColor)
-        .text(gridObject.value, columnXStart[gridObject['column']], y, {
-          width: columnWidth[gridObject['column']],
-          align: 'right',
+    doc.font("OpenSansLight").fontSize(fontSize).fillColor(headerColor)
+        .text(gridObject.value, columnXStart[gridObject["column"]], y, {
+          width: columnWidth[gridObject["column"]],
+          align: "right",
         });
   }
   y += incrementY;
