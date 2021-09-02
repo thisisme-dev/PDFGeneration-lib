@@ -1,21 +1,21 @@
-"use strict";
+'use strict';
 
-const PDFDocument = require("./library-override/pdfkit-customized");
+const PDFDocument = require('./library-override/pdfkit-customized');
 
-const constants = require("./constants");
+const constants = require('./constants');
 
 class PDFLimiter {
-  constructor() {
+  constructor(maxWidth=350) {
     // move function to break into array here, add vars with a constructor?
     const doc = new PDFDocument({
       bufferPages: true,
-      size: "A4",
+      size: 'A4',
       margin: 0,
     });
     doc.fontSize(constants.NORMAL_FONT_SIZE);
 
     this.doc = doc;
-    this.max = 375 /* max width */ - constants.X_START;
+    this.max = maxWidth /* max width */ - constants.X_START;
   }
 
   // destroyLimitationsDoc(doc) {
@@ -27,7 +27,7 @@ class PDFLimiter {
       return /%/i.test(str);
     }
     if (checkEncodeURI(uri)) {
-      return "URL has undisplayable characters, click on this text to open link";
+      return 'URL has undisplayable characters, click on this text to open link';
     }
     return uri;
   }
@@ -40,22 +40,22 @@ class PDFLimiter {
 
   splitLongWord(text) {
     // Specifically created for URLs in mind, use with caution
-    return this.splitString(text, "");
+    return this.splitString(text, '');
   }
 
   splitLongText(text) {
-    return this.splitString(text, " ");
+    return this.splitString(text, ' ');
   }
 
   splitString(text, splitter) {
     // TODO: incorporate splitLongWord into this function.
-    text = text.toString().trim().replace(/(\r\n|\n|\r)/gm, "").replace(/\s\s+/g, " ").replace(/\s/g, " ");
-    const firstLine = "1";
+    text = text.toString().trim().replace(/(\r\n|\n|\r)/gm, '').replace(/\s\s+/g, ' ').replace(/\s/g, ' ');
+    const firstLine = '1';
     const lines = {};
     if (this.getStringWidth(text) <= this.max) {
       lines[firstLine] = text;
     } else {
-      lines[firstLine] = "";
+      lines[firstLine] = '';
       const textPieces = text.split(splitter);
       let line = 1;
       for (let i = 0; i < textPieces.length; i++) {
@@ -71,7 +71,7 @@ class PDFLimiter {
             const wordPieces = this.splitLongWord(piece);
             line++;
             for (let j = 0; j < wordPieces.length; j++) {
-              lines[`${line - 1}.${j + 1}`] = wordPieces[j];
+              lines[`${line-1}.${j+1}`] = wordPieces[j];
             }
           } else {
             line++;
@@ -81,7 +81,7 @@ class PDFLimiter {
       }
     }
     const keysSorted = Object.keys(lines).sort(function(a, b) {
-      return parseFloat(a) - parseFloat(b);
+      return parseFloat(a)-parseFloat(b);
     });
     const array = [];
     for (let j = 0; j < keysSorted.length; j++) {

@@ -1,8 +1,8 @@
-"use strict";
+'use strict';
 
-const contentsPDFLogic = require("./pdf-types/page-of-contents-logic");
+const contentsPDFLogic = require('./pdf-types/page-of-contents-logic');
 
-const constants = require("./constants");
+const constants = require('./constants');
 
 function setupPDFType(type) {
   function pdfSetupResponse(pageOfContents, addBasicResponseHeader) {

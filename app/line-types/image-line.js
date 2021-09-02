@@ -1,28 +1,28 @@
-"use strict";
+'use strict';
 
-const Jimp = require("jimp");
+const Jimp = require('jimp');
 
-const constants = require("../constants");
+const constants = require('../constants');
 
 // WARNING: this is a WIP, need to break this so we can handle errors correctly
-const sectionTypeLogic = require("./base-logic");
+const sectionTypeLogic = require('./base-logic');
 
 module.exports = {
   generateLineThatIsImage,
 };
 
-async function generateLineThatIsImage(doc, x, y, value, incrementY, getDocY) {
+async function generateLineThatIsImage(doc, x, y, value, incrementY, getDocY, options = false) {
   const docY = getDocY(doc, y, incrementY, 1, false);
   doc = docY.doc;
   y = docY.y;
   // value = examplePayload();
   // console.log(value);
-  return await populateImage(doc, x, y, incrementY, value);
+  return await populateImage(doc, x, y, incrementY, value, options);
 }
 
 // Notes:
 // imageDescriptions are currently only available for single images
-async function populateImage(doc, x, y, incrementY, imageOptions) {
+async function populateImage(doc, x, y, incrementY, imageOptions, options = false) {
   if (Array.isArray(imageOptions.data)) {
     /* Images in the array will be placed side by side -- MONTY */
     let runningWidth = x;
@@ -37,14 +37,14 @@ async function populateImage(doc, x, y, incrementY, imageOptions) {
         heighestImage = imageHeight;
       }
     }
-    return sectionTypeLogic.docYResponse(doc, y + heighestImage + incrementY);
+    return sectionTypeLogic.docYResponse(doc, doc.y);
   } else {
-    const isCentered = imageOptions["imageType"] && imageOptions["imageType"] === constants.PDFImageType.CENTER;
+    const isCentered = imageOptions['imageType'] && imageOptions['imageType'] === constants.PDFImageType.CENTER;
     const pdfImage = await generatePDFImage(imageOptions.data);
     const imageWidth = imageOptions.imageRules.width;
     const imageHeight = imageOptions.imageRules.height;
     if (isCentered) {
-      x = x + (doc.page.width - imageWidth) / 2 - 20;
+      x = x + (doc.page.width - imageWidth)/2 -20;
     }
     doc.image(pdfImage, x, y, {
       fit: [imageWidth, imageHeight],
@@ -55,14 +55,14 @@ async function populateImage(doc, x, y, incrementY, imageOptions) {
     if (docIncrementY.incrementY) {
       y = y + incrementY;
     }
-    return sectionTypeLogic.docYResponse(doc, y);
+    return sectionTypeLogic.docYResponse(doc, doc.y);
   }
 }
 
 function addDescriptionLine(doc, description, maxLabelWidth, y, x) {
   const fontSize = constants.NORMAL_FONT_SIZE - 3;
-  const boldFont = "OpenSansSemiBold";
-  const lightFont = "OpenSansLight";
+  const boldFont = 'OpenSansSemiBold';
+  const lightFont = 'OpenSansLight';
 
   doc.font(boldFont).fontSize(fontSize).fillColor(constants.PDFColors.NORMAL_COLOR).text(`${description.label}:`, x, y);
   doc.font(lightFont).fontSize(fontSize).text(`${description.value}`, x + maxLabelWidth + 12, y, {

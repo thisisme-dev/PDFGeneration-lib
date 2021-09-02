@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 class PageOfContents {
   constructor() {
@@ -10,8 +10,8 @@ class PageOfContents {
   }
   addPageDetails(section) {
     const details = {
-      "section": section,
-      "page": this.pagePosition,
+      'section': section,
+      'page': this.pagePosition,
     };
 
     this.details.push(details);

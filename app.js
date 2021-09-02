@@ -1,11 +1,11 @@
-"use strict";
+'use strict';
 
-const dateTime = require("node-datetime");
+const dateTime = require('node-datetime');
 
-const constants = require("./app/constants");
-const logic = require("./app/logic");
-const helpers = require("./app/pdf-helpers");
-const PDFLimiter = require("./app/pdf-limitations").PDFLimiter;
+const constants = require('./app/constants');
+const logic = require('./app/logic');
+const helpers = require('./app/pdf-helpers');
+const PDFLimiter = require('./app/pdf-limitations').PDFLimiter;
 
 const pdfLimiter = new PDFLimiter();
 
@@ -19,17 +19,17 @@ module.exports = {
     const dt = dateTime.create();
     const data = {
       metaData: {
-        formatted: dt.format("Y-m-d"),
+        formatted: dt.format('Y-m-d'),
         disclaimer: disclaimer,
         s3BucketName: s3BucketName,
         reportName: reportName,
         LOCAL_DEBUG: localDebug,
         DEBUG: debug,
       },
-      requestTimestamp: dt.format("Y-m-d H:M:S"),
+      requestTimestamp: dt.format('Y-m-d H:M:S'),
     };
     dt.offsetInDays(3);
-    data.expiryDate = `${dt.format("w, d n Y H:M:S")} UTC`;
+    data.expiryDate = `${dt.format('w, d n Y H:M:S')} UTC`;
     if (debug) {
       console.log(data);
     }
@@ -38,11 +38,11 @@ module.exports = {
   generateNoResultsPDFContent: logic.generateNoResultsPDFContent,
   generateReport: async (reportContent, reportMeta) => {
     const requestID = reportContent.requestId;
-    const pageSetup = logic.setupPDFType(reportContent.pdfType);
+    const pageSetup = logic.setupPDFType(null);
     const pageOfContents = pageSetup.pageOfContents;
     let docY = logic.createPDFDocument(requestID, reportMeta.reportName, pageOfContents, pageSetup.hasCover);
     if (pageSetup.hasCover) {
-      docY = await logic.addCoverPage(docY, reportContent["coverDetails"]);
+      docY = await logic.addCoverPage(docY, reportContent['coverDetails']);
       if (pageOfContents !== null) {
         docY.doc.addPage(); // create blank page for page of contents
       }
@@ -52,10 +52,10 @@ module.exports = {
         docY.doc.addPage(); // create blank page for page of contents
       }
       if (pageSetup.addBasicResponseHeader && !pageSetup.hasCover) {
-        docY = await logic.addDefaultLine(docY, "Service Response:", null);
+        docY = await logic.addHeadline(docY, 'RESULTS', false, 'list');
       }
     }
-    docY = await logic.addPageDetail(docY, reportContent["dataFound"], reportContent.newPageHeaders, pageOfContents, pageSetup.hasCover);
+    docY = await logic.addPageDetail(docY, reportContent['dataFound'], reportContent.newPageHeaders, pageOfContents, pageSetup.hasCover);
     docY.doc = await logic.addPageFooter(docY, requestID, reportMeta.disclaimer);
     return await logic.finalizePDFDocument(docY.doc, requestID, reportMeta, pageOfContents, pageSetup.hasCover);
   },

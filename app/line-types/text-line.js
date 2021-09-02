@@ -1,6 +1,6 @@
-"use strict";
+'use strict';
 
-const sectionTypeLogic = require("./base-logic");
+const sectionTypeLogic = require('./base-logic');
 
 module.exports = {
   generateLineThatIsText,
