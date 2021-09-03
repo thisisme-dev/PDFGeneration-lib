@@ -1,58 +1,28 @@
 {
-  "_args": [
-    [
-      "@thisisme/pdfgeneration-lib@git+https://github.com/ThisIsMe-dev/PDFGeneration-lib.git#5.10.2",
-      "/Users/amien/dev/bitbucket/herman/emailcheck"
-    ]
-  ],
-  "_from": "@thisisme/pdfgeneration-lib@https://github.com/ThisIsMe-dev/PDFGeneration-lib#5.10.2",
-  "_id": "@thisisme/pdfgeneration-lib@git+ssh://git@github.com/ThisIsMe-dev/PDFGeneration-lib.git#74e301af2c1eb763528017205eaf8f23bd7ee2b4",
-  "_inBundle": false,
-  "_integrity": "",
-  "_location": "/@thisisme/pdfgeneration-lib",
-  "_phantomChildren": {},
-  "_requested": {
-    "type": "git",
-    "raw": "@thisisme/pdfgeneration-lib@https://github.com/ThisIsMe-dev/PDFGeneration-lib#5.10.2",
-    "name": "@thisisme/pdfgeneration-lib",
-    "escapedName": "@thisisme%2fpdfgeneration-lib",
-    "scope": "@thisisme",
-    "rawSpec": "https://github.com/ThisIsMe-dev/PDFGeneration-lib#5.10.2",
-    "saveSpec": "git+https://github.com/ThisIsMe-dev/PDFGeneration-lib.git#5.10.2",
-    "fetchSpec": "https://github.com/ThisIsMe-dev/PDFGeneration-lib.git",
-    "gitCommittish": "6.00.0"
-  },
-  "_requiredBy": [
-    "/@thisisme/utils-lib"
-  ],
-  "_resolved": "git+ssh://git@github.com/ThisIsMe-dev/PDFGeneration-lib.git#74e301af2c1eb763528017205eaf8f23bd7ee2b4",
-  "_spec": "https://github.com/ThisIsMe-dev/PDFGeneration-lib#6.00.0-beta",
-  "_where": "/Users/amien/dev/bitbucket/herman/emailcheck",
-  "dependencies": {
-    "aws-sdk": "2.886.0",
-    "bwip-js": "2.1.3",
-    "cloc": "^2.8.0",
-    "concat-stream": "2.0.0",
-    "fs": "0.0.1-security",
-    "jimp": "0.16.1",
-    "node-datetime": "2.1.2",
-    "pdfkit": "0.12.1"
-  },
-  "description": "## Rules",
-  "devDependencies": {
-    "babel-eslint": "10.1.0",
-    "eslint": "7.24.0",
-    "eslint-config-google": "0.14.0",
-    "jest": "26.6.3"
-  },
-  "main": "app.js",
   "name": "@thisisme/pdfgeneration-lib",
+  "version": "5.10.3",
   "private": true,
-  "scripts": {
-    "cloc": "cloc --exclude-list-file=.clocignore .",
-    "lint": "node node_modules/.bin/eslint -c .eslintrc.js \"*.js\" \"**/*.js\" --ignore-pattern \"**/node_modules/*\" --fix",
-    "prepare": "npm run lint && jest",
-    "test": "jest"
+  "main": "app.js",
+  "dependencies": {
+  "aws-sdk": "2.978.0",
+  "bwip-js": "3.0.4",
+  "cloc": "^2.8.0",
+  "concat-stream": "2.0.0",
+  "fs": "0.0.1-security",
+  "jimp": "0.16.1",
+  "node-datetime": "2.1.2",
+  "pdfkit": "0.12.3"
   },
-  "version": "5.10.2"
+  "scripts": {
+  "lint": "node node_modules/.bin/eslint -c .eslintrc.js \"*.js\" \"**/*.js\" --ignore-pattern \"**/node_modules/*\" --fix",
+  "test": "jest",
+  "prepare": "npm run lint && jest",
+  "cloc": "cloc --exclude-list-file=.clocignore ."
+  },
+  "devDependencies": {
+  "@babel/eslint-parser": "^7.15.0",
+  "eslint": "7.32.0",
+  "eslint-config-google": "0.14.0",
+  "jest": "27.1.0"
+  }
 }
