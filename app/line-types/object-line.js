@@ -1,8 +1,8 @@
-'use strict';
+"use strict";
 
-const constants = require('../constants');
+const constants = require("../constants");
 
-const sectionTypeLogic = require('./base-logic');
+const sectionTypeLogic = require("./base-logic");
 
 module.exports = {
   generateLineThatIsObject,

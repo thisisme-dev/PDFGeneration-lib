@@ -1,18 +1,18 @@
-'use strict';
+"use strict";
 
-const constants = require('../constants');
+const constants = require("../constants");
 
 // cover disclaimer label
-const COVER_DISCLAIMER_LABEL = 'STRICTLY PRIVATE AND CONFIDENTIAL';
+const COVER_DISCLAIMER_LABEL = "STRICTLY PRIVATE AND CONFIDENTIAL";
 // cover disclaimer
-let COVER_DISCLAIMER = 'This document contains proprietary and strictly confidential information, including personal information (as defined by the Protection of Personal Information Act). It is for the intended recipient only. If you are not the intended recipient you must not use, disclose, distribute, copy, print or otherwise share this document or its information.';
-COVER_DISCLAIMER += '\n\nThis report may only be used for the prescribed purpose it was requested for.';
-COVER_DISCLAIMER += '\n\nOwing to the sensitive nature of the information contained in this report, it must be treated with care and diligently deleted after use.';
+let COVER_DISCLAIMER = "This document contains proprietary and strictly confidential information, including personal information (as defined by the Protection of Personal Information Act). It is for the intended recipient only. If you are not the intended recipient you must not use, disclose, distribute, copy, print or otherwise share this document or its information.";
+COVER_DISCLAIMER += "\n\nThis report may only be used for the prescribed purpose it was requested for.";
+COVER_DISCLAIMER += "\n\nOwing to the sensitive nature of the information contained in this report, it must be treated with care and diligently deleted after use.";
 
 async function addCoverPage(docY, reportContent) {
   function addCoverReportName(doc, reportName) {
     const page = doc.page;
-    doc.font('OpenSansBold').fontSize(20).fillColor('#333333').text(
+    doc.font("OpenSansBold").fontSize(20).fillColor("#333333").text(
         reportName.trim(),
         page.width / 2 - doc.widthOfString(reportName) / 2,
         page.height - 550,
@@ -22,7 +22,7 @@ async function addCoverPage(docY, reportContent) {
   }
   function addCoverRequestDetails(doc, searchParams) {
     const page = doc.page;
-    doc.font('OpenSansLight').fontSize(12).fillColor('#333333');
+    doc.font("OpenSansLight").fontSize(12).fillColor("#333333");
     doc.moveDown().table(
         searchParams.data,
         page.width / 2 - searchParams.width / 2,
@@ -34,7 +34,7 @@ async function addCoverPage(docY, reportContent) {
   }
   function addCoverDisclaimerLabel(doc, disclaimerLabel) {
     const page = doc.page;
-    doc.font('OpenSansBold').fontSize(14).fillColor('#333333').text(
+    doc.font("OpenSansBold").fontSize(14).fillColor("#333333").text(
         disclaimerLabel.trim(),
         page.width / 2 - doc.widthOfString(disclaimerLabel) / 2,
         page.height - 300,
@@ -50,8 +50,8 @@ async function addCoverPage(docY, reportContent) {
         page.height - 230,
         page.width - 100,
         155,
-    ).fillColor('#F9F9F9').strokeColor(constants.PDFColors.NORMAL_COLOR).fillAndStroke();
-    doc.font('OpenSansLight').fontSize(12).fillColor('#333333').text(
+    ).fillColor("#F9F9F9").strokeColor(constants.PDFColors.NORMAL_COLOR).fillAndStroke();
+    doc.font("OpenSansLight").fontSize(12).fillColor("#333333").text(
         disclaimer.trim(),
         60,
         page.height - 225,

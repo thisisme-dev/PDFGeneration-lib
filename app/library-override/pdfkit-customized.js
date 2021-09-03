@@ -1,8 +1,8 @@
-'use strict';
+"use strict";
 
-const PDFDocument = require('pdfkit');
+const PDFDocument = require("pdfkit");
 
-const constants = require('../constants');
+const constants = require("../constants");
 
 class PDFDocumentCustomized extends PDFDocument {
   constructor(options) {
@@ -11,20 +11,20 @@ class PDFDocumentCustomized extends PDFDocument {
 
   table(table, arg0, arg1, arg2, type) {
     if (type === constants.PDFTableType.COVER) {
-      console.log('Cover Table being created');
+      console.log("Cover Table being created");
     }
     let startX = this.page.margins.left;
     let startY = this.y;
     let options = {};
 
-    if ((typeof arg0 === 'number') && (typeof arg1 === 'number')) {
+    if ((typeof arg0 === "number") && (typeof arg1 === "number")) {
       startX = arg0;
       startY = arg1;
 
-      if (typeof arg2 === 'object') {
+      if (typeof arg2 === "object") {
         options = arg2;
       }
-    } else if (typeof arg0 === 'object') {
+    } else if (typeof arg0 === "object") {
       options = arg0;
     }
 
@@ -41,7 +41,7 @@ class PDFDocumentCustomized extends PDFDocument {
       row.forEach((cell) => {
         const cellHeight = this.heightOfString(cell, {
           width: columnWidth,
-          align: 'left',
+          align: "left",
         });
         result = Math.max(result, cellHeight);
       });
@@ -55,7 +55,7 @@ class PDFDocumentCustomized extends PDFDocument {
 
     let rowBottomY = 0;
 
-    this.on('pageAdded', () => {
+    this.on("pageAdded", () => {
       startY = this.page.margins.top;
       rowBottomY = 0;
     });
@@ -70,10 +70,10 @@ class PDFDocumentCustomized extends PDFDocument {
 
     // Print all headers
     table.headers.forEach((headerValue, i) => {
-      const TextStartX = startX + i * columnContainerWidth +5;
+      const TextStartX = startX + i * columnContainerWidth + 5;
       this.text(headerValue, TextStartX, startY, {
         width: columnWidth,
-        align: 'left',
+        align: "left",
       });
     });
 
@@ -106,18 +106,18 @@ class PDFDocumentCustomized extends PDFDocument {
       // Print all cells of the current row
       row.forEach((cellValue, i) => {
         const ColumnLineStartX = startX + i * columnContainerWidth;
-        const ColumnLineEndX = startX + (i+1) * columnContainerWidth;
+        const ColumnLineEndX = startX + (i + 1) * columnContainerWidth;
         if (type === constants.PDFTableType.COVER) {
           const TextStartX = ColumnLineStartX + (cellValue.align === constants.PDFTableColumnTextAlign.RIGHT ? 10 : 5);
           this.text(cellValue.text, TextStartX, startY, {
             width: columnWidth,
-            align: (cellValue.align === constants.PDFTableColumnTextAlign.LEFT ? 'left' : 'right'),
+            align: (cellValue.align === constants.PDFTableColumnTextAlign.LEFT ? "left" : "right"),
           });
         } else {
           const TextStartX = ColumnLineStartX + 5;
           this.text(cellValue, TextStartX, startY, {
             width: columnWidth,
-            align: 'left',
+            align: "left",
           });
         }
 
@@ -148,7 +148,7 @@ class PDFDocumentCustomized extends PDFDocument {
   image(src, x, y, options = {}) {
     let bh; let bp; let bw; let image; let ip; let left; let left1;
 
-    if (typeof x === 'object') {
+    if (typeof x === "object") {
       options = x;
       x = null;
     }
@@ -156,7 +156,7 @@ class PDFDocumentCustomized extends PDFDocument {
     x = (left = x != null ? x : options.x) != null ? left : this.x;
     y = (left1 = y != null ? y : options.y) != null ? left1 : this.y;
 
-    if (typeof src === 'string') {
+    if (typeof src === "string") {
       image = this._imageRegistry[src];
     }
 
@@ -217,15 +217,15 @@ class PDFDocumentCustomized extends PDFDocument {
     }
 
     if (options.fit || options.cover) {
-      if (options.align === 'center') {
+      if (options.align === "center") {
         x = x + bw / 2 - w / 2;
-      } else if (options.align === 'right') {
+      } else if (options.align === "right") {
         x = x + bw - w;
       }
 
-      if (options.valign === 'center') {
+      if (options.valign === "center") {
         y = y + bh / 2 - h / 2;
-      } else if (options.valign === 'bottom') {
+      } else if (options.valign === "bottom") {
         y = y + bh - h;
       }
     } // create link annotations if the link option is given
@@ -240,7 +240,7 @@ class PDFDocumentCustomized extends PDFDocument {
     }
 
     if (options.destination != null) {
-      this.addNamedDestination(options.destination, 'XYZ', x, y, null);
+      this.addNamedDestination(options.destination, "XYZ", x, y, null);
     } // Set the current y position to below the image if it is in the document flow
 
 
