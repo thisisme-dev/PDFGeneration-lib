@@ -3,52 +3,12 @@
 ## Rules
 
 - Add your version/tag release information on the [change log](CHANGELOG.MD)
-- If you require the Charts Type install `"vega": "5.17.0"` and `"sharp": "^0.26.3"`
+- If you require the Charts Type install `"vega": "5.20.2"` and `"sharp": "^0.29.0"`
 
 ## Getting started
 
-- Add the library in your package.json under dependencies `"@thisisme/pdfgeneration-lib": "https://github.com/ThisIsMe-dev/PDFGeneration-lib#5.3.0"`
-- npm install to install all your dependencies for your project.
-
-### Examples
-
-- Create a pdf_req.js file in your service that exports the following:
-
-#### Generates a PDF Report with Content
-
-```JavaScript
-generatePDFContent: (response, event, requestTimestamp, requestParams, dataSource) => {
-console.log('Generating PDF Object');
-const pdfLimiter = pdf.pdfLimiter;
-const pdfHelpers = new pdf.PDFHelpers(event, requestTimestamp, dataSource, requestParams);
-const reportHeaders = {
-    businessInformation: {title: 'Business Information', new_page: true},
-    linkedAddress: {title: 'Linked Addresses', new_page: true},
-    aliases: {title: 'Known Aliases', new_page: false},
-    notes: {title: 'Notes', new_page: true},
-    linkedBusinesses: {title: 'Linked Businesses', new_page: false},
-    linkedPersons: {title: 'Known Associates', new_page: true},
-}; // These are custom headers for you service that the PDF needs to know are headers so it can adjust the look accordingly
-const content = pdfHelpers.generateResultsFoundPDFStartingContent(reportHeaders, constants.PDFType.CONTENTS_OF_PAGE);
-return populateRestOfReport(pdfLimiter, reportHeaders, pdfHelpers, response, content); // this is your custom function that handles the rest of your custom service's pdf
-}
-```
-
-#### Generates a PDF Report without Content
-
-```JavaScript
-generateNoResultsPDFContent: (event, requestTimestamp, requestParams, dataSource) => {
-const pdfHelpers = new pdf.PDFHelpers(event, requestTimestamp, dataSource, requestParams);
-return pdfHelpers.generateNoResultsPDFContent();
-}
-```
-
-#### Remember to include your modules
-
-```JavaScript
-const pdf = require('@thisisme/pdfgeneration-lib');
-const constants = require('@thisisme/pdfgeneration-lib/app/constants');
-```
+- Add the library in your package.json under dependencies `"@thisisme/pdfgeneration-lib": "https://github.com/ThisIsMe-dev/PDFGeneration-lib#5.10.4"`
+- npm install to install all your dependencies for your project
 
 ## Current Types
 

@@ -1,6 +1,6 @@
 {
   "name": "@thisisme/pdfgeneration-lib",
-  "version": "5.10.3",
+  "version": "5.10.4",
   "private": true,
   "main": "app.js",
   "dependencies": {

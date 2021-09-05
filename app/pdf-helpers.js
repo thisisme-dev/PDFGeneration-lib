@@ -5,11 +5,13 @@ const coverPDFLogic = require("./pdf-types/cover-logic");
 const constants = require("./constants");
 
 class PDFHelpers {
-  constructor(event, requestTimestamp, dataSource, serviceSearchParams) {
+  constructor(event, reportData) {
+    const {requestTimestamp, dataSource, requestParams, isCoverPagePDF} = reportData;
     this.event = event;
+    this.isCoverPagePDF = isCoverPagePDF;
     this.requestTimestamp = requestTimestamp;
     this.dataSource = dataSource;
-    this.serviceSearchParams = serviceSearchParams;
+    this.serviceSearchParams = requestParams;
   }
 
   textValueObj(text, value, lineType, font) {
@@ -84,6 +86,12 @@ class PDFHelpers {
       headers: ["", ""],
       rows: [],
     };
+
+    searchParams.rows.push([
+      {text: "Request Timestamp", align: constants.PDFTableColumnTextAlign.LEFT},
+      {text: this.requestTimestamp, align: constants.PDFTableColumnTextAlign.RIGHT},
+    ]);
+
     for (const [key] of Object.entries(this.serviceSearchParams)) {
       let value = this.event[key];
       if (value === undefined || value === null || value.trim().length === 0) {
