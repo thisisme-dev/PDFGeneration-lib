@@ -38,7 +38,7 @@ module.exports = {
   generateNoResultsPDFContent: logic.generateNoResultsPDFContent,
   generateReport: async (reportContent, reportMeta) => {
     const requestID = reportContent.requestId;
-    const pageSetup = logic.setupPDFType(reportContent.pdfType);
+    const pageSetup = logic.setupPDFType(null);
     const pageOfContents = pageSetup.pageOfContents;
     let docY = logic.createPDFDocument(requestID, reportMeta.reportName, pageOfContents, pageSetup.hasCover);
     if (pageSetup.hasCover) {
@@ -52,7 +52,7 @@ module.exports = {
         docY.doc.addPage(); // create blank page for page of contents
       }
       if (pageSetup.addBasicResponseHeader && !pageSetup.hasCover) {
-        docY = await logic.addDefaultLine(docY, "Service Response:", null);
+        docY = await logic.addHeadline(docY, "RESULTS", false, "list");
       }
     }
     docY = await logic.addPageDetail(docY, reportContent["dataFound"], reportContent.newPageHeaders, pageOfContents, pageSetup.hasCover);

@@ -4,25 +4,25 @@
   "private": true,
   "main": "app.js",
   "dependencies": {
-    "aws-sdk": "2.978.0",
-    "bwip-js": "3.0.4",
-    "cloc": "^2.8.0",
-    "concat-stream": "2.0.0",
-    "fs": "0.0.1-security",
-    "jimp": "0.16.1",
-    "node-datetime": "2.1.2",
-    "pdfkit": "0.12.3"
+  "aws-sdk": "2.978.0",
+  "bwip-js": "3.0.4",
+  "cloc": "^2.8.0",
+  "concat-stream": "2.0.0",
+  "fs": "0.0.1-security",
+  "jimp": "0.16.1",
+  "node-datetime": "2.1.2",
+  "pdfkit": "0.12.3"
   },
   "scripts": {
-    "lint": "node node_modules/.bin/eslint -c .eslintrc.js \"*.js\" \"**/*.js\" --ignore-pattern \"**/node_modules/*\" --fix",
-    "test": "jest",
-    "prepare": "npm run lint && jest",
-    "cloc": "cloc --exclude-list-file=.clocignore ."
+  "lint": "node node_modules/.bin/eslint -c .eslintrc.js \"*.js\" \"**/*.js\" --ignore-pattern \"**/node_modules/*\" --fix",
+  "test": "jest",
+  "prepare": "npm run lint && jest",
+  "cloc": "cloc --exclude-list-file=.clocignore ."
   },
   "devDependencies": {
-    "@babel/eslint-parser": "^7.15.0",
-    "eslint": "7.32.0",
-    "eslint-config-google": "0.14.0",
-    "jest": "27.1.0"
+  "@babel/eslint-parser": "^7.15.0",
+  "eslint": "7.32.0",
+  "eslint-config-google": "0.14.0",
+  "jest": "27.1.0"
   }
 }

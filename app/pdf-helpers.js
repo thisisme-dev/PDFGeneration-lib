@@ -14,11 +14,28 @@ class PDFHelpers {
     this.serviceSearchParams = requestParams;
   }
 
-  textValueObj(text, value, lineType, font) {
+  textValueObj(text, value, lineType, font, options = false) {
+    if (text == null) {
+      text = "";
+    }
     return {
-      text: text, // to avoid confusion, perhaps rename to label?
+      text: text.toUpperCase(), // to avoid confusion, perhaps rename to label?
       value: value,
       lineType: lineType,
+      font: font,
+      options: options,
+    };
+  }
+
+  textIconObj(text, value, lineType, options = false, font = false) {
+    if (text == null) {
+      text = "";
+    }
+    return {
+      text: text.toUpperCase(), // to avoid confusion, perhaps rename to label?
+      value: value,
+      lineType: lineType,
+      options: options,
       font: font,
     };
   }
@@ -45,7 +62,20 @@ class PDFHelpers {
     };
   }
 
-  addImageLineFromPath(imageURL, imageType, imageDescriptions) {
+  hLine(text, lineType, options) {
+    if (text == null) {
+      text = "";
+    }
+
+    return {
+      text: text.toUpperCase(), // to avoid confusion, perhaps rename to label?
+      lineType: lineType,
+      options: options,
+    };
+  }
+
+
+  addImageLineFromPath(imageURL, imageType, imageDescriptions, options = false) {
     const imageObj = {
       imageType: imageType,
       imageRules: {
@@ -54,13 +84,14 @@ class PDFHelpers {
       },
       imageDescriptions: imageDescriptions,
       data: imageURL,
+      options: options,
     };
     return this.textValueObj("", imageObj, constants.PDFDocumentLineType.IMAGE_LINE);
   }
 
-  addImageLineFromBase64(base64str, imageType, imageDescriptions) {
+  addImageLineFromBase64(base64str, imageType, imageDescriptions, options = false) {
     const buf = Buffer.from(base64str, "base64");
-    return this.addImageLineFromPath(buf, imageType, imageDescriptions);
+    return this.addImageLineFromPath(buf, imageType, imageDescriptions, options);
   }
 
   endSection() {

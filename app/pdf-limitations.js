@@ -5,7 +5,7 @@ const PDFDocument = require("./library-override/pdfkit-customized");
 const constants = require("./constants");
 
 class PDFLimiter {
-  constructor() {
+  constructor(maxWidth = 350) {
     // move function to break into array here, add vars with a constructor?
     const doc = new PDFDocument({
       bufferPages: true,
@@ -15,7 +15,7 @@ class PDFLimiter {
     doc.fontSize(constants.NORMAL_FONT_SIZE);
 
     this.doc = doc;
-    this.max = 375 /* max width */ - constants.X_START;
+    this.max = maxWidth /* max width */ - constants.X_START;
   }
 
   // destroyLimitationsDoc(doc) {

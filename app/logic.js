@@ -51,7 +51,15 @@ function createPDFDocument(requestID, reportName, pageOfContents, coverPage) {
     // doc.font('OpenSansSemiBold').fontSize(20).text(reportName, 150, 26, {width: 430, align: 'right'}); incorporate this
   } else {
     doc.image(`${constants.PACKAGE_PATH}images/tim_logo_large.png`, 20, 20, {width: 170});
-    doc.font("OpenSansSemiBold").fontSize(20).text(reportName, 150, 26, {width: 430, align: "right"});
+    doc.font("OpenSans").fontSize(16).text(reportName, 150, 26, {width: 430, align: "right"});
+    doc
+        .strokeColor("#cccccc")
+        .lineWidth(1)
+        .moveTo(0, 95)
+        .lineTo(595.26, 95)
+        .dash(2, {space: 2})
+        .stroke()
+        .undash();
   }
   return {
     doc: doc,
@@ -60,10 +68,10 @@ function createPDFDocument(requestID, reportName, pageOfContents, coverPage) {
 }
 
 async function defaultTop(docY, reportContent) {
-  docY = await addDefaultLine(docY, "Request Timestamp", reportContent["requestTimestamp"]);
-  docY = await addDefaultLine(docY, "Report Generated For", reportContent["reportGeneratedFor"]);
-  docY = await addDefaultLine(docY, "Data Source", reportContent["dataSource"]);
-  docY = await addDefaultLine(docY, "Request Id", reportContent["requestId"]);
+  docY = await addDefaultLine(docY, "DATE", reportContent["requestTimestamp"]);
+  docY = await addDefaultLine(docY, "REQUESTED BY", reportContent["reportGeneratedFor"]);
+  docY = await addDefaultLine(docY, "DATA SOURCE", reportContent["dataSource"]);
+  docY = await addDefaultLine(docY, "REQUEST ID", reportContent["requestId"]);
   if (reportContent["error"] !== undefined && reportContent["error"] !== null) {
     docY = await addDefaultLine(docY, "Error", reportContent["error"]);
   }
@@ -72,7 +80,8 @@ async function defaultTop(docY, reportContent) {
   const searchParams = reportContent["searchParams"];
   if (Object.keys(searchParams).length) {
   // if (searchParams !== null) {
-    docY = await addDefaultLine(docY, "Search Parameters:", null);
+
+    docY = await addHeadline(docY, "DATA SUBMITTED", false, "clock");
     docY = await addPageDetail(docY, searchParams, null);
     docY = await addLine(docY, null, null, constants.PDFDocumentLineType.EMPTY_LINE, false);
   }
@@ -88,6 +97,15 @@ async function addPageDetail(docY, data, newPageHeaders, pageOfContents) {
     if (Object.prototype.hasOwnProperty.call(data, prop)) {
       let isFancyHeader = false;
       const row = data[prop];
+      //       var imgOptions = {};
+
+      //       if (row.value.imgOptions == undefined) {
+      //         imgOptions = false;
+      //       } else {
+      //         imgOptions = row.value.imgOptions;
+      //       }
+      console.log("rowdata", row);
+
       if (newPageHeaders !== null) {
         if (newPageHeaders.includes(row.text)) {
           if (docY.y > constants.TOP_OF_PAGE_Y) {
@@ -109,11 +127,39 @@ async function addPageDetail(docY, data, newPageHeaders, pageOfContents) {
 }
 
 /**
+   * Adds a headline.
+   *
+  **/
+async function addHeadline(docY, text, type = "H2", icon = false) {
+  docY.doc.x = constants.PD.MARGIN;
+
+  docY.doc.roundedRect(constants.PD.MARGIN, docY.y, (constants.PD.WIDTH - (constants.PD.MARGIN) * 2), 26, 2)
+      .fill(constants.PDColors.BG_LIGHT, "#000");
+
+  if (icon) {
+    docY.doc.image(`${constants.PACKAGE_PATH}images/icon-${icon}.png`, (constants.PD.MARGIN + constants.PD.PADDING ), (docY.y + 7), {height: 12});
+    docY.doc.x += constants.PD.PADDING + 10;
+  }
+
+  docY.doc.fillColor(constants.PDColors.TEXT_DARK)
+      .fontSize(10)
+      .text(text, (docY.doc.x + constants.PD.PADDING), (docY.y + 6) );
+
+  docY.y += 40;
+  docY.doc.y += constants.PD.MARGIN;
+
+  return docY;
+}
+
+/**
    * Adds the page footer.
    *
   **/
 async function addPageFooter(docY, requestID, disclaimer) {
-  if (docY.y > 608) {
+  console.log("page y", docY.y);
+  const footerClearance = (docY.doc.page.height - 110);
+
+  if (docY.y > footerClearance) {
     // create new page so footer can be displayed (otherwise it will be placed on top of data)
     docY.doc.addPage();
     // docY.doc.fillColor(constants.PDFColors.NORMAL_COLOR);
@@ -121,42 +167,32 @@ async function addPageFooter(docY, requestID, disclaimer) {
   }
   const doc = addDisclaimer(docY.doc, disclaimer);
   const page = doc.page;
-  doc.rect(0, page.height - 100, page.width, page.height)
-      .lineWidth(0.2)
-      .fillOpacity(0.1)
-      .fill("#CCCCCC");
+
+  doc
+      .strokeColor("#cccccc")
+      .lineWidth(1)
+      .moveTo(0, page.height - 60)
+      .lineTo(page.width, (page.height - 60))
+      .dash(2, {space: 2})
+      .stroke()
+      .undash();
 
   doc.font("OpenSansSemiBold")
       .fontSize(12)
       .fillOpacity(1)
-      .fillColor("#000")
-      .strokeColor("#000")
+      .fillColor(constants.PDColors.TEXT_DARK)
+      .strokeColor(constants.PDColors.TEXT_DARK)
       .fontSize(8)
-      .text("ThisIsMe (Pty) Ltd", 30, page.height - 90, {width: page.width - 80});
+      .text("ThisIsMe (Pty) Ltd", constants.PD.MARGIN, page.height - 45, {width: page.width - 80});
 
   doc.font("OpenSansLight")
       .fontSize(8)
       .fillOpacity(1)
-      .fillColor("#000")
-      .strokeColor("#000")
+      .fillColor(constants.PDColors.TEXT_DARK)
+      .strokeColor(constants.PDColors.TEXT_DARK)
       .fontSize(7)
-      .text("Registration Number: 2014/136237/07", 30, page.height - 78, {width: page.width - 80})
-      .text("Vat Registration: 4170271870", 30, page.height - 67, {width: page.width - 80})
-      .text("Tel: +27 21 422 3995", 30, page.height - 56, {width: page.width - 80})
-      .text("Email: info@thisisme.com", 30, page.height - 45, {width: page.width - 80});
+      .text("Registration Number: 2014/136237/07, Vat Registration: 4170271870, Tel: +27 21 422 3995, Email: info@thisisme.com", constants.PD.MARGIN, page.height - 35, {width: page.width - 80});
 
-  doc.font("OpenSansLight")
-      .fontSize(7)
-      .fillOpacity(1)
-      .fillColor("#000")
-      .strokeColor("#000")
-      .fontSize(6.5)
-      .text(
-          "Copyright © ThisIsMe (Pty) Ltd. All rights reserved",
-          30,
-          page.height - 20,
-          {width: page.width - 80},
-      );
 
   // /**
   //      * Here we specifically override the generation to include a
@@ -178,6 +214,7 @@ async function addPageFooter(docY, requestID, disclaimer) {
 
   return doc;
 }
+
 
 /**
    * Generate the QR Code Barcode
@@ -206,18 +243,17 @@ async function generateQRCode(data) {
   */
 function addDisclaimer(doc, disclaimer) {
   const page = doc.page;
-  doc.rect(
-      20,
-      page.height - 210,
-      page.width - 40,
-      100,
-  ).fillColor("#F9F9F9").strokeColor(constants.PDFColors.NORMAL_COLOR).fillAndStroke();
-  doc.font("OpenSansLight").fontSize(8).fillColor("#333333").text(
-      disclaimer.trim(),
-      25,
-      page.height - 205,
-      {width: page.width - 55},
-  );
+
+  // Same disclaimer for all reports for now
+  const PDF_REPORT_DISCLAIMER = "Please review ThisIsMe's Privacy Policy as well as Terms & Conditions https://thisisme.com/legal/. All Rights Reserved.";
+
+  doc.roundedRect(20, page.height - 100, page.width - 40, 30, 2)
+      .fillColor(constants.PDColors.BG_LIGHT)
+  // .strokeColor(constants.PDColors.TEXT_DARK)
+      .fill();
+
+  doc.font("OpenSansLight").fontSize(8).fillColor("#333333")
+      .text(PDF_REPORT_DISCLAIMER.trim(), 30, page.height - 90, {width: page.width - 60});
   return doc;
 }
 
@@ -259,12 +295,12 @@ async function finalizePDFDocument(doc, requestID, reportMeta, pageOfContents, c
     // Footer: Add page number
     const oldBottomMargin = doc.page.margins.bottom;
     doc.page.margins.bottom = 0;
-    doc.text(
-        `Page: ${i + 1} of ${pages.count}`,
-        270,
-        doc.page.height - 20,
-        {width: doc.page.width - 80},
-    );
+    // doc.text(
+    //     `Page: ${i + 1} of ${pages.count}`,
+    //     270,
+    //     doc.page.height - 20,
+    //     {width: doc.page.width - 80},
+    // );
     doc.page.margins.bottom = oldBottomMargin;
   }
   const key = `${reportMeta.s3BucketName}/${reportMeta.formatted}/${requestID}.pdf`;
@@ -319,6 +355,8 @@ module.exports = {
   addDefaultLine,
   addPageDetail,
   addPageFooter,
+  addHeadline,
+  addLine,
   finalizePDFDocument,
   generateQRCode,
 };

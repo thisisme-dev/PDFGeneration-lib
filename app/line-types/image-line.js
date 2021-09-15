@@ -11,18 +11,18 @@ module.exports = {
   generateLineThatIsImage,
 };
 
-async function generateLineThatIsImage(doc, x, y, value, incrementY, getDocY) {
+async function generateLineThatIsImage(doc, x, y, value, incrementY, getDocY, options = false) {
   const docY = getDocY(doc, y, incrementY, 1, false);
   doc = docY.doc;
   y = docY.y;
   // value = examplePayload();
   // console.log(value);
-  return await populateImage(doc, x, y, incrementY, value);
+  return await populateImage(doc, x, y, incrementY, value, options);
 }
 
 // Notes:
 // imageDescriptions are currently only available for single images
-async function populateImage(doc, x, y, incrementY, imageOptions) {
+async function populateImage(doc, x, y, incrementY, imageOptions, options = false) {
   if (Array.isArray(imageOptions.data)) {
     /* Images in the array will be placed side by side -- MONTY */
     let runningWidth = x;
@@ -37,7 +37,7 @@ async function populateImage(doc, x, y, incrementY, imageOptions) {
         heighestImage = imageHeight;
       }
     }
-    return sectionTypeLogic.docYResponse(doc, y + heighestImage + incrementY);
+    return sectionTypeLogic.docYResponse(doc, doc.y);
   } else {
     const isCentered = imageOptions["imageType"] && imageOptions["imageType"] === constants.PDFImageType.CENTER;
     const pdfImage = await generatePDFImage(imageOptions.data);
@@ -55,7 +55,7 @@ async function populateImage(doc, x, y, incrementY, imageOptions) {
     if (docIncrementY.incrementY) {
       y = y + incrementY;
     }
-    return sectionTypeLogic.docYResponse(doc, y);
+    return sectionTypeLogic.docYResponse(doc, doc.y);
   }
 }
 
