@@ -97,7 +97,8 @@ module.exports = Object.freeze({
   PDFTableType,
   PDFTableColumnTextAlign,
   PDFImageType,
-  PD, PDColors,
+  PD,
+  PDColors,
 
   // Colors used in Footer and Disclaimer are not currently covered here
   PDFColors: {

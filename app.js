@@ -38,7 +38,7 @@ module.exports = {
   generateNoResultsPDFContent: logic.generateNoResultsPDFContent,
   generateReport: async (reportContent, reportMeta) => {
     const requestID = reportContent.requestId;
-    const pageSetup = logic.setupPDFType(null);
+    const pageSetup = logic.setupPDFType(reportContent.pdfType);
     const pageOfContents = pageSetup.pageOfContents;
     let docY = logic.createPDFDocument(requestID, reportMeta.reportName, pageOfContents, pageSetup.hasCover);
     if (pageSetup.hasCover) {

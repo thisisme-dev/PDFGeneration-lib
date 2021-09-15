@@ -51,9 +51,6 @@ async function addLine(lineDocY, text, value, lineType, isFancyHeader, font, opt
   const x = constants.X_START;
   const headerColor = constants.PDF_TEXT.REPORT_HEADERS.includes(text) || lineType === constants.PDFDocumentLineType.HEADER_LINE ? constants.PDFColors.INDICATIVE_COLOR : constants.PDFColors.NORMAL_COLOR;
 
-  // console.log('but i am here as a linetype', lineType) ;
-
-
   // A type should ALWAYS start with the getDocY function to ensure you are correctly positioned
   switch (lineType) {
     case constants.PDFDocumentLineType.EMPTY_LINE:
