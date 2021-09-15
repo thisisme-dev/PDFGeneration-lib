@@ -57,7 +57,6 @@ async function addLine(lineDocY, text, value, lineType, isFancyHeader, font, opt
   // A type should ALWAYS start with the getDocY function to ensure you are correctly positioned
   switch (lineType) {
     case constants.PDFDocumentLineType.EMPTY_LINE:
-
     case constants.PDFDocumentLineType.END_LINE: {
       const sectionResponse = emptyLine.generateLineThatIsEmpty(doc, y, incrementY, getDocY);
       doc = sectionResponse.doc;
@@ -95,7 +94,7 @@ async function addLine(lineDocY, text, value, lineType, isFancyHeader, font, opt
     }
 
     case constants.PDFDocumentLineType.KEY_ICON_LINE: {
-      const sectionResponse = iconLine.populateIconLine(doc, x, y, text, value, incrementY, headerColor, getDocY, options);
+      const sectionResponse = iconLine.populateIconLine(doc, x, y, text, value, incrementY, headerColor, 180);
       doc = sectionResponse.doc;
       y = sectionResponse.y;
       break;
@@ -125,7 +124,6 @@ async function addLine(lineDocY, text, value, lineType, isFancyHeader, font, opt
     }
 
     case constants.PDFDocumentLineType.COLUMN_INFO:
-
     case constants.PDFDocumentLineType.META_INFO: {
       const sectionResponse = objectLine.generateLineThatIsObject(doc, x, y, text, value, lineType, incrementY, getDocY, font);
       doc = sectionResponse.doc;

@@ -85,10 +85,10 @@ function populateHeaderLine(doc, headerColor, text, value, x, xAdditionalWidth, 
 }
 
 // populateHeaderLine : populates a line with the stipulated text and settings
-function populateHLine(doc, text, value, x, y, lineType, options = false) {
+function populateHLine(doc, text, value, x, y, hType, options = false) {
   doc.x = constants.PD.MARGIN;
 
-  if (lineType == constants.PDFDocumentLineType.H1_LINE) {
+  if (hType == constants.PDFDocumentLineType.H1_LINE) {
     doc.roundedRect(constants.PD.MARGIN, doc.y, (constants.PD.WIDTH - (constants.PD.MARGIN) * 2), 26, 2)
         .fill(constants.PDColors.BG_LIGHT, "#000");
 
@@ -105,19 +105,19 @@ function populateHLine(doc, text, value, x, y, lineType, options = false) {
     doc.y = doc.y + 20;
 
     return doc;
-  } else if (lineType == constants.PDFDocumentLineType.H2_LINE) {
+  } else if (hType == constants.PDFDocumentLineType.H2_LINE) {
     doc.fillColor(constants.PDColors.TEXT_DARK)
         .fontSize(10)
         .text(text, (doc.x), (doc.y) );
 
     doc.y -= 10;
 
-    doc = this.underline(doc, doc.x, doc.y, 3);
+    doc = underline(doc, doc.x, doc.y, 3);
 
     doc.y += 25;
 
     return doc;
-  } else if (lineType == constants.PDFDocumentLineType.H3_LINE) {
+  } else if (hType == constants.PDFDocumentLineType.H3_LINE) {
     doc.fillColor(constants.PDColors.TEXT_DARK)
         .fontSize(9)
         .text(text, (doc.x), (doc.y) );
@@ -129,38 +129,40 @@ function populateHLine(doc, text, value, x, y, lineType, options = false) {
     doc.y += 7;
 
     return doc;
-  } else {
-
   }
+  /* else {
+    throw new Error("Header line not defined");
+  } */
 
-  const page = doc.page;
+  // const page = doc.page;
   // if (isFancyHeader) {
   //   doc.rect(0, 25, page.width, 50).fillColor(constants.PDFColors.NORMAL_COLOR).strokeColor(constants.PDFColors.NORMAL_COLOR).fillAndStroke();
   //   doc.font('OpenSansSemiBold').fontSize(fontSize).fillColor(constants.PDFColors.TEXT_IN_NORMAL_COLOR).text(text, x, y - 40);
   // } else {
   //   doc.font('OpenSansSemiBold').fontSize(fontSize).fillColor(constants.PDFColors.NORMAL_COLOR).text(text, x, y);
   // }
+  // let fontSize = constants.NORMAL_FONT_SIZE;
 
-  switch (hType) {
-    case "h1": {
-      fontSize = 20;
-      break;
-    }
+  // switch (hType) {
+  //   case "h1": {
+  //     fontSize = 20;
+  //     break;
+  //   }
 
-    case "h2": {
-      fontSize = 16;
-      break;
-    }
+  //   case "h2": {
+  //     fontSize = 16;
+  //     break;
+  //   }
 
-    case "h3": {
-      fontSize = 12;
-      break;
-    }
+  //   case "h3": {
+  //     fontSize = 12;
+  //     break;
+  //   }
 
-    default: {
-      break;
-    }
-  }
+  //   default: {
+  //     break;
+  //   }
+  // }
 
 
   return doc;
