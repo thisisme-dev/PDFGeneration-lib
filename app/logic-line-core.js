@@ -49,7 +49,7 @@ async function addLine(lineDocY, text, value, lineType, isFancyHeader, font, opt
   let y = lineDocY.y;
   const incrementY = constants.INCREMENT_MAIN_Y;
   const x = constants.X_START;
-  const headerColor = constants.PDF_TEXT.REPORT_HEADERS.includes(text) || lineType === constants.PDFDocumentLineType.HEADER_LINE ? constants.PDFColors.INDICATIVE_COLOR : constants.PDFColors.NORMAL_COLOR;
+  const headerColor = /* constants.PDF_TEXT.REPORT_HEADERS.includes(text) || */ lineType === constants.PDFDocumentLineType.HEADER_LINE ? constants.PDFColors.INDICATIVE_COLOR : constants.PDFColors.NORMAL_COLOR;
 
   // A type should ALWAYS start with the getDocY function to ensure you are correctly positioned
   switch (lineType) {

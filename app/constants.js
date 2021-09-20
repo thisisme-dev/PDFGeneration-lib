@@ -77,7 +77,8 @@ const PDColors = {
 module.exports = Object.freeze({
   PACKAGE_PATH: getPackagePath(),
   // Where the page starts
-  TOP_OF_PAGE_Y: 120,
+  TOP_OF_PAGE_Y: 80,
+  TOP_OF_FIRST_PAGE_Y: 120,
   X_START: 20,
 
   // Normal Information
@@ -113,6 +114,8 @@ module.exports = Object.freeze({
 
   PDF_TEXT: {
     REPORT_AUTHOR: "ThisIsMe (Pty) Ltd",
-    REPORT_HEADERS: ["Search Parameters:", "Service Response:"],
+    // REPORT_HEADERS: ["Search Parameters:", "Service Response:"],
+    REGISTRATION: "Registration Number: 2014/136237/07, Vat Registration: 4170271870, Tel: +27 21 422 3995, Email: info@thisisme.com",
+    DISCLAIMER: "Please review ThisIsMe's Privacy Policy as well as Terms & Conditions https://thisisme.com/legal/. All Rights Reserved.",
   },
 });

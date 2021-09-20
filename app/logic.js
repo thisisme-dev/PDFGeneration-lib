@@ -13,6 +13,7 @@ const configs = require("./configs");
 const constants = require("./constants");
 const setupPDFType = require("./logic-pdf-type").setupPDFType;
 const addLine = require("./logic-line-core").addLine;
+const {PDF_TEXT} = require("./constants");
 
 AWS.config.update({region: configs.AWS_DEFAULT_REGION});
 const AWS_S3_REPORTS_BUCKET = configs.AWS_S3_REPORTS_BUCKET;
@@ -63,7 +64,7 @@ function createPDFDocument(requestID, reportName, pageOfContents, coverPage) {
   }
   return {
     doc: doc,
-    y: constants.TOP_OF_PAGE_Y,
+    y: constants.TOP_OF_FIRST_PAGE_Y + 40,
   };
 }
 
@@ -97,14 +98,6 @@ async function addPageDetail(docY, data, newPageHeaders, pageOfContents) {
     if (Object.prototype.hasOwnProperty.call(data, prop)) {
       let isFancyHeader = false;
       const row = data[prop];
-      //       var imgOptions = {};
-
-      //       if (row.value.imgOptions == undefined) {
-      //         imgOptions = false;
-      //       } else {
-      //         imgOptions = row.value.imgOptions;
-      //       }
-      console.log("rowdata", row);
 
       if (newPageHeaders !== null) {
         if (newPageHeaders.includes(row.text)) {
@@ -156,7 +149,6 @@ async function addHeadline(docY, text, type = "H2", icon = false) {
    *
   **/
 async function addPageFooter(docY, requestID, disclaimer) {
-  console.log("page y", docY.y);
   const footerClearance = (docY.doc.page.height - 110);
 
   if (docY.y > footerClearance) {
@@ -183,7 +175,7 @@ async function addPageFooter(docY, requestID, disclaimer) {
       .fillColor(constants.PDColors.TEXT_DARK)
       .strokeColor(constants.PDColors.TEXT_DARK)
       .fontSize(8)
-      .text("ThisIsMe (Pty) Ltd", constants.PD.MARGIN, page.height - 45, {width: page.width - 80});
+      .text(PDF_TEXT.REPORT_AUTHOR, constants.PD.MARGIN, page.height - 45, {width: page.width - 80});
 
   doc.font("OpenSansLight")
       .fontSize(8)
@@ -191,7 +183,7 @@ async function addPageFooter(docY, requestID, disclaimer) {
       .fillColor(constants.PDColors.TEXT_DARK)
       .strokeColor(constants.PDColors.TEXT_DARK)
       .fontSize(7)
-      .text("Registration Number: 2014/136237/07, Vat Registration: 4170271870, Tel: +27 21 422 3995, Email: info@thisisme.com", constants.PD.MARGIN, page.height - 35, {width: page.width - 80});
+      .text(PDF_TEXT.REGISTRATION, constants.PD.MARGIN, page.height - 35, {width: page.width - 80});
 
 
   // /**
@@ -245,7 +237,7 @@ function addDisclaimer(doc, disclaimer) {
   const page = doc.page;
 
   // Same disclaimer for all reports for now
-  const PDF_REPORT_DISCLAIMER = "Please review ThisIsMe's Privacy Policy as well as Terms & Conditions https://thisisme.com/legal/. All Rights Reserved.";
+  const PDF_REPORT_DISCLAIMER = PDF_TEXT.DISCLAIMER;
 
   doc.roundedRect(20, page.height - 100, page.width - 40, 30, 2)
       .fillColor(constants.PDColors.BG_LIGHT)
@@ -295,12 +287,12 @@ async function finalizePDFDocument(doc, requestID, reportMeta, pageOfContents, c
     // Footer: Add page number
     const oldBottomMargin = doc.page.margins.bottom;
     doc.page.margins.bottom = 0;
-    // doc.text(
-    //     `Page: ${i + 1} of ${pages.count}`,
-    //     270,
-    //     doc.page.height - 20,
-    //     {width: doc.page.width - 80},
-    // );
+    doc.text(
+        `Page: ${i + 1} of ${pages.count}`,
+        270,
+        doc.page.height - 20,
+        {width: doc.page.width - 80},
+    );
     doc.page.margins.bottom = oldBottomMargin;
   }
   const key = `${reportMeta.s3BucketName}/${reportMeta.formatted}/${requestID}.pdf`;

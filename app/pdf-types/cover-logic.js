@@ -60,8 +60,6 @@ async function addCoverPage(docY, reportContent) {
     return doc;
   }
 
-  // reportContent = examplePayload()
-
   let doc;
   doc = addCoverReportName(docY.doc, reportContent.coverReportName);
   doc = addCoverRequestDetails(doc, reportContent.searchParams);
