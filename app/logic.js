@@ -50,6 +50,10 @@ function createPDFDocument(requestID, reportName, pageOfContents, coverPage) {
   if (coverPage) {
     doc.image(`${constants.PACKAGE_PATH}images/tim_logo_large.png`, 100, 80, {width: 400});
     // doc.font('OpenSansSemiBold').fontSize(20).text(reportName, 150, 26, {width: 430, align: 'right'}); incorporate this
+    return {
+      doc: doc,
+      y: constants.TOP_OF_FIRST_PAGE_Y,
+    };
   } else {
     doc.image(`${constants.PACKAGE_PATH}images/tim_logo_large.png`, 20, 20, {width: 170});
     doc.font("OpenSans").fontSize(16).text(reportName, 150, 26, {width: 430, align: "right"});
@@ -61,11 +65,11 @@ function createPDFDocument(requestID, reportName, pageOfContents, coverPage) {
         .dash(2, {space: 2})
         .stroke()
         .undash();
+    return {
+      doc: doc,
+      y: constants.TOP_OF_FIRST_PAGE_Y + 40,
+    };
   }
-  return {
-    doc: doc,
-    y: constants.TOP_OF_FIRST_PAGE_Y + 40,
-  };
 }
 
 async function defaultTop(docY, reportContent) {
