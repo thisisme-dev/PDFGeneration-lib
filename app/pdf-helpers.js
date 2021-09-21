@@ -19,7 +19,7 @@ class PDFHelpers {
       text = "";
     }
     return {
-      text: text.toUpperCase(), // to avoid confusion, perhaps rename to label?
+      text: text.toUpperCase(),
       value: value,
       lineType: lineType,
       font: font,
@@ -32,7 +32,7 @@ class PDFHelpers {
       text = "";
     }
     return {
-      text: text.toUpperCase(), // to avoid confusion, perhaps rename to label?
+      text: text.toUpperCase(),
       value: value,
       lineType: lineType,
       options: options,
@@ -68,12 +68,11 @@ class PDFHelpers {
     }
 
     return {
-      text: text.toUpperCase(), // to avoid confusion, perhaps rename to label?
+      text: text.toUpperCase(),
       lineType: lineType,
       options: options,
     };
   }
-
 
   addImageLineFromPath(imageURL, imageType, imageDescriptions, options = false) {
     const imageObj = {

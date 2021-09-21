@@ -52,7 +52,7 @@ function createPDFDocument(requestID, reportName, pageOfContents, coverPage) {
     // doc.font('OpenSansSemiBold').fontSize(20).text(reportName, 150, 26, {width: 430, align: 'right'}); incorporate this
     return {
       doc: doc,
-      y: constants.TOP_OF_FIRST_PAGE_Y,
+      y: constants.TOP_OF_PAGE_Y,
     };
   } else {
     doc.image(`${constants.PACKAGE_PATH}images/tim_logo_large.png`, 20, 20, {width: 170});
@@ -67,7 +67,7 @@ function createPDFDocument(requestID, reportName, pageOfContents, coverPage) {
         .undash();
     return {
       doc: doc,
-      y: constants.TOP_OF_FIRST_PAGE_Y + 40,
+      y: constants.TOP_OF_FIRST_PAGE_Y,
     };
   }
 }
@@ -158,7 +158,6 @@ async function addPageFooter(docY, requestID, disclaimer) {
   if (docY.y > footerClearance) {
     // create new page so footer can be displayed (otherwise it will be placed on top of data)
     docY.doc.addPage();
-    // docY.doc.fillColor(constants.PDFColors.NORMAL_COLOR);
     docY.y = constants.TOP_OF_PAGE_Y;
   }
   const doc = addDisclaimer(docY.doc, disclaimer);
@@ -240,12 +239,10 @@ async function generateQRCode(data) {
 function addDisclaimer(doc, disclaimer) {
   const page = doc.page;
 
-  // Same disclaimer for all reports for now
   const PDF_REPORT_DISCLAIMER = PDF_TEXT.DISCLAIMER;
 
   doc.roundedRect(20, page.height - 100, page.width - 40, 30, 2)
       .fillColor(constants.PDColors.BG_LIGHT)
-  // .strokeColor(constants.PDColors.TEXT_DARK)
       .fill();
 
   doc.font("OpenSansLight").fontSize(8).fillColor("#333333")
