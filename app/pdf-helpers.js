@@ -19,6 +19,7 @@ class PDFHelpers {
       text = "";
     }
     return {
+      header: text,
       text: text.toUpperCase(),
       value: value,
       lineType: lineType,
@@ -32,6 +33,7 @@ class PDFHelpers {
       text = "";
     }
     return {
+      header: text,
       text: text.toUpperCase(),
       value: value,
       lineType: lineType,
@@ -42,6 +44,7 @@ class PDFHelpers {
 
   chartObj(label, results, incrementX, hasMore, isSameLine) {
     const obj = {
+      header: label,
       text: label,
       value: results,
       lineType: constants.PDFDocumentLineType.CHART_LINE,
@@ -57,6 +60,7 @@ class PDFHelpers {
 
   headerLine(title) {
     return {
+      header: title,
       text: title,
       lineType: constants.PDFDocumentLineType.HEADER_LINE,
     };
@@ -68,6 +72,7 @@ class PDFHelpers {
     }
 
     return {
+      header: text,
       text: text.toUpperCase(),
       lineType: lineType,
       options: options,
@@ -139,7 +144,7 @@ class PDFHelpers {
 
   getDisplayableTextValue(value) {
     function startOfWordsToUpperCase(str) {
-      return str.replace(/\w\S*/g, function(txt) {
+      return str.replace(/\w\S*/g, (txt) => {
         return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
       });
     }

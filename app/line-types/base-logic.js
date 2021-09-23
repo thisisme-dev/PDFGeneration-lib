@@ -52,7 +52,6 @@ function populateLine(doc, headerColor, text, value, x, xAdditionalWidth, y, fon
 // populateHeaderLine : populates a line with the stipulated text and settings
 function populateHeaderLine(doc, headerColor, text, value, x, xAdditionalWidth, y, isFancyHeader, font) {
   let fontSize = constants.NORMAL_FONT_SIZE;
-  // console.log(isHeaderType)
   fontSize = constants.HEADER_FONT_SIZE;
   let boldFont;
   let lightFont;

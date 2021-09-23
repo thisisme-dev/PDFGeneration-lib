@@ -100,8 +100,10 @@ async function addPageDetail(docY, data, newPageHeaders, pageOfContents) {
     if (Object.prototype.hasOwnProperty.call(data, prop)) {
       let isFancyHeader = false;
       const row = data[prop];
-      if (newPageHeaders !== null) {
-        if (newPageHeaders.includes(row.text)) {
+
+      let populatedHeader = false;
+      if (newPageHeaders !== null && newPageHeaders !== undefined) {
+        if (newPageHeaders.includes(row.header)) {
           if (docY.y > constants.TOP_OF_PAGE_Y) {
             docY.doc.addPage();
             // docY.doc.fillColor(constants.PDFColors.NORMAL_COLOR);
@@ -109,12 +111,15 @@ async function addPageDetail(docY, data, newPageHeaders, pageOfContents) {
           }
           isFancyHeader = true;
           if (pageOfContents !== null) {
-            pageOfContents.addPageDetails(row.text);
+            pageOfContents.addPageDetails(row.header);
           }
+          docY = await addLine(docY, row.header, row.value, row.lineType, isFancyHeader);
+          populatedHeader = true;
         }
       }
-
-      docY = await addLine(docY, row.text, row.value, row.lineType, isFancyHeader);
+      if (!populatedHeader) {
+        docY = await addLine(docY, row.text, row.value, row.lineType, isFancyHeader);
+      }
     }
   }
   return docY;
@@ -251,7 +256,6 @@ async function populatePageOfContents(doc, pageOfContents) {
   if (pageOfContents !== null) {
   // TODO: what if sections push this to add new page?? figure out how to create new page then
     doc.switchToPage(1); // there will be cases where this is not 1
-    // console.log(pageOfContents.getPageOfContents());
     let size = constants.NORMAL_FONT_SIZE;
 
     size = constants.HEADER_FONT_SIZE;
@@ -274,24 +278,25 @@ async function populatePageOfContents(doc, pageOfContents) {
 
 async function finalizePDFDocument(doc, requestID, reportMeta, pageOfContents, coverPage) {
   const pages = doc.bufferedPageRange();
-
   doc = await populatePageOfContents(doc, pageOfContents);
   // old code for page numbering
   for (let i = 0; i < pages.count; i++) {
-    if (coverPage) {
+    if (coverPage && i === 0) {
       continue;
     }
     doc.switchToPage(i);
     // Footer: Add page number
-    const oldBottomMargin = doc.page.margins.bottom;
+    // const oldBottomMargin = doc.page.margins.bottom;
     doc.page.margins.bottom = 0;
-    doc.text(
+    doc
+      .font("OpenSansLight").fontSize(6).fillColor("#333333")
+      .text(
         `Page: ${i + 1} of ${pages.count}`,
         270,
         doc.page.height - 20,
         {width: doc.page.width - 80},
     );
-    doc.page.margins.bottom = oldBottomMargin;
+    // doc.page.margins.bottom = oldBottomMargin;
   }
   const key = `${reportMeta.s3BucketName}/${reportMeta.formatted}/${requestID}.pdf`;
 

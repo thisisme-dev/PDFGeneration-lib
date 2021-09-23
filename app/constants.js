@@ -13,10 +13,11 @@ function getPackagePath() {
 }
 
 const PDFType = {
-  DEFAULT: 0, // old style search/response
+  DEFAULT: 0,
   CONTENTS_OF_PAGE: 1,
   NO_SERVICE_RESPONSE_HEADER: 2,
-  COVER_AND_CONTENTS_OF_PAGE: 3,
+  COVER_PAGE: 3,
+  COVER_AND_CONTENTS_OF_PAGE: 4,
 };
 
 const PDFDocumentLineType = {
@@ -92,6 +93,13 @@ module.exports = Object.freeze({
 
   HEADER_FONT_SIZE: 12,
   NORMAL_FONT_SIZE: 8,
+
+  // INCREMENT_MAIN_Y: 18,
+  // INCREMENT_SUB_Y: 14,
+  // INCREMENT_UNDERLINE: 15,
+
+  // HEADER_FONT_SIZE: 16,
+  // NORMAL_FONT_SIZE: 10,
 
   PDFType,
   PDFDocumentLineType,
