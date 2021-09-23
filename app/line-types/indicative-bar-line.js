@@ -14,8 +14,6 @@ function generateLineThatIsIndicativeBar(doc, x, y, text, value, incrementY, get
   const docY = getDocY(doc, y, incrementY, 1, false);
   doc = docY.doc;
   y = docY.y;
-  // text = "Credit Score";
-  // value = examplePayload();
   return populateIndicativeBar(doc, x, y, incrementY, text, value);
 }
 
@@ -96,17 +94,9 @@ function populateIndicativeBar(doc, x, y, incrementY, label, barOptions) {
 }
 
 function createBackgroundRectangle(doc, maxWidthLabel, y) {
-  // doc.rect(
-  //     20,
-  //     y,
-  //     maxWidthLabel - 40,
-  //     80,
-  // ).fillColor('#F9F9F9').strokeColor(constants.PDFColors.NORMAL_COLOR).fillAndStroke();
-
   doc.roundedRect(20, y, maxWidthLabel - 40, 80, 2)
       .fillColor(constants.PDColors.BG_LIGHT)
       .fill();
-
 
   return doc;
 }

@@ -2,9 +2,7 @@
 
 const constants = require("../constants");
 
-// cover disclaimer label
 const COVER_DISCLAIMER_LABEL = "STRICTLY PRIVATE AND CONFIDENTIAL";
-// cover disclaimer
 let COVER_DISCLAIMER = "This document contains proprietary and strictly confidential information, including personal information (as defined by the Protection of Personal Information Act). It is for the intended recipient only. If you are not the intended recipient you must not use, disclose, distribute, copy, print or otherwise share this document or its information.";
 COVER_DISCLAIMER += "\n\nThis report may only be used for the prescribed purpose it was requested for.";
 COVER_DISCLAIMER += "\n\nOwing to the sensitive nature of the information contained in this report, it must be treated with care and diligently deleted after use.";

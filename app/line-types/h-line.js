@@ -2,7 +2,6 @@
 
 const sectionTypeLogic = require("./base-logic");
 
-
 module.exports = {
   generateLineThatIsH,
 };

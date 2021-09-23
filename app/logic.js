@@ -84,8 +84,6 @@ async function defaultTop(docY, reportContent) {
 
   const searchParams = reportContent["searchParams"];
   if (Object.keys(searchParams).length) {
-  // if (searchParams !== null) {
-
     docY = await addHeadline(docY, "DATA SUBMITTED", false, "clock");
     docY = await addPageDetail(docY, searchParams, null);
     docY = await addLine(docY, null, null, constants.PDFDocumentLineType.EMPTY_LINE, false);
@@ -102,7 +100,6 @@ async function addPageDetail(docY, data, newPageHeaders, pageOfContents) {
     if (Object.prototype.hasOwnProperty.call(data, prop)) {
       let isFancyHeader = false;
       const row = data[prop];
-
       if (newPageHeaders !== null) {
         if (newPageHeaders.includes(row.text)) {
           if (docY.y > constants.TOP_OF_PAGE_Y) {
@@ -153,7 +150,7 @@ async function addHeadline(docY, text, type = "H2", icon = false) {
    *
   **/
 async function addPageFooter(docY, requestID, disclaimer) {
-  const footerClearance = (docY.doc.page.height - 110);
+  const footerClearance = (docY.doc.page.height - 100);
 
   if (docY.y > footerClearance) {
     // create new page so footer can be displayed (otherwise it will be placed on top of data)

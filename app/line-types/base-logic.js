@@ -84,7 +84,6 @@ function populateHeaderLine(doc, headerColor, text, value, x, xAdditionalWidth, 
   return doc;
 }
 
-// populateHeaderLine : populates a line with the stipulated text and settings
 function populateHLine(doc, text, value, x, y, hType, options = false) {
   doc.x = constants.PD.MARGIN;
 
@@ -92,11 +91,8 @@ function populateHLine(doc, text, value, x, y, hType, options = false) {
     doc.roundedRect(constants.PD.MARGIN, doc.y, (constants.PD.WIDTH - (constants.PD.MARGIN) * 2), 26, 2)
         .fill(constants.PDColors.BG_LIGHT, "#000");
 
-    // if (icon){
     doc.image(`${constants.PACKAGE_PATH}images/icon-clock.png`, (constants.PD.MARGIN + constants.PD.PADDING ), (doc.y + 7), {height: 12});
     doc.x += constants.PD.PADDING + 10;
-
-    // }
 
     doc.fillColor(constants.PDColors.TEXT_DARK)
         .fontSize(10)
@@ -122,48 +118,10 @@ function populateHLine(doc, text, value, x, y, hType, options = false) {
         .fontSize(9)
         .text(text, (doc.x), (doc.y) );
 
-    // doc.y -= 7;
-
-    // doc = this.underline(doc, doc.x, doc.y, 3);
-
     doc.y += 7;
 
     return doc;
   }
-  /* else {
-    throw new Error("Header line not defined");
-  } */
-
-  // const page = doc.page;
-  // if (isFancyHeader) {
-  //   doc.rect(0, 25, page.width, 50).fillColor(constants.PDFColors.NORMAL_COLOR).strokeColor(constants.PDFColors.NORMAL_COLOR).fillAndStroke();
-  //   doc.font('OpenSansSemiBold').fontSize(fontSize).fillColor(constants.PDFColors.TEXT_IN_NORMAL_COLOR).text(text, x, y - 40);
-  // } else {
-  //   doc.font('OpenSansSemiBold').fontSize(fontSize).fillColor(constants.PDFColors.NORMAL_COLOR).text(text, x, y);
-  // }
-  // let fontSize = constants.NORMAL_FONT_SIZE;
-
-  // switch (hType) {
-  //   case "h1": {
-  //     fontSize = 20;
-  //     break;
-  //   }
-
-  //   case "h2": {
-  //     fontSize = 16;
-  //     break;
-  //   }
-
-  //   case "h3": {
-  //     fontSize = 12;
-  //     break;
-  //   }
-
-  //   default: {
-  //     break;
-  //   }
-  // }
-
 
   return doc;
 }

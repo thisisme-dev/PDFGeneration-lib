@@ -7,12 +7,10 @@ module.exports = {
   populateIconLine,
 };
 
-// populateLine : populates a line with the stipulated text and settings
 function populateIconLine(doc, x, y, text, value, incrementY, headerColor, xAdditionalWidth) {
   const boldFont = "OpenSansSemiBold";
   const lightFont = "OpenSansLight";
 
-  // doc.y += 7;
   doc.font(lightFont).fontSize(8).fillColor(headerColor).text(text, x, y, {
     width: 370,
     lineGap: 10,
