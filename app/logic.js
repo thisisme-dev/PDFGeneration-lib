@@ -289,13 +289,13 @@ async function finalizePDFDocument(doc, requestID, reportMeta, pageOfContents, c
     // const oldBottomMargin = doc.page.margins.bottom;
     doc.page.margins.bottom = 0;
     doc
-      .font("OpenSansLight").fontSize(6).fillColor("#333333")
-      .text(
-        `Page: ${i + 1} of ${pages.count}`,
-        270,
-        doc.page.height - 20,
-        {width: doc.page.width - 80},
-    );
+        .font("OpenSansLight").fontSize(6).fillColor("#333333")
+        .text(
+            `Page: ${i + 1} of ${pages.count}`,
+            270,
+            doc.page.height - 20,
+            {width: doc.page.width - 80},
+        );
     // doc.page.margins.bottom = oldBottomMargin;
   }
   const key = `${reportMeta.s3BucketName}/${reportMeta.formatted}/${requestID}.pdf`;
