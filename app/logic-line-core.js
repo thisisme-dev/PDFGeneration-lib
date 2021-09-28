@@ -4,6 +4,8 @@ const constants = require("./constants");
 
 const sectionTypeLogic = require("./line-types/base-logic");
 const headerLine = require("./line-types/header-line");
+const hLine = require("./line-types/h-line");
+const iconLine = require("./line-types/icon-line");
 const emptyLine = require("./line-types/empty-line");
 const chartLine = require("./line-types/chart-line");
 const textLine = require("./line-types/text-line");
@@ -18,7 +20,7 @@ module.exports = {
 };
 
 // addLine : This function builds the line/section to display on the PDF document
-async function addLine(lineDocY, text, value, lineType, isFancyHeader, font) {
+async function addLine(lineDocY, text, value, lineType, isFancyHeader, font, options = false) {
   function getDocY(doc, currentY, incrementY, sectionRows, isSubHeader) {
     // this function needs the lineType for the object,
     // we have case where we don't just deal with lines,
@@ -47,7 +49,7 @@ async function addLine(lineDocY, text, value, lineType, isFancyHeader, font) {
   let y = lineDocY.y;
   const incrementY = constants.INCREMENT_MAIN_Y;
   const x = constants.X_START;
-  const headerColor = constants.PDF_TEXT.REPORT_HEADERS.includes(text) || lineType === constants.PDFDocumentLineType.HEADER_LINE ? constants.PDFColors.INDICATIVE_COLOR : constants.PDFColors.NORMAL_COLOR;
+  const headerColor = lineType === constants.PDFDocumentLineType.HEADER_LINE ? constants.PDFColors.INDICATIVE_COLOR : constants.PDFColors.NORMAL_COLOR;
 
   // A type should ALWAYS start with the getDocY function to ensure you are correctly positioned
   switch (lineType) {
@@ -61,6 +63,30 @@ async function addLine(lineDocY, text, value, lineType, isFancyHeader, font) {
     case constants.PDFDocumentLineType.HEADER_LINE: {
       // console.log(`Header line: ${text} -- ${headerColor} ${y} ${isFancyHeader}`)
       const sectionResponse = headerLine.generateLineThatIsHeader(doc, x, y, isFancyHeader, text, incrementY, headerColor, getDocY, font);
+      doc = sectionResponse.doc;
+      y = sectionResponse.y;
+      break;
+    }
+    case constants.PDFDocumentLineType.H1_LINE: {
+      const sectionResponse = hLine.generateLineThatIsH(doc, x, y, text, value, constants.PDFDocumentLineType.H1_LINE, options);
+      doc = sectionResponse.doc;
+      y = sectionResponse.y;
+      break;
+    }
+    case constants.PDFDocumentLineType.H2_LINE: {
+      const sectionResponse = hLine.generateLineThatIsH(doc, x, y, text, value, constants.PDFDocumentLineType.H2_LINE, options);
+      doc = sectionResponse.doc;
+      y = sectionResponse.y;
+      break;
+    }
+    case constants.PDFDocumentLineType.H3_LINE: {
+      const sectionResponse = hLine.generateLineThatIsH(doc, x, y, text, value, constants.PDFDocumentLineType.H3_LINE, options);
+      doc = sectionResponse.doc;
+      y = sectionResponse.y;
+      break;
+    }
+    case constants.PDFDocumentLineType.KEY_ICON_LINE: {
+      const sectionResponse = iconLine.populateIconLine(doc, x, y, text, value, incrementY, headerColor, 180);
       doc = sectionResponse.doc;
       y = sectionResponse.y;
       break;
@@ -123,7 +149,7 @@ async function addLine(lineDocY, text, value, lineType, isFancyHeader, font) {
       break;
     }
     case constants.PDFDocumentLineType.IMAGE_LINE: {
-      const sectionResponse = await imageLine.generateLineThatIsImage(doc, x, y, value, incrementY, getDocY);
+      const sectionResponse = await imageLine.generateLineThatIsImage(doc, x, y, value, incrementY, getDocY, options);
       doc = sectionResponse.doc;
       y = sectionResponse.y;
       break;
@@ -140,7 +166,7 @@ async function addLine(lineDocY, text, value, lineType, isFancyHeader, font) {
       break;
     }
     default: {
-      const sectionResponse = textLine.generateLineThatIsText(doc, x, y, text, value, incrementY, headerColor, getDocY);
+      const sectionResponse = textLine.generateLineThatIsText(doc, x, y, text, value, incrementY, headerColor, getDocY, options);
       doc = sectionResponse.doc;
       y = sectionResponse.y;
       break;

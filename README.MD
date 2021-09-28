@@ -19,7 +19,8 @@ const PDFType = {
   DEFAULT: 0, // old style search/response
   CONTENTS_OF_PAGE: 1,
   NO_SERVICE_RESPONSE_HEADER: 2,
-  COVER_AND_CONTENTS_OF_PAGE: 3,
+  COVER_PAGE: 3,
+  COVER_AND_CONTENTS_OF_PAGE: 4,
 };
 ```
 

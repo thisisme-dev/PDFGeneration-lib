@@ -52,7 +52,7 @@ module.exports = {
         docY.doc.addPage(); // create blank page for page of contents
       }
       if (pageSetup.addBasicResponseHeader && !pageSetup.hasCover) {
-        docY = await logic.addDefaultLine(docY, "Service Response:", null);
+        docY = await logic.addHeadline(docY, "RESULTS", false, "list");
       }
     }
     docY = await logic.addPageDetail(docY, reportContent["dataFound"], reportContent.newPageHeaders, pageOfContents, pageSetup.hasCover);

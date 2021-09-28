@@ -14,17 +14,37 @@ class PDFHelpers {
     this.serviceSearchParams = requestParams;
   }
 
-  textValueObj(text, value, lineType, font) {
+  textValueObj(text, value, lineType, font, options = false) {
+    if (text == null) {
+      text = "";
+    }
     return {
-      text: text, // to avoid confusion, perhaps rename to label?
+      header: text,
+      text: text.toUpperCase(),
       value: value,
       lineType: lineType,
+      font: font,
+      options: options,
+    };
+  }
+
+  textIconObj(text, value, lineType, options = false, font = false) {
+    if (text == null) {
+      text = "";
+    }
+    return {
+      header: text,
+      text: text.toUpperCase(),
+      value: value,
+      lineType: lineType,
+      options: options,
       font: font,
     };
   }
 
   chartObj(label, results, incrementX, hasMore, isSameLine) {
     const obj = {
+      header: label,
       text: label,
       value: results,
       lineType: constants.PDFDocumentLineType.CHART_LINE,
@@ -40,12 +60,26 @@ class PDFHelpers {
 
   headerLine(title) {
     return {
+      header: title,
       text: title,
       lineType: constants.PDFDocumentLineType.HEADER_LINE,
     };
   }
 
-  addImageLineFromPath(imageURL, imageType, imageDescriptions) {
+  hLine(text, lineType, options) {
+    if (text == null) {
+      text = "";
+    }
+
+    return {
+      header: text,
+      text: text.toUpperCase(),
+      lineType: lineType,
+      options: options,
+    };
+  }
+
+  addImageLineFromPath(imageURL, imageType, imageDescriptions, options = false) {
     const imageObj = {
       imageType: imageType,
       imageRules: {
@@ -54,13 +88,14 @@ class PDFHelpers {
       },
       imageDescriptions: imageDescriptions,
       data: imageURL,
+      options: options,
     };
     return this.textValueObj("", imageObj, constants.PDFDocumentLineType.IMAGE_LINE);
   }
 
-  addImageLineFromBase64(base64str, imageType, imageDescriptions) {
+  addImageLineFromBase64(base64str, imageType, imageDescriptions, options = false) {
     const buf = Buffer.from(base64str, "base64");
-    return this.addImageLineFromPath(buf, imageType, imageDescriptions);
+    return this.addImageLineFromPath(buf, imageType, imageDescriptions, options);
   }
 
   endSection() {
@@ -109,7 +144,7 @@ class PDFHelpers {
 
   getDisplayableTextValue(value) {
     function startOfWordsToUpperCase(str) {
-      return str.replace(/\w\S*/g, function(txt) {
+      return str.replace(/\w\S*/g, (txt) => {
         return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
       });
     }

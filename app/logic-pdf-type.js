@@ -17,6 +17,11 @@ function setupPDFType(type) {
     case constants.PDFType.CONTENTS_OF_PAGE: {
       return pdfSetupResponse(new contentsPDFLogic.PageOfContents(), false);
     }
+    case constants.PDFType.COVER_PAGE: {
+      const pageSetup = pdfSetupResponse(null, false);
+      pageSetup.hasCover = true;
+      return pageSetup;
+    }
     case constants.PDFType.COVER_AND_CONTENTS_OF_PAGE: {
       const pageSetup = pdfSetupResponse(new contentsPDFLogic.PageOfContents(), false);
       pageSetup.hasCover = true;

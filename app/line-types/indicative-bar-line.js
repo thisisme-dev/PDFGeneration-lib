@@ -14,8 +14,6 @@ function generateLineThatIsIndicativeBar(doc, x, y, text, value, incrementY, get
   const docY = getDocY(doc, y, incrementY, 1, false);
   doc = docY.doc;
   y = docY.y;
-  // text = "Credit Score";
-  // value = examplePayload();
   return populateIndicativeBar(doc, x, y, incrementY, text, value);
 }
 
@@ -41,23 +39,9 @@ function populateIndicativeBar(doc, x, y, incrementY, label, barOptions) {
 
   doc = createBackgroundRectangle(doc, maxWidthLabel, y);
 
-  doc.font("OpenSansBold").fillColor(constants.PDFColors.NORMAL_COLOR).fontSize(22).text(label, constants.X_START + 2, y, {
-    width: maxWidthLabel,
-    lineGap: 10,
-    align: "left",
-    ellipsis: true,
-  });
-
-  y += 180;
+  y += 80;
   if (Object.prototype.hasOwnProperty.call(barOptions, "text")) {
-    doc.font("OpenSansBold").fillColor(barOptions.text.color).fontSize(20).text(barOptions.text.description, 0, y - 145, {
-      width: maxWidthLabel,
-      lineGap: 10,
-      align: "center",
-      ellipsis: true,
-    });
-
-    doc.font("OpenSansBold").fillColor(constants.PDFColors.NORMAL_COLOR).fontSize(20).text(barOptions.text.value, 0, y - 120, {
+    doc.font("OpenSansBold").fillColor(barOptions.text.color).fontSize(14).text(`CREDIT SCORE: ${barOptions.text.value} ( ${barOptions.text.description} )`, 0, y - 75, {
       width: maxWidthLabel,
       lineGap: 10,
       align: "center",
@@ -74,7 +58,7 @@ function populateIndicativeBar(doc, x, y, incrementY, label, barOptions) {
         const labelX = piece * parseInt(key) + barAdditionalIncrementX + fixPortion;
 
         // this is a description of the section
-        doc.font("OpenSansBold").fillColor(constants.PDFColors.NORMAL_COLOR).fontSize(constants.NORMAL_FONT_SIZE).text(barProps[key].text, labelX, y - 70, {
+        doc.font("OpenSansBold").fillColor(constants.PDFColors.NORMAL_COLOR).fontSize(constants.NORMAL_FONT_SIZE).text(barProps[key].text, labelX, y - 50, {
           width: 92.5,
           lineGap: 10,
           align: "center",
@@ -82,7 +66,7 @@ function populateIndicativeBar(doc, x, y, incrementY, label, barOptions) {
         });
 
         // this is another description of the section
-        doc.font("OpenSansBold").fillColor(constants.PDFColors.NORMAL_COLOR).fontSize(constants.NORMAL_FONT_SIZE).text(barProps[key].range, labelX, y - 55, {
+        doc.font("OpenSansBold").fillColor(constants.PDFColors.NORMAL_COLOR).fontSize(constants.NORMAL_FONT_SIZE).text(barProps[key].range, labelX, y - 40, {
           width: 92.5,
           lineGap: 10,
           align: "center",
@@ -110,12 +94,10 @@ function populateIndicativeBar(doc, x, y, incrementY, label, barOptions) {
 }
 
 function createBackgroundRectangle(doc, maxWidthLabel, y) {
-  doc.rect(
-      20,
-      y,
-      maxWidthLabel - 40,
-      180,
-  ).fillColor("#F9F9F9").strokeColor(constants.PDFColors.NORMAL_COLOR).fillAndStroke();
+  doc.roundedRect(20, y, maxWidthLabel - 40, 80, 2)
+      .fillColor(constants.PDColors.BG_LIGHT)
+      .fill();
+
   return doc;
 }
 
