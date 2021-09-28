@@ -86,6 +86,8 @@ function populateHeaderLine(doc, headerColor, text, value, x, xAdditionalWidth, 
 function populateHLine(doc, text, value, x, y, hType, options = false) {
   doc.x = constants.PD.MARGIN;
 
+  if (doc.y == 0) { doc.y = (constants.TOP_OF_PAGE_Y / 2 ); } // if the header is flush with page, set a top margin
+  
   if (hType == constants.PDFDocumentLineType.H1_LINE) {
     doc.roundedRect(constants.PD.MARGIN, doc.y, (constants.PD.WIDTH - (constants.PD.MARGIN) * 2), 26, 2)
         .fill(constants.PDColors.BG_LIGHT, "#000");
