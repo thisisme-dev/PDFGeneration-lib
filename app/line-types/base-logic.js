@@ -4,6 +4,7 @@ module.exports = {
   docYResponse,
   populateLine,
   populateHeaderLine,
+  setComponentFont,
   populateHLine,
   underline,
   createNewPage,
@@ -18,12 +19,7 @@ function docYResponse(doc, y) {
   };
 }
 
-// populateLine : populates a line with the stipulated text and settings
-function populateLine(doc, headerColor, text, value, x, xAdditionalWidth, y, font) {
-  let fontSize = constants.NORMAL_FONT_SIZE;
-  let boldFont = "OpenSansSemiBold";
-  let lightFont = "OpenSansLight";
-
+function setComponentFont(boldFont, lightFont, fontSize, font) {
   if (font !== undefined) {
     if (font.size !== undefined) {
       fontSize = font.size;
@@ -32,12 +28,21 @@ function populateLine(doc, headerColor, text, value, x, xAdditionalWidth, y, fon
     if (font.bold_font !== undefined) {
       boldFont = font.bold_font;
     }
-
     if (font.light_font !== undefined) {
       lightFont = font.light_font;
     }
   }
 
+  return {
+    fontSize: fontSize,
+    boldFont: boldFont,
+    lightFont: lightFont,
+  };
+}
+
+// populateLine : populates a line with the stipulated text and settings
+function populateLine(doc, headerColor, text, value, x, xAdditionalWidth, y, font) {
+  const {fontSize, boldFont, lightFont} = setComponentFont("OpenSansSemiBold", "OpenSansLight", constants.NORMAL_FONT_SIZE, font);
   doc.font(lightFont).fontSize(fontSize).fillColor(headerColor).text(text, x, y);
   doc.font(boldFont).fontSize(fontSize).text(value, x + xAdditionalWidth, y, {
     width: 370,
@@ -45,45 +50,25 @@ function populateLine(doc, headerColor, text, value, x, xAdditionalWidth, y, fon
     ellipsis: true,
   });
 
-
   return doc;
 }
 
 // populateHeaderLine : populates a line with the stipulated text and settings
-function populateHeaderLine(doc, headerColor, text, value, x, xAdditionalWidth, y, isFancyHeader, font) {
-  let fontSize = constants.NORMAL_FONT_SIZE;
-  fontSize = constants.HEADER_FONT_SIZE;
-  let boldFont;
-  let lightFont;
-
-  if (font !== undefined) {
-    if (font.size !== undefined) {
-      fontSize = font.size;
-    }
-
-    /* eslint-disable */
-    if (font.bold_font !== undefined) {
-      boldFont = font.bold_font;
-    }
-
-    if (font.light_font !== undefined) {
-      lightFont = font.light_font;
-    }
-    /* eslint-enable */
-  }
+function populateHeaderLine(doc, text, x, y, isNewPageHeader, font) {
+  const {fontSize, boldFont} = setComponentFont("OpenSansSemiBold", null, constants.HEADER_FONT_SIZE, font);
 
   const page = doc.page;
-  if (isFancyHeader) {
+  if (isNewPageHeader) {
     doc.rect(0, 25, page.width, 50).fillColor(constants.PDFColors.NORMAL_COLOR).strokeColor(constants.PDFColors.NORMAL_COLOR).fillAndStroke();
-    doc.font("OpenSansSemiBold").fontSize(fontSize).fillColor(constants.PDFColors.TEXT_IN_NORMAL_COLOR).text(text, x, y - 40);
+    doc.font(boldFont).fontSize(fontSize).fillColor(constants.PDFColors.TEXT_IN_NORMAL_COLOR).text(text, x, y - 40);
   } else {
-    doc.font("OpenSansSemiBold").fontSize(fontSize).fillColor(constants.PDFColors.NORMAL_COLOR).text(text, x, y);
+    doc.font(boldFont).fontSize(fontSize).fillColor(constants.PDFColors.NORMAL_COLOR).text(text, x, y);
   }
 
   return doc;
 }
 
-function populateHLine(doc, text, value, x, y, hType, options = false) {
+function populateHLine(doc, text, x, y, hType, options = false) {
   if (hType == constants.PDFDocumentLineType.H1_LINE) {
     doc
         .roundedRect(constants.PD.MARGIN, y, (constants.PD.WIDTH - (constants.PD.MARGIN) * 2), 26, 2)
@@ -124,7 +109,6 @@ function underline(doc, x, y, thickness = 0.5) {
       .lineWidth(thickness)
       .stroke();
 }
-
 
 // createNewPage : Creates a new PDF Document page and returns the coordinates for continuation
 function createNewPage(doc) {

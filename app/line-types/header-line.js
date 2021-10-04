@@ -10,7 +10,7 @@ function generateLineThatIsHeader(doc, x, y, isFancyHeader, text, incrementY, he
   const docY = getDocY(doc, y, incrementY, 1, false);
   doc = docY.doc;
   y = docY.y;
-  doc = sectionTypeLogic.populateHeaderLine(doc, headerColor, text, "", x, 180, y, isFancyHeader, font);
+  doc = sectionTypeLogic.populateHeaderLine(doc, text, x, y, isFancyHeader, font);
   if (!isFancyHeader) {
     y += incrementY + incrementY / 2;
   }

@@ -54,15 +54,12 @@ async function populateImage(doc, x, y, incrementY, imageOptions, options = fals
     if (docIncrementY.incrementY) {
       y = y + incrementY;
     }
-    // return sectionTypeLogic.docYResponse(doc, y); amien added this
     return sectionTypeLogic.docYResponse(doc, y);
   }
 }
 
 function addDescriptionLine(doc, description, maxLabelWidth, y, x) {
-  const fontSize = constants.NORMAL_FONT_SIZE - 3;
-  const boldFont = "OpenSansSemiBold";
-  const lightFont = "OpenSansLight";
+  const {fontSize, boldFont, lightFont} = sectionTypeLogic.setComponentFont("OpenSansSemiBold", "OpenSansLight", constants.NORMAL_FONT_SIZE - 1);
 
   doc.font(boldFont).fontSize(fontSize).fillColor(constants.PDFColors.NORMAL_COLOR).text(`${description.label}:`, x, y);
   doc.font(lightFont).fontSize(fontSize).text(`${description.value}`, x + maxLabelWidth + 12, y, {

@@ -1,56 +1,52 @@
-const constants = require("../constants");
+"use strict";
 
+const constants = require("../constants");
 const sectionTypeLogic = require("./base-logic");
 
 module.exports = {
   generateLineThatIsGrid,
 };
 
-function generateLineThatIsGrid(doc, x, y, text, value, isDefinedHeader, incrementY, headerColor, getDocY, font) {
+function generateLineThatIsGrid(doc, x, y, text, value, isNewPageHeader, incrementY, headerColor, getDocY, font) {
   const itemCountToFormRow = (Object.keys(value[0]).length + 1); // keys + END_LINE to go to next row
   const gridRowsWithoutHeader = ((value.length - 1) / itemCountToFormRow);
-  const headerRow = isDefinedHeader ? 0 : 1;
+  const headerRow = isNewPageHeader ? 0 : 1;
   const docY = getDocY(doc, y, incrementY, gridRowsWithoutHeader + headerRow, true);
 
   doc = docY.doc;
   y = docY.y;
 
-  doc = sectionTypeLogic.populateHeaderLine(doc, constants.PDFColors.INDICATIVE_COLOR, text, null, x, 180, y, isDefinedHeader, font);
+  if (isNewPageHeader) {
+    doc = sectionTypeLogic.populateHeaderLine(doc, text, x, y, isNewPageHeader, font);
+  } else {
+    if (text !== null && text !== undefined) {
+      if (text.length > 0) {
+        doc = sectionTypeLogic.populateHLine(doc, text, x, y, constants.PDFDocumentLineType.H3_LINE);
+        y += incrementY;
+      }
+    }
+  }
 
   const gridHeaders = value[0];
   const columnWidth = {};
   const columnXStart = {};
 
-  let fontSize = constants.NORMAL_FONT_SIZE;
-  let boldFont;
-  let lightFont;
-
-  if (font !== undefined) {
-    if (font.size !== undefined) {
-      fontSize = font.size;
-    }
-
-    /* eslint-disable */
-    if (font.bold_font !== undefined) {
-      boldFont = font.bold_font;
-    }
-
-    if (font.light_font !== undefined) {
-      lightFont = font.light_font;
-    }
-    /* eslint-enable */
-  }
+  const {fontSize, boldFont, lightFont} = sectionTypeLogic.setComponentFont("OpenSansSemiBold", "OpenSansLight", constants.NORMAL_FONT_SIZE, font);
 
   let index = 0;
   for (const gridHeader in gridHeaders) {
     if (Object.prototype.hasOwnProperty.call(gridHeaders, gridHeader)) {
       const header = gridHeaders[gridHeader];
-      x = index === 0 ? x : x + (header.size + 100); // TODO: the + 100 can differ for size ranges perhaps
+      const width = (header.size + 100);
+      x = index === 0 ? x : x + width; // TODO: the + 100 can differ for size ranges perhaps
       columnXStart[gridHeader] = x;
-      columnWidth[gridHeader] = (header.size + 100);
-      doc.font("OpenSansLight").fontSize(fontSize).fillColor(headerColor)
+      columnWidth[gridHeader] = width;
+      doc
+          .font(lightFont)
+          .fontSize(fontSize)
+          .fillColor(headerColor)
           .text(header.name, columnXStart[gridHeader], y, {
-            width: (header.size + 100),
+            width: width,
             align: "left",
           });
       index++;
@@ -63,7 +59,7 @@ function generateLineThatIsGrid(doc, x, y, text, value, isDefinedHeader, increme
     if (gridObject.lineType === constants.PDFDocumentLineType.END_LINE) {
       y += constants.INCREMENT_SUB_Y;
     }
-    doc.font("OpenSansSemiBold").fontSize(fontSize).fillColor(headerColor)
+    doc.font(boldFont).fontSize(fontSize).fillColor(headerColor)
         .text(gridObject.value, columnXStart[gridObject["column"]], y, {
           width: columnWidth[gridObject["column"]],
           align: "left",

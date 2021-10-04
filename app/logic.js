@@ -160,7 +160,7 @@ async function addHeadline(docY, text, icon = false) {
   **/
 async function addPageFooter(docY, requestID) {
   const footerClearance = (docY.doc.page.height - 100);
-
+  console.log(footerClearance);
   if (docY.y > footerClearance) {
     // create new page so footer can be displayed (otherwise it will be placed on top of data)
     docY.doc.addPage();
@@ -247,6 +247,7 @@ function addDisclaimer(doc) {
 
   const PDF_REPORT_DISCLAIMER = PDF_TEXT.DISCLAIMER;
 
+  // 741.89
   doc.roundedRect(20, page.height - 100, page.width - 40, 30, 2)
       .fillColor(constants.PDColors.BG_LIGHT)
       .fill();

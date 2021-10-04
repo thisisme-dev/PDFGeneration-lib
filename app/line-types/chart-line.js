@@ -1,7 +1,6 @@
 "use strict";
 
 const constants = require("../constants");
-
 const sectionTypeLogic = require("./base-logic");
 
 async function generateChart(doc, y, chartLabel, results, incrementY, getDocY) {
@@ -22,7 +21,10 @@ async function addChart(doc, chartLabel, results, y, incrementY) {
   delete results.coords;
   const x = coords.incrementX;
   doc.rect(x, y, 275, 20).stroke();
-  doc.font("OpenSansLight").fontSize(9).text(chartLabel, x, y + 4, {align: "center", width: 275});
+
+  const {fontSize, boldFont, lightFont} = sectionTypeLogic.setComponentFont("OpenSansSemiBitalic", "OpenSansLight", constants.NORMAL_FONT_SIZE);
+
+  doc.font(lightFont).fontSize(fontSize + 1).text(chartLabel, x, y + 4, {align: "center", width: 275});
   const stackedBarChartSpec = require("../../configs/stacked-bar-chart.spec.json");
   stackedBarChartSpec.data[0].values = [
     {id: 1, field: parseInt(results.score)},
@@ -36,13 +38,13 @@ async function addChart(doc, chartLabel, results, y, incrementY) {
   const pdfImage = await generatePDFImage(view);
   doc.image(pdfImage, canvasX, canvasY, {width: 150});
 
-  doc.font("OpenSansSemiBitalic").fontSize(20).text(results.score, x + 120, y + 98);
+  doc.font(boldFont).fontSize(fontSize + 12).text(results.score, x + 120, y + 98);
   let t = y + 220;
-  doc.font("OpenSansSemiBitalic").fontSize(8).text("Notes: ", x + 33, t + 10);
+  doc.font(boldFont).fontSize(fontSize).text("Notes: ", x + 33, t + 10);
   const reasons = results.reasons;
   reasons.forEach((element) => {
     t += 10;
-    doc.font("OpenSansLight").fontSize(8).text(element["reasonDescription"], x + 65, t);
+    doc.font(lightFont).fontSize(fontSize).text(element["reasonDescription"], x + 65, t);
   });
   // increase next line y coord with valid reasons length
   const nextLineYCoord = (coords.hasMore ? y : t + incrementY);
@@ -56,11 +58,11 @@ function generatePDFImage(view) {
       view.toSVG().then((svg) => {
         sharp(Buffer.from(svg)).png().toBuffer().then((buffer) => {
           resolve(buffer);
-        }).catch(function(err) {
+        }).catch((err) => {
           console.log("Error encountered creating buffer from svg");
           console.log(err);
         });
-      }).catch(function(err) {
+      }).catch((err) => {
         console.log("Error encountered when adjusting view to SVG");
         console.log(err);
       });

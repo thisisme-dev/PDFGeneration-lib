@@ -15,22 +15,27 @@ module.exports = {
   textValueObj: logic.textValueObj,
   PDFHelpers: helpers.PDFHelpers,
   getPDFContentTemplate: logic.getPDFContentTemplate,
-  generateReportData: (disclaimer, s3BucketName, reportName, localDebug, debug) => {
+  generateReportData: (serviceConfigs, providerConfigs, localDebug, requestInDebugMode) => {
     const dt = dateTime.create();
     const data = {
       metaData: {
         formatted: dt.format("Y-m-d"),
-        disclaimer: disclaimer,
-        s3BucketName: s3BucketName,
-        reportName: reportName,
+        s3BucketName: serviceConfigs.S3_REPORT_FOLDER,
+        reportName: serviceConfigs.REPORT_NAME,
         LOCAL_DEBUG: localDebug,
-        DEBUG: debug,
+        DEBUG: requestInDebugMode,
       },
       requestTimestamp: dt.format("Y-m-d H:M:S"),
+      requestParams: providerConfigs.SEARCH_PARAMS,
+      dataSource: providerConfigs.DATASOURCE,
+      reportHeaders: serviceConfigs.REPORT_HEADERS,
+      reportDescription: serviceConfigs.REPORT_DESCRIPTION,
+      serviceName: serviceConfigs.SERVICE_NAME,
+      reportEnabledSettings: serviceConfigs.REPORT_ENABLED_BY_DEFAULT,
     };
     dt.offsetInDays(3);
     data.expiryDate = `${dt.format("w, d n Y H:M:S")} UTC`;
-    if (debug) {
+    if (requestInDebugMode) {
       console.log(data);
     }
     return data;

@@ -14,7 +14,7 @@ function generateLineThatIsH(doc, x, y, text, value, lineType, getDocY, options 
   doc = docY.doc;
   y = docY.y;
 
-  doc = sectionTypeLogic.populateHLine(doc, text, value, x, y, lineType, options);
+  doc = sectionTypeLogic.populateHLine(doc, text, x, y, lineType, options);
 
   if (lineType == constants.PDFDocumentLineType.H1_LINE) {
     y += incrementY + incrementY / 2;
