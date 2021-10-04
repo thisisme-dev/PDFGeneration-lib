@@ -24,19 +24,19 @@ const PDFDocumentLineType = {
   DEFAULT_LINE: 0,
   HEADER_LINE: 1,
   KEY_VALUE_LINE: 2,
-  EMPTY_LINE: 3,
+  EMPTY_LINE: 3, // this line forces an empty line as the next line on the page
   ADDRESS_LINE: 4,
   COLUMN_INFO: 5,
   META_INFO: 6,
   SINGLE_COLUMN: 7,
   DOUBLE_COLUMN: 8,
-  END_LINE: 9,
+  END_LINE: 9, // this line forces an invisible line, that ends a section
   GRID: 10,
   TABLE_OF_CONTENTS_LINE: 11,
   KEY_LINK_LINE: 12,
   INDICATIVE_BAR_LINE: 13,
   IMAGE_LINE: 14,
-  PAGE_BREAK: 15,
+  PAGE_BREAK: 15, // this line forces the line to be the last line on the page, forcing a page break
   CHART_LINE: 16,
   H0_LINE: 17,
   H1_LINE: 18,
@@ -65,6 +65,7 @@ const PD = {
   HEIGHT: 841.89,
   MARGIN: 20,
   PADDING: 10,
+  PAD_FOR_IMAGE_TEXT: 30,
 };
 
 const PDColors = {

@@ -55,7 +55,7 @@ async function addLine(lineDocY, text, value, lineType, isFancyHeader, font, opt
   switch (lineType) {
     case constants.PDFDocumentLineType.EMPTY_LINE:
     case constants.PDFDocumentLineType.END_LINE: {
-      const sectionResponse = emptyLine.generateLineThatIsEmpty(doc, y, incrementY, getDocY);
+      const sectionResponse = emptyLine.generateLineThatIsEmpty(doc, y, getDocY);
       doc = sectionResponse.doc;
       y = sectionResponse.y;
       break;
@@ -68,19 +68,19 @@ async function addLine(lineDocY, text, value, lineType, isFancyHeader, font, opt
       break;
     }
     case constants.PDFDocumentLineType.H1_LINE: {
-      const sectionResponse = hLine.generateLineThatIsH(doc, x, y, text, value, constants.PDFDocumentLineType.H1_LINE, options);
+      const sectionResponse = hLine.generateLineThatIsH(doc, x, y, text, value, constants.PDFDocumentLineType.H1_LINE, getDocY, options);
       doc = sectionResponse.doc;
       y = sectionResponse.y;
       break;
     }
     case constants.PDFDocumentLineType.H2_LINE: {
-      const sectionResponse = hLine.generateLineThatIsH(doc, x, y, text, value, constants.PDFDocumentLineType.H2_LINE, options);
+      const sectionResponse = hLine.generateLineThatIsH(doc, x, y, text, value, constants.PDFDocumentLineType.H2_LINE, getDocY, options);
       doc = sectionResponse.doc;
       y = sectionResponse.y;
       break;
     }
     case constants.PDFDocumentLineType.H3_LINE: {
-      const sectionResponse = hLine.generateLineThatIsH(doc, x, y, text, value, constants.PDFDocumentLineType.H3_LINE, options);
+      const sectionResponse = hLine.generateLineThatIsH(doc, x, y, text, value, constants.PDFDocumentLineType.H3_LINE, getDocY, options);
       doc = sectionResponse.doc;
       y = sectionResponse.y;
       break;

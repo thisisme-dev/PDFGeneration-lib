@@ -10,9 +10,9 @@ class PDFDocumentCustomized extends PDFDocument {
   }
 
   table(table, arg0, arg1, arg2, type) {
-    if (type === constants.PDFTableType.COVER) {
-      console.log("Cover Table being created");
-    }
+    // if (type === constants.PDFTableType.COVER) {
+    //   console.log("Cover Table being created");
+    // }
     let startX = this.page.margins.left;
     let startY = this.y;
     let options = {};

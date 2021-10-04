@@ -84,51 +84,37 @@ function populateHeaderLine(doc, headerColor, text, value, x, xAdditionalWidth, 
 }
 
 function populateHLine(doc, text, value, x, y, hType, options = false) {
-  doc.x = constants.PD.MARGIN;
-
-  if (doc.y == 0) {
-    doc.y = (constants.TOP_OF_PAGE_Y / 2 );
-  } // if the header is flush with page, set a top margin
-
   if (hType == constants.PDFDocumentLineType.H1_LINE) {
-    doc.roundedRect(constants.PD.MARGIN, doc.y, (constants.PD.WIDTH - (constants.PD.MARGIN) * 2), 26, 2)
+    doc
+        .roundedRect(constants.PD.MARGIN, y, (constants.PD.WIDTH - (constants.PD.MARGIN) * 2), 26, 2)
         .fill(constants.PDColors.BG_LIGHT, "#000");
 
-    doc.image(`${constants.PACKAGE_PATH}images/icon-clock.png`, (constants.PD.MARGIN + constants.PD.PADDING ), (doc.y + 7), {height: 12});
-    doc.x += constants.PD.PADDING + 10;
+    doc.image(`${constants.PACKAGE_PATH}images/icon-clock.png`,
+        x, (y + 7), {
+          height: 12,
+        },
+    );
 
-    doc.fillColor(constants.PDColors.TEXT_DARK)
+    doc
+        .fillColor(constants.PDColors.TEXT_DARK)
         .fontSize(10)
-        .text(text, (doc.x + constants.PD.PADDING), (doc.y - 13) );
-
-    doc.y = doc.y + 20;
-
-    return doc;
+        .text(text, (constants.PD.MARGIN + constants.PD.PAD_FOR_IMAGE_TEXT), (y + 6) );
   } else if (hType == constants.PDFDocumentLineType.H2_LINE) {
-    doc.fillColor(constants.PDColors.TEXT_DARK)
+    doc
+        .fillColor(constants.PDColors.TEXT_DARK)
         .fontSize(10)
-        .text(text, (doc.x), (doc.y) );
+        .text(text, x, y);
 
-    doc.y -= 10;
-
-    doc = underline(doc, doc.x, doc.y, 3);
-
-    doc.y += 25;
-
-    return doc;
+    doc = underline(doc, x, y + 5, 3);
   } else if (hType == constants.PDFDocumentLineType.H3_LINE) {
-    doc.fillColor(constants.PDColors.TEXT_DARK)
+    doc
+        .fillColor(constants.PDColors.TEXT_DARK)
         .fontSize(9)
-        .text(text, (doc.x), (doc.y) );
-
-    doc.y += 7;
-
-    return doc;
+        .text(text, x, y);
   }
 
   return doc;
 }
-
 
 // underline: underlines a line on the PDF doc
 function underline(doc, x, y, thickness = 0.5) {

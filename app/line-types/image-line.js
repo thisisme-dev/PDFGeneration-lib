@@ -15,8 +15,6 @@ async function generateLineThatIsImage(doc, x, y, value, incrementY, getDocY, op
   const docY = getDocY(doc, y, incrementY, 1, false);
   doc = docY.doc;
   y = docY.y;
-  // value = examplePayload();
-  // console.log(value);
   return await populateImage(doc, x, y, incrementY, value, options);
 }
 

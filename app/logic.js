@@ -14,6 +14,7 @@ const constants = require("./constants");
 const setupPDFType = require("./logic-pdf-type").setupPDFType;
 const addLine = require("./logic-line-core").addLine;
 const {PDF_TEXT} = require("./constants");
+const sectionTypeLogic = require("./line-types/base-logic");
 
 AWS.config.update({region: configs.AWS_DEFAULT_REGION});
 const AWS_S3_REPORTS_BUCKET = configs.AWS_S3_REPORTS_BUCKET;
@@ -84,7 +85,7 @@ async function defaultTop(docY, reportContent) {
 
   const searchParams = reportContent["searchParams"];
   if (Object.keys(searchParams).length) {
-    docY = await addHeadline(docY, "DATA SUBMITTED", false, "clock");
+    docY = await addHeadline(docY, "DATA SUBMITTED", "clock");
     docY = await addPageDetail(docY, searchParams, null);
     docY = await addLine(docY, null, null, constants.PDFDocumentLineType.EMPTY_LINE, false);
   }
@@ -98,27 +99,28 @@ async function addDefaultLine(docY, text, value) {
 async function addPageDetail(docY, data, newPageHeaders, pageOfContents) {
   for (const prop in data) {
     if (Object.prototype.hasOwnProperty.call(data, prop)) {
-      let isFancyHeader = false;
+      let isNewPageHeader = false;
       const row = data[prop];
-
-      let populatedHeader = false;
+      // if page headers object was set, go in the below piece
       if (newPageHeaders !== null && newPageHeaders !== undefined) {
+        // if header is listed as a new page header, add new page header line
         if (newPageHeaders.includes(row.header)) {
           if (docY.y > constants.TOP_OF_PAGE_Y) {
             docY.doc.addPage();
             // docY.doc.fillColor(constants.PDFColors.NORMAL_COLOR);
             docY.y = constants.TOP_OF_PAGE_Y;
           }
-          isFancyHeader = true;
+          isNewPageHeader = true;
           if (pageOfContents !== null) {
             pageOfContents.addPageDetails(row.header);
           }
-          docY = await addLine(docY, row.header, row.value, row.lineType, isFancyHeader);
-          populatedHeader = true;
+          docY = await addLine(docY, row.header, row.value, row.lineType, isNewPageHeader);
         }
       }
-      if (!populatedHeader) {
-        docY = await addLine(docY, row.text, row.value, row.lineType, isFancyHeader);
+
+      // if not new page header, add
+      if (!isNewPageHeader) {
+        docY = await addLine(docY, row.text, row.value, row.lineType, isNewPageHeader);
       }
     }
   }
@@ -126,35 +128,37 @@ async function addPageDetail(docY, data, newPageHeaders, pageOfContents) {
 }
 
 /**
-   * Adds a headline.
-   *
-  **/
-async function addHeadline(docY, text, type = "H2", icon = false) {
-  docY.doc.x = constants.PD.MARGIN;
-
+ * Adds a default design report header
+ * @param {*} docY
+ * @param {*} text
+ * @param {*} icon
+ * @returns
+ */
+async function addHeadline(docY, text, icon = false) {
   docY.doc.roundedRect(constants.PD.MARGIN, docY.y, (constants.PD.WIDTH - (constants.PD.MARGIN) * 2), 26, 2)
       .fill(constants.PDColors.BG_LIGHT, "#000");
 
   if (icon) {
     docY.doc.image(`${constants.PACKAGE_PATH}images/icon-${icon}.png`, (constants.PD.MARGIN + constants.PD.PADDING ), (docY.y + 7), {height: 12});
-    docY.doc.x += constants.PD.PADDING + 10;
   }
 
-  docY.doc.fillColor(constants.PDColors.TEXT_DARK)
+  docY.doc
+      .fillColor(constants.PDColors.TEXT_DARK)
       .fontSize(10)
-      .text(text, (docY.doc.x + constants.PD.PADDING), (docY.y + 6) );
+      .text(text, (constants.PD.MARGIN + constants.PD.PAD_FOR_IMAGE_TEXT), (docY.y + 6) );
 
-  docY.y += 40;
-  docY.doc.y += constants.PD.MARGIN;
+  const doc = docY.doc;
+  let y = docY.y;
+  y += 40;
 
-  return docY;
+  return sectionTypeLogic.docYResponse(doc, y);
 }
 
 /**
    * Adds the page footer.
    *
   **/
-async function addPageFooter(docY, requestID, disclaimer) {
+async function addPageFooter(docY, requestID) {
   const footerClearance = (docY.doc.page.height - 100);
 
   if (docY.y > footerClearance) {
@@ -162,7 +166,7 @@ async function addPageFooter(docY, requestID, disclaimer) {
     docY.doc.addPage();
     docY.y = constants.TOP_OF_PAGE_Y;
   }
-  const doc = addDisclaimer(docY.doc, disclaimer);
+  const doc = addDisclaimer(docY.doc);
   const page = doc.page;
 
   doc
@@ -238,7 +242,7 @@ async function generateQRCode(data) {
 /**
    * Generate the Disclaimer text included on the PDF Report.
   */
-function addDisclaimer(doc, disclaimer) {
+function addDisclaimer(doc) {
   const page = doc.page;
 
   const PDF_REPORT_DISCLAIMER = PDF_TEXT.DISCLAIMER;

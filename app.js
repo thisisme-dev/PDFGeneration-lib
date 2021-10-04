@@ -52,11 +52,11 @@ module.exports = {
         docY.doc.addPage(); // create blank page for page of contents
       }
       if (pageSetup.addBasicResponseHeader && !pageSetup.hasCover) {
-        docY = await logic.addHeadline(docY, "RESULTS", false, "list");
+        docY = await logic.addHeadline(docY, "RESULTS", "list");
       }
     }
     docY = await logic.addPageDetail(docY, reportContent["dataFound"], reportContent.newPageHeaders, pageOfContents, pageSetup.hasCover);
-    docY.doc = await logic.addPageFooter(docY, requestID, reportMeta.disclaimer);
+    docY.doc = await logic.addPageFooter(docY, requestID);
     return await logic.finalizePDFDocument(docY.doc, requestID, reportMeta, pageOfContents, pageSetup.hasCover);
   },
   generateNoResultsReport: async (reportContent, reportMeta) => {
@@ -65,7 +65,7 @@ module.exports = {
     const pageOfContents = null;
     let docY = logic.createPDFDocument(requestID, reportMeta.reportName, pageOfContents, pageSetup.hasCover);
     docY = await logic.defaultTop(docY, reportContent);
-    docY.doc = await logic.addPageFooter(docY, requestID, reportMeta.disclaimer);
+    docY.doc = await logic.addPageFooter(docY, requestID);
     return await logic.finalizePDFDocument(docY.doc, requestID, reportMeta, pageOfContents, pageSetup.hasCover);
   },
 };
