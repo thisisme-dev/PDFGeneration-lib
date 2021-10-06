@@ -3,16 +3,18 @@
 const constants = require("../constants");
 const sectionTypeLogic = require("./base-logic");
 
-async function generateChart(doc, y, chartLabel, results, incrementY, getDocY) {
+async function generateChart(doc, y, chartLabel, results) {
   if (!results.coords["isSameLine"]) {
-    const docY = getDocY(doc, y, incrementY, 1, false);
+    const docY = doc.getDocY(constants.PDFDocumentLineType.CHART_LINE, y, 1, false);
     doc = docY.doc;
     y = docY.y;
   }
-  return await addChart(doc, chartLabel, results, y, incrementY);
+  return await addChart(doc, chartLabel, results, y);
 }
 
-async function addChart(doc, chartLabel, results, y, incrementY) {
+async function addChart(doc, chartLabel, results, y) {
+  const incrementY = constants.INCREMENT_MAIN_Y;
+
   const vega = require("vega");
   vega.scheme("myscheme", ["#708090", "#fff", "#00f", "#ff0", "#f0f", "#0ff"]);
 

@@ -4,6 +4,8 @@ const PDFDocument = require("pdfkit");
 
 const constants = require("../constants");
 
+const sectionTypeLogic = require("../line-types/base-logic");
+
 class PDFDocumentCustomized extends PDFDocument {
   constructor(options) {
     super(options);
@@ -254,6 +256,52 @@ class PDFDocumentCustomized extends PDFDocument {
     this.restore();
     this.y = y + h;
     return this.annotate(x, y, w, h, options);
+  }
+
+  getDocY(lineType, currentY, sectionRows, isSubHeader, text) {
+    // this function needs the lineType for the object,
+    // we have case where we don't just deal with lines,
+    // but objects with lines
+    const headerLowest = 770; // the lowest y for a header
+    const noFooterLimit = 806; // lowest y for a row
+    const isHeader = (lineType === constants.PDFDocumentLineType.HEADER_LINE) || isSubHeader;
+
+    if (lineType === constants.PDFDocumentLineType.END_LINE) {
+      // TODO: should add empty_line as well
+      if (currentY > constants.TOP_OF_PAGE_Y) {
+        if (currentY >= headerLowest) {
+          return sectionTypeLogic.docYResponse(this, currentY);
+        }
+      }
+    } else {
+      let incrementY = constants.INCREMENT_MAIN_Y;
+      let rowsIncrementY = (sectionRows * incrementY);
+      let endY = rowsIncrementY + currentY;
+
+      if (lineType === constants.PDFDocumentLineType.META_INFO || lineType === constants.PDFDocumentLineType.COLUMN_INFO) {
+        incrementY = constants.INCREMENT_SUB_Y;
+        if (isHeader) {
+          const sectionsToMutiplyWith = sectionRows > 1 ? sectionRows - 1 : sectionRows;
+          rowsIncrementY = constants.INCREMENT_MAIN_Y + (sectionsToMutiplyWith * incrementY);
+        } else {
+          rowsIncrementY = (sectionRows * incrementY);
+        }
+        endY = rowsIncrementY + currentY;
+      }
+
+      if (endY > constants.TOP_OF_PAGE_Y) {
+        // if (text) {
+        //   this is where the next line will most likely start
+        //   console.log(`${currentY + incrementY} ${endY} ${text}`)
+        //   this is where we are at currently
+        //   console.log(`${currentY} ${endY} ${text}`)
+        // }
+        if ((isHeader && (endY >= headerLowest)) || (endY >= noFooterLimit)) {
+          return sectionTypeLogic.createNewPage(this);
+        }
+      }
+    }
+    return sectionTypeLogic.docYResponse(this, currentY);
   }
 }
 

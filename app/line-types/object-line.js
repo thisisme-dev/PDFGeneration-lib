@@ -8,7 +8,9 @@ module.exports = {
   generateLineThatIsObject,
 };
 
-function generateLineThatIsObject(doc, x, y, text, value, lineType, incrementY, getDocY) {
+function generateLineThatIsObject(doc, x, y, text, value, lineType) {
+  const incrementY = constants.INCREMENT_SUB_Y;
+
   if (value.length > 0) {
     const sections = generateSections(value);
     let sectionHeaderPrinted = false;
@@ -16,8 +18,8 @@ function generateLineThatIsObject(doc, x, y, text, value, lineType, incrementY, 
       if (Object.prototype.hasOwnProperty.call(sections, key)) {
         const value = sections[key];
         const sectionRowCount = getSectionRowCount(value) + (sectionHeaderPrinted ? 0 : 1);
-        incrementY = constants.INCREMENT_SUB_Y;
-        const docY = getDocY(doc, y, incrementY, sectionRowCount, true);
+        // incrementY = constants.INCREMENT_SUB_Y;
+        const docY = doc.getDocY(lineType, y, sectionRowCount, true, text);
         doc = docY.doc;
         y = docY.y;
         if (y > constants.TOP_OF_PAGE_Y) {
@@ -25,7 +27,7 @@ function generateLineThatIsObject(doc, x, y, text, value, lineType, incrementY, 
         }
         if (!sectionHeaderPrinted) {
           const isFancyHeader = (lineType === constants.PDFDocumentLineType.COLUMN_INFO);
-          doc = sectionTypeLogic.populateLine(doc, constants.PDFColors.INDICATIVE_COLOR, text, null, x, 180, y, isFancyHeader);
+          doc = sectionTypeLogic.populateLine(doc, constants.PDFColors.INDICATIVE_COLOR, text, null, x, 180, y);
           sectionHeaderPrinted = true;
           if (!isFancyHeader) {
             y += (lineType === constants.PDFDocumentLineType.COLUMN_INFO) ? constants.INCREMENT_MAIN_Y : constants.INCREMENT_SUB_Y;

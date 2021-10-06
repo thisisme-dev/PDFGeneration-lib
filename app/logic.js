@@ -160,7 +160,6 @@ async function addHeadline(docY, text, icon = false) {
   **/
 async function addPageFooter(docY, requestID) {
   const footerClearance = (docY.doc.page.height - 100);
-  console.log(footerClearance);
   if (docY.y > footerClearance) {
     // create new page so footer can be displayed (otherwise it will be placed on top of data)
     docY.doc.addPage();

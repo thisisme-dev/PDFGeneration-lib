@@ -9,15 +9,15 @@ module.exports = {
   generateLineThatIsIndicativeBar,
 };
 
-// Current element height is 180 (rectangle) + incrementY
-function generateLineThatIsIndicativeBar(doc, x, y, text, value, incrementY, getDocY) {
-  const docY = getDocY(doc, y, incrementY, 1, false);
+function generateLineThatIsIndicativeBar(doc, x, y, text, value) {
+  const docY = doc.getDocY(constants.PDFDocumentLineType.INDICATIVE_BAR_LINE, y, 1, false);
   doc = docY.doc;
   y = docY.y;
-  return populateIndicativeBar(doc, x, y, incrementY, text, value);
+  return populateIndicativeBar(doc, x, y, text, value);
 }
 
-function populateIndicativeBar(doc, x, y, incrementY, label, barOptions) {
+function populateIndicativeBar(doc, x, y, label, barOptions) {
+  const incrementY = constants.INCREMENT_MAIN_Y;
   const {fontSize, boldFont} = sectionTypeLogic.setComponentFont("OpenSansBold", null, constants.NORMAL_FONT_SIZE);
 
   const maxWidth = 550;

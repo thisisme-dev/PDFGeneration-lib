@@ -67,7 +67,7 @@ async function addCoverPage(docY, reportContent) {
 
   return {
     doc: doc,
-    y: constants.TOP_OF_PAGE_Y,
+    y: constants.TOP_OF_COVER_PAGE_Y,
   };
 }
 

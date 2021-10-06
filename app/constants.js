@@ -79,7 +79,8 @@ const PDColors = {
 module.exports = Object.freeze({
   PACKAGE_PATH: getPackagePath(),
   // Where the page starts
-  TOP_OF_PAGE_Y: 80,
+  TOP_OF_PAGE_Y: 40,
+  TOP_OF_COVER_PAGE_Y: 80,
   TOP_OF_FIRST_PAGE_Y: 120,
   X_START: 20,
 

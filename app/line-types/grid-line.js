@@ -7,11 +7,13 @@ module.exports = {
   generateLineThatIsGrid,
 };
 
-function generateLineThatIsGrid(doc, x, y, text, value, isNewPageHeader, incrementY, headerColor, getDocY, font) {
+function generateLineThatIsGrid(doc, x, y, text, value, isNewPageHeader, headerColor, font) {
   const itemCountToFormRow = (Object.keys(value[0]).length + 1); // keys + END_LINE to go to next row
   const gridRowsWithoutHeader = ((value.length - 1) / itemCountToFormRow);
   const headerRow = isNewPageHeader ? 0 : 1;
-  const docY = getDocY(doc, y, incrementY, gridRowsWithoutHeader + headerRow, true);
+
+  const incrementY = constants.INCREMENT_MAIN_Y;
+  const docY = doc.getDocY(constants.PDFDocumentLineType.GRID, y, gridRowsWithoutHeader + headerRow, true);
 
   doc = docY.doc;
   y = docY.y;

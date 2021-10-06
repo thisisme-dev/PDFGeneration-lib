@@ -43,7 +43,7 @@ function setComponentFont(boldFont, lightFont, fontSize, font) {
 // populateLine : populates a line with the stipulated text and settings
 function populateLine(doc, headerColor, text, value, x, xAdditionalWidth, y, font) {
   const {fontSize, boldFont, lightFont} = setComponentFont("OpenSansSemiBold", "OpenSansLight", constants.NORMAL_FONT_SIZE, font);
-  doc.font(lightFont).fontSize(fontSize).fillColor(headerColor).text(text, x, y);
+  doc.font(lightFont).fontSize(fontSize).fillColor(headerColor).text(y + " " + text, x, y);
   doc.font(boldFont).fontSize(fontSize).text(value, x + xAdditionalWidth, y, {
     width: 370,
     lineGap: 10,
@@ -112,6 +112,7 @@ function underline(doc, x, y, thickness = 0.5) {
 
 // createNewPage : Creates a new PDF Document page and returns the coordinates for continuation
 function createNewPage(doc) {
+  console.log("????????NEW PAGE CREATED????????");
   doc.addPage();
   return docYResponse(doc, constants.TOP_OF_PAGE_Y);
 }

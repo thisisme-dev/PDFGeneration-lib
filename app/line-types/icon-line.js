@@ -7,7 +7,9 @@ module.exports = {
   populateIconLine,
 };
 
-function populateIconLine(doc, x, y, text, value, incrementY, headerColor, xAdditionalWidth) {
+function populateIconLine(doc, x, y, text, value, headerColor, xAdditionalWidth) {
+  const incrementY = constants.INCREMENT_MAIN_Y;
+
   const {fontSize, boldFont, lightFont} = sectionTypeLogic.setComponentFont("OpenSansSemiBold", "OpenSansLight", constants.NORMAL_FONT_SIZE);
 
   doc.font(lightFont).fontSize(fontSize).fillColor(headerColor).text(text, x, y, {

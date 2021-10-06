@@ -11,16 +11,18 @@ module.exports = {
   generateLineThatIsImage,
 };
 
-async function generateLineThatIsImage(doc, x, y, value, incrementY, getDocY, options = false) {
-  const docY = getDocY(doc, y, incrementY, 1, false);
+async function generateLineThatIsImage(doc, x, y, value, options = false) {
+  const docY = doc.getDocY(constants.PDFDocumentLineType.IMAGE_LINE, y, 1, false);
   doc = docY.doc;
   y = docY.y;
-  return await populateImage(doc, x, y, incrementY, value, options);
+  return await populateImage(doc, x, y, value, options);
 }
 
 // Notes:
 // imageDescriptions are currently only available for single images
-async function populateImage(doc, x, y, incrementY, imageOptions, options = false) {
+async function populateImage(doc, x, y, imageOptions, options = false) {
+  const incrementY = constants.INCREMENT_MAIN_Y;
+
   if (Array.isArray(imageOptions.data)) {
     /* Images in the array will be placed side by side -- MONTY */
     let runningWidth = x;

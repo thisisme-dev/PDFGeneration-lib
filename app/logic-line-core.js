@@ -9,6 +9,7 @@ const iconLine = require("./line-types/icon-line");
 const emptyLine = require("./line-types/empty-line");
 const chartLine = require("./line-types/chart-line");
 const textLine = require("./line-types/text-line");
+const addressLine = require("./line-types/address-line");
 const linkLine = require("./line-types/link-line");
 const objectLine = require("./line-types/object-line");
 const gridLine = require("./line-types/grid-line");
@@ -21,30 +22,6 @@ module.exports = {
 
 // addLine : This function builds the line/section to display on the PDF document
 async function addLine(lineDocY, text, value, lineType, isFancyHeader, font, options = false) {
-  function getDocY(doc, currentY, incrementY, sectionRows, isSubHeader) {
-    // this function needs the lineType for the object,
-    // we have case where we don't just deal with lines,
-    // but objects with lines
-    const headerLowest = 750; // the lowest y for a header
-    const noFooterLimit = 800; // lowest y for a row
-    const isHeader = (lineType === constants.PDFDocumentLineType.HEADER_LINE) || isSubHeader;
-
-    const rowsIncrementY = (sectionRows * incrementY);
-    if (rowsIncrementY + currentY > constants.TOP_OF_PAGE_Y) {
-      // console.log(`${text} currentY: ${currentY} sectionRows: ${sectionRows}`);
-      if (isHeader || lineType === constants.PDFDocumentLineType.END_LINE) {
-        if (rowsIncrementY + currentY >= headerLowest) {
-          return sectionTypeLogic.createNewPage(doc);
-        }
-      }
-
-      if (rowsIncrementY + currentY > noFooterLimit) {
-        return sectionTypeLogic.createNewPage(doc);
-      }
-    }
-    return sectionTypeLogic.docYResponse(doc, currentY);
-  }
-
   let doc = lineDocY.doc;
   let y = lineDocY.y;
   const incrementY = constants.INCREMENT_MAIN_Y;
@@ -55,79 +32,63 @@ async function addLine(lineDocY, text, value, lineType, isFancyHeader, font, opt
   switch (lineType) {
     case constants.PDFDocumentLineType.EMPTY_LINE:
     case constants.PDFDocumentLineType.END_LINE: {
-      const sectionResponse = emptyLine.generateLineThatIsEmpty(doc, y, getDocY);
+      const sectionResponse = emptyLine.generateLineThatIsEmpty(doc, lineType, y);
       doc = sectionResponse.doc;
       y = sectionResponse.y;
       break;
     }
     case constants.PDFDocumentLineType.HEADER_LINE: {
       // console.log(`Header line: ${text} -- ${headerColor} ${y} ${isFancyHeader}`)
-      const sectionResponse = headerLine.generateLineThatIsHeader(doc, x, y, isFancyHeader, text, incrementY, headerColor, getDocY, font);
+      const sectionResponse = headerLine.generateLineThatIsHeader(doc, x, y, isFancyHeader, text, headerColor, font);
       doc = sectionResponse.doc;
       y = sectionResponse.y;
       break;
     }
     case constants.PDFDocumentLineType.H1_LINE: {
-      const sectionResponse = hLine.generateLineThatIsH(doc, x, y, text, value, constants.PDFDocumentLineType.H1_LINE, getDocY, options);
+      const sectionResponse = hLine.generateLineThatIsH(doc, x, y, text, value, constants.PDFDocumentLineType.H1_LINE, options);
       doc = sectionResponse.doc;
       y = sectionResponse.y;
       break;
     }
     case constants.PDFDocumentLineType.H2_LINE: {
-      const sectionResponse = hLine.generateLineThatIsH(doc, x, y, text, value, constants.PDFDocumentLineType.H2_LINE, getDocY, options);
+      const sectionResponse = hLine.generateLineThatIsH(doc, x, y, text, value, constants.PDFDocumentLineType.H2_LINE, options);
       doc = sectionResponse.doc;
       y = sectionResponse.y;
       break;
     }
     case constants.PDFDocumentLineType.H3_LINE: {
-      const sectionResponse = hLine.generateLineThatIsH(doc, x, y, text, value, constants.PDFDocumentLineType.H3_LINE, getDocY, options);
+      const sectionResponse = hLine.generateLineThatIsH(doc, x, y, text, value, constants.PDFDocumentLineType.H3_LINE, options);
       doc = sectionResponse.doc;
       y = sectionResponse.y;
       break;
     }
     case constants.PDFDocumentLineType.KEY_ICON_LINE: {
-      const sectionResponse = iconLine.populateIconLine(doc, x, y, text, value, incrementY, headerColor, 180);
+      const sectionResponse = iconLine.populateIconLine(doc, x, y, text, value, headerColor, 180);
       doc = sectionResponse.doc;
       y = sectionResponse.y;
       break;
     }
     case constants.PDFDocumentLineType.ADDRESS_LINE: {
-      let addressParts = value.split(",");
-      addressParts = addressParts.map((s) => s.trim());
-      addressParts = addressParts.filter((s) => s.length > 0);
-
-      const docY = getDocY(doc, y, incrementY, addressParts.length, false);
-      doc = docY.doc;
-      y = docY.y;
-
-      doc = sectionTypeLogic.populateLine(doc, headerColor, text, "", x, 180, y, font);
-      for (let i = 0; i < addressParts.length; i++) {
-        const addressPart = addressParts[i];
-        doc = sectionTypeLogic.populateLine(doc, headerColor, "", addressPart, x, 180, y, font);
-        if (i < addressParts.length - 1) {
-          doc = sectionTypeLogic.underline(doc, x, y);
-          y += incrementY;
-        }
-        doc = sectionTypeLogic.underline(doc, x, y);
-      }
-      y += incrementY;
+      const sectionResponse = addressLine.generateAddressLine(doc, text, value, x, y, headerColor, font);
+      doc = sectionResponse.doc;
+      y = sectionResponse.y;
       break;
     }
     case constants.PDFDocumentLineType.COLUMN_INFO:
     case constants.PDFDocumentLineType.META_INFO: {
-      const sectionResponse = objectLine.generateLineThatIsObject(doc, x, y, text, value, lineType, incrementY, getDocY, font);
+      const sectionResponse = objectLine.generateLineThatIsObject(doc, x, y, text, value, lineType);
       doc = sectionResponse.doc;
       y = sectionResponse.y;
       break;
     }
     case constants.PDFDocumentLineType.GRID: { // TODO: requires validating new headers for page space
-      const sectionResponse = gridLine.generateLineThatIsGrid(doc, x, y, text, value, isFancyHeader, incrementY, headerColor, getDocY, font);
+      const sectionResponse = gridLine.generateLineThatIsGrid(doc, x, y, text, value, isFancyHeader, headerColor, font);
       doc = sectionResponse.doc;
       y = sectionResponse.y;
       break;
     }
     case constants.PDFDocumentLineType.TABLE_OF_CONTENTS_LINE: {
-      const docY = getDocY(doc, y, incrementY, 1, false);
+      const docY = doc.getDocY(lineType, doc, y, 1, false);
       doc = docY.doc;
       y = docY.y;
       doc = sectionTypeLogic.populateLine(doc, headerColor, text, "", x, 180, y);
@@ -137,36 +98,36 @@ async function addLine(lineDocY, text, value, lineType, isFancyHeader, font, opt
       break;
     }
     case constants.PDFDocumentLineType.KEY_LINK_LINE: {
-      const sectionResponse = linkLine.generateLineThatIsLink(doc, x, y, text, value, incrementY, headerColor, getDocY);
+      const sectionResponse = linkLine.generateLineThatIsLink(doc, x, y, text, value, headerColor);
       doc = sectionResponse.doc;
       y = sectionResponse.y;
       break;
     }
     case constants.PDFDocumentLineType.INDICATIVE_BAR_LINE: {
-      const sectionResponse = indicativeLine.generateLineThatIsIndicativeBar(doc, x, y, text, value, incrementY, getDocY);
+      const sectionResponse = indicativeLine.generateLineThatIsIndicativeBar(doc, x, y, text, value);
       doc = sectionResponse.doc;
       y = sectionResponse.y;
       break;
     }
     case constants.PDFDocumentLineType.IMAGE_LINE: {
-      const sectionResponse = await imageLine.generateLineThatIsImage(doc, x, y, value, incrementY, getDocY, options);
+      const sectionResponse = await imageLine.generateLineThatIsImage(doc, x, y, value, options);
       doc = sectionResponse.doc;
       y = sectionResponse.y;
       break;
     }
     case constants.PDFDocumentLineType.PAGE_BREAK: {
       doc.addPage();
-      y = 80;
+      y = constants.TOP_OF_PAGE_Y;
       break;
     }
     case constants.PDFDocumentLineType.CHART_LINE: {
-      const sectionResponse = await chartLine.generateChart(doc, y, text, value, incrementY, getDocY);
+      const sectionResponse = await chartLine.generateChart(doc, y, text, value);
       doc = sectionResponse.doc;
       y = sectionResponse.y;
       break;
     }
     default: {
-      const sectionResponse = textLine.generateLineThatIsText(doc, x, y, text, value, incrementY, headerColor, getDocY, options);
+      const sectionResponse = textLine.generateLineThatIsText(doc, x, y, text, value, headerColor, options);
       doc = sectionResponse.doc;
       y = sectionResponse.y;
       break;

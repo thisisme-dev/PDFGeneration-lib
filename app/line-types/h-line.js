@@ -7,14 +7,14 @@ module.exports = {
   generateLineThatIsH,
 };
 
-function generateLineThatIsH(doc, x, y, text, value, lineType, getDocY, options = false) {
+function generateLineThatIsH(doc, x, y, text, value, lineType, options = false) {
   const incrementY = constants.INCREMENT_MAIN_Y;
 
-  const docY = getDocY(doc, y, incrementY, 1, false);
+  const docY = doc.getDocY(lineType, y, 1, false);
   doc = docY.doc;
   y = docY.y;
 
-  doc = sectionTypeLogic.populateHLine(doc, text, x, y, lineType, options);
+  doc = sectionTypeLogic.populateHLine(doc, text, x, y, lineType, options, "H2");
 
   if (lineType == constants.PDFDocumentLineType.H1_LINE) {
     y += incrementY + incrementY / 2;

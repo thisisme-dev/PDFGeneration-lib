@@ -8,10 +8,9 @@ module.exports = {
   generateLineThatIsEmpty,
 };
 
-function generateLineThatIsEmpty(doc, y, getDocY) {
+function generateLineThatIsEmpty(doc, lineType, y) {
   const incrementY = constants.INCREMENT_MAIN_Y;
-
-  const docY = getDocY(doc, y, incrementY, 1, false);
+  const docY = doc.getDocY(lineType, y, 1, false);
   doc = docY.doc;
   y = docY.y;
   if (y > constants.TOP_OF_PAGE_Y) {

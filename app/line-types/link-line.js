@@ -7,8 +7,9 @@ module.exports = {
   generateLineThatIsLink,
 };
 
-function generateLineThatIsLink(doc, x, y, text, value, incrementY, headerColor, getDocY) {
-  const docY = getDocY(doc, y, incrementY, 1, false);
+function generateLineThatIsLink(doc, x, y, text, value, headerColor) {
+  const incrementY = constants.INCREMENT_MAIN_Y;
+  const docY = doc.getDocY(constants.PDFDocumentLineType.KEY_LINK_LINE, y, 1, false);
   doc = docY.doc;
   y = docY.y;
   doc = populateLineLink(doc, headerColor, text, value, x, 180, y);
