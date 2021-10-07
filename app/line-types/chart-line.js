@@ -50,7 +50,7 @@ async function addChart(doc, chartLabel, results, y) {
   });
   // increase next line y coord with valid reasons length
   const nextLineYCoord = (coords.hasMore ? y : t + incrementY);
-  return sectionTypeLogic.docYResponse(doc, nextLineYCoord);
+  return doc.docYResponse(nextLineYCoord);
 }
 
 function generatePDFImage(view) {

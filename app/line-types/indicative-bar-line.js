@@ -92,7 +92,7 @@ function populateIndicativeBar(doc, x, y, label, barOptions) {
   }
   y += incrementY / 2;
 
-  return sectionTypeLogic.docYResponse(doc, y);
+  return doc.docYResponse(y);
 }
 
 function createBackgroundRectangle(doc, maxWidthLabel, y) {

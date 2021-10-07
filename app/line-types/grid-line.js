@@ -18,11 +18,12 @@ function generateLineThatIsGrid(doc, x, y, text, value, isNewPageHeader, headerC
   doc = docY.doc;
   y = docY.y;
 
-  if (isNewPageHeader) {
-    doc = sectionTypeLogic.populateHeaderLine(doc, text, x, y, isNewPageHeader, font);
-  } else {
-    if (text !== null && text !== undefined) {
-      if (text.length > 0) {
+  if (text !== null && text !== undefined) {
+    if (text.length > 0) {
+      if (isNewPageHeader) {
+        doc = sectionTypeLogic.populateHLine(doc, text, x, y, constants.PDFDocumentLineType.H1_LINE);
+        y += 40;
+      } else {
         doc = sectionTypeLogic.populateHLine(doc, text, x, y, constants.PDFDocumentLineType.H3_LINE);
         y += incrementY;
       }
@@ -68,5 +69,5 @@ function generateLineThatIsGrid(doc, x, y, text, value, isNewPageHeader, headerC
         });
   }
   y += incrementY;
-  return sectionTypeLogic.docYResponse(doc, y);
+  return doc.docYResponse(y);
 }

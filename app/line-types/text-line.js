@@ -16,5 +16,5 @@ function generateLineThatIsText(doc, x, y, text, value, headerColor) {
   doc = sectionTypeLogic.populateLine(doc, headerColor, text, value, x, 180, y);
   doc = sectionTypeLogic.underline(doc, x, y);
   y += incrementY;
-  return sectionTypeLogic.docYResponse(doc, y);
+  return doc.docYResponse(y);
 }

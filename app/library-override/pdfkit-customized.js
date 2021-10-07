@@ -4,13 +4,21 @@ const PDFDocument = require("pdfkit");
 
 const constants = require("../constants");
 
-const sectionTypeLogic = require("../line-types/base-logic");
 
 class PDFDocumentCustomized extends PDFDocument {
   constructor(options) {
     super(options);
   }
 
+  /**
+   * Creates a table component, specifically aimed at the cover page at the moment
+   * @param {*} table
+   * @param {*} arg0
+   * @param {*} arg1
+   * @param {*} arg2
+   * @param {*} type
+   * @returns
+   */
   table(table, arg0, arg1, arg2, type) {
     // if (type === constants.PDFTableType.COVER) {
     //   console.log("Cover Table being created");
@@ -67,7 +75,7 @@ class PDFDocumentCustomized extends PDFDocument {
 
     // Check to have enough room for header and first rows
     if (startY + 3 * computeRowHeight(table.headers) > maxY) {
-      this.addPage();
+      this.createNewPage();
     }
 
     // Print all headers
@@ -96,7 +104,7 @@ class PDFDocumentCustomized extends PDFDocument {
       if (startY + 3 * rowHeight < maxY) {
         startY = rowBottomY + rowSpacing;
       } else {
-        this.addPage();
+        this.createNewPage();
       }
 
       // Allow the user to override style for rows
@@ -258,6 +266,37 @@ class PDFDocumentCustomized extends PDFDocument {
     return this.annotate(x, y, w, h, options);
   }
 
+  /**
+   * Creates a new PDF Document page and returns the coordinates for continuation
+   * @returns
+   */
+  createNewPage() {
+    // console.log("CREATED NEW PAGE");
+    this.addPage();
+    return this.docYResponse(constants.TOP_OF_PAGE_Y);
+  }
+
+  /**
+   * Creates an easy to refer to docY object, containing the the PDF Document and the current Y coord
+   * @param {*} y
+   * @returns
+   */
+  docYResponse(y) {
+    return {
+      doc: this,
+      y: y,
+    };
+  }
+
+  /**
+   * Use this to obtain the doc and newest Y coordinate before you start creating new lines
+   * @param {*} lineType
+   * @param {*} currentY
+   * @param {*} sectionRows
+   * @param {*} isSubHeader
+   * @param {*} text
+   * @returns
+   */
   getDocY(lineType, currentY, sectionRows, isSubHeader, text) {
     // this function needs the lineType for the object,
     // we have case where we don't just deal with lines,
@@ -270,7 +309,7 @@ class PDFDocumentCustomized extends PDFDocument {
       // TODO: should add empty_line as well
       if (currentY > constants.TOP_OF_PAGE_Y) {
         if (currentY >= headerLowest) {
-          return sectionTypeLogic.docYResponse(this, currentY);
+          return this.docYResponse(currentY);
         }
       }
     } else {
@@ -297,11 +336,11 @@ class PDFDocumentCustomized extends PDFDocument {
         //   console.log(`${currentY} ${endY} ${text}`)
         // }
         if ((isHeader && (endY >= headerLowest)) || (endY >= noFooterLimit)) {
-          return sectionTypeLogic.createNewPage(this);
+          return this.createNewPage();
         }
       }
     }
-    return sectionTypeLogic.docYResponse(this, currentY);
+    return this.docYResponse(currentY);
   }
 }
 

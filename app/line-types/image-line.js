@@ -37,8 +37,7 @@ async function populateImage(doc, x, y, imageOptions, options = false) {
         heighestImage = imageHeight;
       }
     }
-    // return sectionTypeLogic.docYResponse(doc, y + heighestImage + incrementY); amien added this
-    return sectionTypeLogic.docYResponse(doc, y + heighestImage + incrementY);
+    return doc.docYResponse(y + heighestImage + incrementY);
   } else {
     const isCentered = imageOptions["imageType"] && imageOptions["imageType"] === constants.PDFImageType.CENTER;
     const pdfImage = await generatePDFImage(imageOptions.data);
@@ -56,7 +55,7 @@ async function populateImage(doc, x, y, imageOptions, options = false) {
     if (docIncrementY.incrementY) {
       y = y + incrementY;
     }
-    return sectionTypeLogic.docYResponse(doc, y);
+    return doc.docYResponse(y);
   }
 }
 

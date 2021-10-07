@@ -42,35 +42,44 @@ module.exports = {
   },
   generateNoResultsPDFContent: logic.generateNoResultsPDFContent,
   generateReport: async (reportContent, reportMeta) => {
-    const requestID = reportContent.requestId;
-    const pageSetup = logic.setupPDFType(reportContent.pdfType);
-    const pageOfContents = pageSetup.pageOfContents;
-    let docY = logic.createPDFDocument(requestID, reportMeta.reportName, pageOfContents, pageSetup.hasCover);
-    if (pageSetup.hasCover) {
-      docY = await logic.addCoverPage(docY, reportContent["coverDetails"]);
-      if (pageOfContents !== null) {
-        docY.doc.addPage(); // create blank page for page of contents
+    try {
+      const requestID = reportContent.requestId;
+      const pageSetup = logic.setupPDFType(reportContent.pdfType);
+      const pageOfContents = pageSetup.pageOfContents;
+      let docY = logic.createPDFDocument(requestID, reportMeta.reportName, pageOfContents, pageSetup.hasCover);
+      if (pageSetup.hasCover) {
+        docY = await logic.addCoverPage(docY, reportContent["coverDetails"]);
+        if (pageOfContents !== null) {
+          docY.doc.createNewPage();
+        }
+      } else {
+        docY = await logic.defaultTop(docY, reportContent);
+        if (pageOfContents !== null) {
+          docY.doc.createNewPage();
+        }
+        if (pageSetup.addBasicResponseHeader && !pageSetup.hasCover) {
+          docY = await logic.addHeadline(docY, "RESULTS", "list");
+        }
       }
-    } else {
-      docY = await logic.defaultTop(docY, reportContent);
-      if (pageOfContents !== null) {
-        docY.doc.addPage(); // create blank page for page of contents
-      }
-      if (pageSetup.addBasicResponseHeader && !pageSetup.hasCover) {
-        docY = await logic.addHeadline(docY, "RESULTS", "list");
-      }
+      docY = await logic.addPageDetail(docY, reportContent["dataFound"], reportContent.newPageHeaders, pageOfContents, pageSetup.hasCover);
+      docY.doc = await logic.addPageFooter(docY, requestID);
+      return await logic.finalizePDFDocument(docY.doc, requestID, reportMeta, pageOfContents, pageSetup.hasCover);
+    } catch (error) {
+      console.log(constants.ERRORS.GENERATE_ERROR);
+      console.error(error.stack);
     }
-    docY = await logic.addPageDetail(docY, reportContent["dataFound"], reportContent.newPageHeaders, pageOfContents, pageSetup.hasCover);
-    docY.doc = await logic.addPageFooter(docY, requestID);
-    return await logic.finalizePDFDocument(docY.doc, requestID, reportMeta, pageOfContents, pageSetup.hasCover);
   },
   generateNoResultsReport: async (reportContent, reportMeta) => {
-    const requestID = reportContent.requestId;
-    const pageSetup = logic.setupPDFType(reportContent.pdfType);
-    const pageOfContents = null;
-    let docY = logic.createPDFDocument(requestID, reportMeta.reportName, pageOfContents, pageSetup.hasCover);
-    docY = await logic.defaultTop(docY, reportContent);
-    docY.doc = await logic.addPageFooter(docY, requestID);
-    return await logic.finalizePDFDocument(docY.doc, requestID, reportMeta, pageOfContents, pageSetup.hasCover);
+    try {
+      const requestID = reportContent.requestId;
+      const pageSetup = logic.setupPDFType(reportContent.pdfType);
+      const pageOfContents = null;
+      let docY = logic.createPDFDocument(requestID, reportMeta.reportName, pageOfContents, pageSetup.hasCover);
+      docY = await logic.defaultTop(docY, reportContent);
+      docY.doc = await logic.addPageFooter(docY, requestID);
+      return await logic.finalizePDFDocument(docY.doc, requestID, reportMeta, pageOfContents, pageSetup.hasCover);
+    } catch (error) {
+      console.log(constants.ERRORS.GENERATE_ERROR);
+    }
   },
 };

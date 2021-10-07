@@ -38,5 +38,5 @@ function populateIconLine(doc, x, y, text, value, headerColor, xAdditionalWidth)
   doc = sectionTypeLogic.underline(doc, x, y);
   y += incrementY;
 
-  return sectionTypeLogic.docYResponse(doc, y);
+  return doc.docYResponse(y);
 }

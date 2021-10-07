@@ -77,7 +77,7 @@ function generateLineThatIsObject(doc, x, y, text, value, lineType) {
     }
   }
 
-  return sectionTypeLogic.docYResponse(doc, y);
+  return doc.docYResponse(y);
 }
 
 // TODO: (warning) https://eslint.org/docs/rules/no-prototype-builtins

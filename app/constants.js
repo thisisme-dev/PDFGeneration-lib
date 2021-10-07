@@ -80,7 +80,6 @@ module.exports = Object.freeze({
   PACKAGE_PATH: getPackagePath(),
   // Where the page starts
   TOP_OF_PAGE_Y: 40,
-  TOP_OF_COVER_PAGE_Y: 80,
   TOP_OF_FIRST_PAGE_Y: 120,
   X_START: 20,
 
@@ -95,13 +94,6 @@ module.exports = Object.freeze({
 
   HEADER_FONT_SIZE: 12,
   NORMAL_FONT_SIZE: 8,
-
-  // INCREMENT_MAIN_Y: 18,
-  // INCREMENT_SUB_Y: 14,
-  // INCREMENT_UNDERLINE: 15,
-
-  // HEADER_FONT_SIZE: 16,
-  // NORMAL_FONT_SIZE: 10,
 
   PDFType,
   PDFDocumentLineType,
@@ -127,5 +119,9 @@ module.exports = Object.freeze({
     // REPORT_HEADERS: ["Search Parameters:", "Service Response:"],
     REGISTRATION: "Registration Number: 2014/136237/07, Vat Registration: 4170271870, Tel: +27 21 422 3995, Email: info@thisisme.com",
     DISCLAIMER: "Please review ThisIsMe's Privacy Policy as well as Terms & Conditions https://thisisme.com/legal/. All Rights Reserved.",
+  },
+
+  ERRORS: {
+    GENERATE_ERROR: "PDF Generation Error encountered!",
   },
 });

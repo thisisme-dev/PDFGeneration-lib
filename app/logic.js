@@ -14,7 +14,6 @@ const constants = require("./constants");
 const setupPDFType = require("./logic-pdf-type").setupPDFType;
 const addLine = require("./logic-line-core").addLine;
 const {PDF_TEXT} = require("./constants");
-const sectionTypeLogic = require("./line-types/base-logic");
 
 AWS.config.update({region: configs.AWS_DEFAULT_REGION});
 const AWS_S3_REPORTS_BUCKET = configs.AWS_S3_REPORTS_BUCKET;
@@ -106,9 +105,7 @@ async function addPageDetail(docY, data, newPageHeaders, pageOfContents) {
         // if header is listed as a new page header, add new page header line
         if (newPageHeaders.includes(row.header)) {
           if (docY.y > constants.TOP_OF_PAGE_Y) {
-            docY.doc.addPage();
-            // docY.doc.fillColor(constants.PDFColors.NORMAL_COLOR);
-            docY.y = constants.TOP_OF_PAGE_Y;
+            docY = docY.doc.createNewPage();
           }
           isNewPageHeader = true;
           if (pageOfContents !== null) {
@@ -135,7 +132,7 @@ async function addPageDetail(docY, data, newPageHeaders, pageOfContents) {
  * @returns
  */
 async function addHeadline(docY, text, icon = false) {
-  docY.doc.roundedRect(constants.PD.MARGIN, docY.y, (constants.PD.WIDTH - (constants.PD.MARGIN) * 2), 26, 2)
+  docY.doc.roundedRect(constants.X_START, docY.y, (constants.PD.WIDTH - (constants.PD.MARGIN) * 2), 26, 2)
       .fill(constants.PDColors.BG_LIGHT, "#000");
 
   if (icon) {
@@ -145,13 +142,13 @@ async function addHeadline(docY, text, icon = false) {
   docY.doc
       .fillColor(constants.PDColors.TEXT_DARK)
       .fontSize(10)
-      .text(text, (constants.PD.MARGIN + constants.PD.PAD_FOR_IMAGE_TEXT), (docY.y + 6) );
+      .text(text, (constants.PD.MARGIN + constants.PD.PAD_FOR_IMAGE_TEXT), (docY.y + 6));
 
   const doc = docY.doc;
   let y = docY.y;
   y += 40;
 
-  return sectionTypeLogic.docYResponse(doc, y);
+  return doc.docYResponse(y);
 }
 
 /**
@@ -162,8 +159,7 @@ async function addPageFooter(docY, requestID) {
   const footerClearance = (docY.doc.page.height - 100);
   if (docY.y > footerClearance) {
     // create new page so footer can be displayed (otherwise it will be placed on top of data)
-    docY.doc.addPage();
-    docY.y = constants.TOP_OF_PAGE_Y;
+    docY = docY.doc.createNewPage();
   }
   const doc = addDisclaimer(docY.doc);
   const page = doc.page;
@@ -260,18 +256,15 @@ async function populatePageOfContents(doc, pageOfContents) {
   if (pageOfContents !== null) {
   // TODO: what if sections push this to add new page?? figure out how to create new page then
     doc.switchToPage(1); // there will be cases where this is not 1
-    let size = constants.NORMAL_FONT_SIZE;
-
-    size = constants.HEADER_FONT_SIZE;
-    const page = doc.page;
-    doc.rect(0, 25, page.width, 50).fillColor(constants.PDFColors.NORMAL_COLOR).strokeColor(constants.PDFColors.NORMAL_COLOR).fillAndStroke();
-    doc.font("OpenSansSemiBold").fontSize(size).fillColor(constants.PDFColors.TEXT_IN_NORMAL_COLOR).text("Table of Contents", constants.X_START, constants.TOP_OF_PAGE_Y - 40);
-
     const content = pageOfContents.getPageOfContents();
+
     let docY = {
       doc: doc,
-      y: constants.TOP_OF_PAGE_Y,
+      y: constants.TOP_OF_PAGE_Y, // + (INCREMENT_MAIN_Y * 2),
     };
+
+    docY = await addHeadline(docY, "Table of Contents", "list");
+
     for (let i = 0; i < content.length; i++) {
       docY = await addLine(docY, content[i].section, content[i].page, constants.PDFDocumentLineType.TABLE_OF_CONTENTS_LINE, false);
     }

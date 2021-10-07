@@ -15,7 +15,7 @@ function generateLineThatIsLink(doc, x, y, text, value, headerColor) {
   doc = populateLineLink(doc, headerColor, text, value, x, 180, y);
   doc = sectionTypeLogic.underline(doc, x, y);
   y += incrementY;
-  return sectionTypeLogic.docYResponse(doc, y);
+  return doc.docYResponse(y);
 }
 
 function populateLineLink(doc, headerColor, text, value, x, xAdditionalWidth, y) {

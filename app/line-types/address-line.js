@@ -30,5 +30,5 @@ function generateAddressLine(doc, text, value, x, y, headerColor, font) {
     doc = sectionTypeLogic.underline(doc, x, y);
   }
   y += incrementY;
-  return sectionTypeLogic.docYResponse(doc, y);
+  return doc.docYResponse(y);
 }

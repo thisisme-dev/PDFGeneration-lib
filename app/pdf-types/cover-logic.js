@@ -63,12 +63,7 @@ async function addCoverPage(docY, reportContent) {
   doc = addCoverRequestDetails(doc, reportContent.searchParams);
   doc = addCoverDisclaimerLabel(doc, reportContent.coverDisclaimerLabel);
   doc = addCoverDisclaimer(doc, reportContent.coverDisclaimer);
-  doc.addPage();
-
-  return {
-    doc: doc,
-    y: constants.TOP_OF_COVER_PAGE_Y,
-  };
+  return doc.createNewPage();
 }
 
 function getDefaultCoverDesign(coverReportName, searchParams) {
