@@ -2,12 +2,66 @@
 
 const PDFDocument = require("pdfkit");
 
+const utils = require("../utils");
 const constants = require("../constants");
-
 
 class PDFDocumentCustomized extends PDFDocument {
   constructor(options) {
     super(options);
+  }
+
+  // populateLine : populates a line with the stipulated text and settings
+  populateLine(headerColor, text, value, x, xAdditionalWidth, y, font) {
+    const {fontSize, boldFont, lightFont} = utils.setComponentFont("OpenSansSemiBold", "OpenSansLight", constants.NORMAL_FONT_SIZE, font);
+    this.font(lightFont).fontSize(fontSize).fillColor(headerColor).text(text, x, y);
+    this.font(boldFont).fontSize(fontSize).text(value, x + xAdditionalWidth, y, {
+      width: 370,
+      lineGap: 10,
+      ellipsis: true,
+    });
+
+    return this;
+  }
+
+  populateHeaderLine(text, x, y, hType) {
+    if (hType == constants.PDFHeaderType.H1_LINE) {
+      this
+          .roundedRect(constants.PD.MARGIN, y, (constants.PD.WIDTH - (constants.PD.MARGIN) * 2), 26, 2)
+          .fill(constants.PDColors.BG_LIGHT, "#000");
+
+      this.image(`${constants.PACKAGE_PATH}images/icon-clock.png`, (constants.PD.MARGIN + constants.PD.PADDING ), (y + 7), {height: 12});
+
+      this
+          .fillColor(constants.PDColors.TEXT_DARK)
+          .font("OpenSansSemiBold")
+          .fontSize(10)
+          .text(text, (constants.PD.MARGIN + constants.PD.PAD_FOR_IMAGE_TEXT), (y + 6));
+    } else if (hType == constants.PDFHeaderType.H2_LINE) {
+      this
+          .fillColor(constants.PDColors.TEXT_DARK)
+          .font("OpenSansSemiBold")
+          .fontSize(10)
+          .text(text, x, y);
+
+      this.underline(x, y + 5, 3);
+    } else if (hType == constants.PDFHeaderType.H3_LINE) {
+      this
+          .fillColor(constants.PDColors.TEXT_DARK)
+          .font("OpenSansSemiBold")
+          .fontSize(9)
+          .text(text, x, y);
+    }
+
+    return this;
+  }
+
+  // underline: underlines a line on the PDF doc
+  underline(x, y, thickness = 0.5) {
+    return this.moveTo(x, y + constants.INCREMENT_UNDERLINE)
+        .lineTo(this.page.width - constants.PD.MARGIN, y + constants.INCREMENT_UNDERLINE)
+        .strokeColor("#EEEEEE")
+        .lineWidth(thickness)
+        .stroke();
   }
 
   /**
@@ -303,6 +357,7 @@ class PDFDocumentCustomized extends PDFDocument {
     // but objects with lines
     const headerLowest = 770; // the lowest y for a header
     const noFooterLimit = 806; // lowest y for a row
+
     const isHeader = (lineType === constants.PDFDocumentLineType.HEADER_LINE) || isSubHeader;
 
     if (lineType === constants.PDFDocumentLineType.END_LINE) {

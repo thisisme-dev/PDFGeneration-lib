@@ -20,6 +20,12 @@ const PDFType = {
   COVER_AND_CONTENTS_OF_PAGE: 4,
 };
 
+const PDFHeaderType = {
+  H1_LINE: 1,
+  H2_LINE: 2,
+  H3_LINE: 3,
+};
+
 const PDFDocumentLineType = {
   DEFAULT_LINE: 0,
   HEADER_LINE: 1,
@@ -38,11 +44,7 @@ const PDFDocumentLineType = {
   IMAGE_LINE: 14,
   PAGE_BREAK: 15, // this line forces the line to be the last line on the page, forcing a page break
   CHART_LINE: 16,
-  H0_LINE: 17,
-  H1_LINE: 18,
-  H2_LINE: 19,
-  H3_LINE: 20,
-  KEY_ICON_LINE: 21,
+  KEY_ICON_LINE: 17,
 };
 
 const PDFTableType = {
@@ -96,6 +98,7 @@ module.exports = Object.freeze({
   NORMAL_FONT_SIZE: 8,
 
   PDFType,
+  PDFHeaderType,
   PDFDocumentLineType,
   PDFTableType,
   PDFTableColumnTextAlign,
@@ -116,7 +119,6 @@ module.exports = Object.freeze({
 
   PDF_TEXT: {
     REPORT_AUTHOR: "ThisIsMe (Pty) Ltd",
-    // REPORT_HEADERS: ["Search Parameters:", "Service Response:"],
     REGISTRATION: "Registration Number: 2014/136237/07, Vat Registration: 4170271870, Tel: +27 21 422 3995, Email: info@thisisme.com",
     DISCLAIMER: "Please review ThisIsMe's Privacy Policy as well as Terms & Conditions https://thisisme.com/legal/. All Rights Reserved.",
   },

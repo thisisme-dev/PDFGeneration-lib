@@ -8,12 +8,22 @@ const s3 = new AWS.S3();
 
 const PDFDocument = require("./library-override/pdfkit-customized");
 const coverPDFLogic = require("./pdf-types/cover-logic");
+const setupPDFType = require("./logic-pdf-type").setupPDFType;
 
 const configs = require("./configs");
 const constants = require("./constants");
-const setupPDFType = require("./logic-pdf-type").setupPDFType;
-const addLine = require("./logic-line-core").addLine;
-const {PDF_TEXT} = require("./constants");
+const pageOfContentsLine = require("./line-types/page-of-contents-line");
+const headerLine = require("./line-types/header-line");
+const iconLine = require("./line-types/icon-line");
+const emptyLine = require("./line-types/empty-line");
+const chartLine = require("./line-types/chart-line");
+const textLine = require("./line-types/text-line");
+const addressLine = require("./line-types/address-line");
+const linkLine = require("./line-types/link-line");
+const objectLine = require("./line-types/object-line");
+const gridLine = require("./line-types/grid-line");
+const indicativeLine = require("./line-types/indicative-bar-line");
+const imageLine = require("./line-types/image-line");
 
 AWS.config.update({region: configs.AWS_DEFAULT_REGION});
 const AWS_S3_REPORTS_BUCKET = configs.AWS_S3_REPORTS_BUCKET;
@@ -100,25 +110,94 @@ async function addPageDetail(docY, data, newPageHeaders, pageOfContents) {
     if (Object.prototype.hasOwnProperty.call(data, prop)) {
       let isNewPageHeader = false;
       const row = data[prop];
+      let text = row.text;
       // if page headers object was set, go in the below piece
       if (newPageHeaders !== null && newPageHeaders !== undefined) {
+        if ((row.lineType === constants.PDFDocumentLineType.HEADER_LINE) && (pageOfContents !== null && pageOfContents !== undefined)) {
+
+          if (row.font?.headerLevel === constants.PDFHeaderType.H1_LINE || row.font?.headerLevel === constants.PDFHeaderType.H2_LINE) {
+            pageOfContents.addPageDetails(row.header);
+          }
+        }
+
         // if header is listed as a new page header, add new page header line
         if (newPageHeaders.includes(row.header)) {
           if (docY.y > constants.TOP_OF_PAGE_Y) {
             docY = docY.doc.createNewPage();
           }
           isNewPageHeader = true;
-          if (pageOfContents !== null) {
-            pageOfContents.addPageDetails(row.header);
-          }
-          docY = await addLine(docY, row.header, row.value, row.lineType, isNewPageHeader);
+          text = row.header;
+
         }
       }
+      docY = await addLine(docY, text, row.value, row.lineType, isNewPageHeader, row.font);
+    }
+  }
+  return docY;
+}
 
-      // if not new page header, add
-      if (!isNewPageHeader) {
-        docY = await addLine(docY, row.text, row.value, row.lineType, isNewPageHeader);
-      }
+// addLine : This function builds the line/section to display on the PDF document
+async function addLine(lineDocY, text, value, lineType, isNewPageHeader, font = false) {
+  const {doc, y} = lineDocY;
+  const x = constants.X_START;
+  // const headerColor = lineType === constants.PDFDocumentLineType.HEADER_LINE ? constants.PDFColors.INDICATIVE_COLOR : constants.PDFColors.NORMAL_COLOR;
+  const headerColor = constants.PDFColors.NORMAL_COLOR;
+  // A type should ALWAYS start with the getDocY function to ensure you are correctly positioned
+  let docY;
+  switch (lineType) {
+    case constants.PDFDocumentLineType.EMPTY_LINE:
+    case constants.PDFDocumentLineType.END_LINE: {
+      docY = emptyLine.generateLineThatIsEmpty(doc, lineType, y);
+      break;
+    }
+    case constants.PDFDocumentLineType.HEADER_LINE: {
+      docY = headerLine.generateHeaderLine(doc, x, y, text, font);
+      break;
+    }
+    case constants.PDFDocumentLineType.KEY_ICON_LINE: {
+      docY = iconLine.populateIconLine(doc, x, y, text, value, headerColor, 180);
+      break;
+    }
+    case constants.PDFDocumentLineType.ADDRESS_LINE: {
+      docY = addressLine.generateAddressLine(doc, text, value, x, y, headerColor, font);
+      break;
+    }
+    case constants.PDFDocumentLineType.COLUMN_INFO:
+    case constants.PDFDocumentLineType.META_INFO: {
+      docY = objectLine.generateLineThatIsObject(doc, x, y, text, value, lineType);
+      break;
+    }
+    case constants.PDFDocumentLineType.GRID: { // TODO: requires validating new headers for page space
+      docY = gridLine.generateLineThatIsGrid(doc, x, y, text, value, isNewPageHeader, headerColor, font);
+      break;
+    }
+    case constants.PDFDocumentLineType.TABLE_OF_CONTENTS_LINE: {
+      docY = pageOfContentsLine.generatePageOfContentsLine(doc, x, y, text, value, headerColor);
+      break;
+    }
+    case constants.PDFDocumentLineType.KEY_LINK_LINE: {
+      docY = linkLine.generateLineThatIsLink(doc, x, y, text, value, headerColor);
+      break;
+    }
+    case constants.PDFDocumentLineType.INDICATIVE_BAR_LINE: {
+      docY = indicativeLine.generateLineThatIsIndicativeBar(doc, x, y, text, value);
+      break;
+    }
+    case constants.PDFDocumentLineType.IMAGE_LINE: {
+      docY = await imageLine.generateLineThatIsImage(doc, x, y, value);
+      break;
+    }
+    case constants.PDFDocumentLineType.PAGE_BREAK: {
+      docY = doc.createNewPage();
+      break;
+    }
+    case constants.PDFDocumentLineType.CHART_LINE: {
+      docY = await chartLine.generateChart(doc, y, text, value);
+      break;
+    }
+    default: {
+      docY = textLine.generateLineThatIsText(doc, x, y, text, value, headerColor);
+      break;
     }
   }
   return docY;
@@ -144,11 +223,7 @@ async function addHeadline(docY, text, icon = false) {
       .fontSize(10)
       .text(text, (constants.PD.MARGIN + constants.PD.PAD_FOR_IMAGE_TEXT), (docY.y + 6));
 
-  const doc = docY.doc;
-  let y = docY.y;
-  y += 40;
-
-  return doc.docYResponse(y);
+  return docY.doc.docYResponse(docY.y + 40);
 }
 
 /**
@@ -179,7 +254,7 @@ async function addPageFooter(docY, requestID) {
       .fillColor(constants.PDColors.TEXT_DARK)
       .strokeColor(constants.PDColors.TEXT_DARK)
       .fontSize(8)
-      .text(PDF_TEXT.REPORT_AUTHOR, constants.PD.MARGIN, page.height - 45, {width: page.width - 80});
+      .text(constants.PDF_TEXT.REPORT_AUTHOR, constants.PD.MARGIN, page.height - 45, {width: page.width - 80});
 
   doc.font("OpenSansLight")
       .fontSize(8)
@@ -187,7 +262,7 @@ async function addPageFooter(docY, requestID) {
       .fillColor(constants.PDColors.TEXT_DARK)
       .strokeColor(constants.PDColors.TEXT_DARK)
       .fontSize(7)
-      .text(PDF_TEXT.REGISTRATION, constants.PD.MARGIN, page.height - 35, {width: page.width - 80});
+      .text(constants.PDF_TEXT.REGISTRATION, constants.PD.MARGIN, page.height - 35, {width: page.width - 80});
 
 
   // /**
@@ -240,7 +315,7 @@ async function generateQRCode(data) {
 function addDisclaimer(doc) {
   const page = doc.page;
 
-  const PDF_REPORT_DISCLAIMER = PDF_TEXT.DISCLAIMER;
+  const PDF_REPORT_DISCLAIMER = constants.PDF_TEXT.DISCLAIMER;
 
   // 741.89
   doc.roundedRect(20, page.height - 100, page.width - 40, 30, 2)
@@ -348,7 +423,6 @@ module.exports = {
   addPageDetail,
   addPageFooter,
   addHeadline,
-  addLine,
   finalizePDFDocument,
   generateQRCode,
 };

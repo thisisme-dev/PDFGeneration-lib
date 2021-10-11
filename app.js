@@ -49,12 +49,12 @@ module.exports = {
       let docY = logic.createPDFDocument(requestID, reportMeta.reportName, pageOfContents, pageSetup.hasCover);
       if (pageSetup.hasCover) {
         docY = await logic.addCoverPage(docY, reportContent["coverDetails"]);
-        if (pageOfContents !== null) {
+        if (pageOfContents !== null && pageOfContents !== undefined) {
           docY.doc.createNewPage();
         }
       } else {
         docY = await logic.defaultTop(docY, reportContent);
-        if (pageOfContents !== null) {
+        if (pageOfContents !== null && pageOfContents !== undefined) {
           docY.doc.createNewPage();
         }
         if (pageSetup.addBasicResponseHeader && !pageSetup.hasCover) {

@@ -3,7 +3,7 @@
 // WARNING: this is a WIP, this was created for 6 bar elements, less than that the indicator will not be placed correctly
 const constants = require("../constants");
 
-const sectionTypeLogic = require("./base-logic");
+const utils = require("../utils");
 
 module.exports = {
   generateLineThatIsIndicativeBar,
@@ -18,7 +18,7 @@ function generateLineThatIsIndicativeBar(doc, x, y, text, value) {
 
 function populateIndicativeBar(doc, x, y, label, barOptions) {
   const incrementY = constants.INCREMENT_MAIN_Y;
-  const {fontSize, boldFont} = sectionTypeLogic.setComponentFont("OpenSansBold", null, constants.NORMAL_FONT_SIZE);
+  const {fontSize, boldFont} = utils.setComponentFont("OpenSansBold", null, constants.NORMAL_FONT_SIZE);
 
   const maxWidth = 550;
   const piece = maxWidth / getBarLength(barOptions);

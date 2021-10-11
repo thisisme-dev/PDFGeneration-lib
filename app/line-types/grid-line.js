@@ -1,7 +1,7 @@
 "use strict";
 
 const constants = require("../constants");
-const sectionTypeLogic = require("./base-logic");
+const utils = require("../utils");
 
 module.exports = {
   generateLineThatIsGrid,
@@ -21,10 +21,10 @@ function generateLineThatIsGrid(doc, x, y, text, value, isNewPageHeader, headerC
   if (text !== null && text !== undefined) {
     if (text.length > 0) {
       if (isNewPageHeader) {
-        doc = sectionTypeLogic.populateHLine(doc, text, x, y, constants.PDFDocumentLineType.H1_LINE);
+        doc.populateHeaderLine(text, x, y, constants.PDFHeaderType.H1_LINE);
         y += 40;
       } else {
-        doc = sectionTypeLogic.populateHLine(doc, text, x, y, constants.PDFDocumentLineType.H3_LINE);
+        doc.populateHeaderLine(text, x, y, constants.PDFHeaderType.H3_LINE);
         y += incrementY;
       }
     }
@@ -34,7 +34,7 @@ function generateLineThatIsGrid(doc, x, y, text, value, isNewPageHeader, headerC
   const columnWidth = {};
   const columnXStart = {};
 
-  const {fontSize, boldFont, lightFont} = sectionTypeLogic.setComponentFont("OpenSansSemiBold", "OpenSansLight", constants.NORMAL_FONT_SIZE, font);
+  const {fontSize, boldFont, lightFont} = utils.setComponentFont("OpenSansSemiBold", "OpenSansLight", constants.NORMAL_FONT_SIZE, font);
 
   let index = 0;
   for (const gridHeader in gridHeaders) {

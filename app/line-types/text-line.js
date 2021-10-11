@@ -1,7 +1,6 @@
 "use strict";
 
 const constants = require("../constants");
-const sectionTypeLogic = require("./base-logic");
 
 module.exports = {
   generateLineThatIsText,
@@ -13,8 +12,8 @@ function generateLineThatIsText(doc, x, y, text, value, headerColor) {
   const docY = doc.getDocY(constants.PDFDocumentLineType.KEY_VALUE_LINE, y, 1, false);
   doc = docY.doc;
   y = docY.y;
-  doc = sectionTypeLogic.populateLine(doc, headerColor, text, value, x, 180, y);
-  doc = sectionTypeLogic.underline(doc, x, y);
+  doc.populateLine(headerColor, text, value, x, 180, y);
+  doc.underline(x, y);
   y += incrementY;
   return doc.docYResponse(y);
 }

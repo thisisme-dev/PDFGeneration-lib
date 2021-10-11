@@ -14,7 +14,7 @@ class PDFHelpers {
     this.serviceSearchParams = requestParams;
   }
 
-  textValueObj(text, value, lineType, font, options = false) {
+  textValueObj(text, value, lineType, font = false) {
     if (text == null) {
       text = "";
     }
@@ -24,11 +24,10 @@ class PDFHelpers {
       value: value,
       lineType: lineType,
       font: font,
-      options: options,
     };
   }
 
-  textIconObj(text, value, lineType, options = false, font = false) {
+  textIconObj(text, value, lineType) {
     if (text == null) {
       text = "";
     }
@@ -37,8 +36,6 @@ class PDFHelpers {
       text: text.toUpperCase(),
       value: value,
       lineType: lineType,
-      options: options,
-      font: font,
     };
   }
 
@@ -58,28 +55,23 @@ class PDFHelpers {
     return obj;
   }
 
-  headerLine(title) {
-    return {
-      header: title,
-      text: title,
-      lineType: constants.PDFDocumentLineType.HEADER_LINE,
-    };
-  }
-
-  hLine(text, lineType, options) {
+  headerLine(text, headerLevel, font = false) {
     if (text == null) {
       text = "";
     }
-
+    if (!font) {
+      font = {};
+    }
+    font["headerLevel"] = headerLevel;
     return {
       header: text,
       text: text.toUpperCase(),
-      lineType: lineType,
-      options: options,
+      lineType: constants.PDFDocumentLineType.HEADER_LINE,
+      font: font,
     };
   }
 
-  addImageLineFromPath(imageURL, imageType, imageDescriptions, options = false) {
+  addImageLineFromPath(imageURL, imageType, imageDescriptions) {
     const imageObj = {
       imageType: imageType,
       imageRules: {
@@ -88,14 +80,13 @@ class PDFHelpers {
       },
       imageDescriptions: imageDescriptions,
       data: imageURL,
-      options: options,
     };
     return this.textValueObj("", imageObj, constants.PDFDocumentLineType.IMAGE_LINE);
   }
 
-  addImageLineFromBase64(base64str, imageType, imageDescriptions, options = false) {
+  addImageLineFromBase64(base64str, imageType, imageDescriptions) {
     const buf = Buffer.from(base64str, "base64");
-    return this.addImageLineFromPath(buf, imageType, imageDescriptions, options);
+    return this.addImageLineFromPath(buf, imageType, imageDescriptions);
   }
 
   endSection() {

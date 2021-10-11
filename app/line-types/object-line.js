@@ -2,8 +2,6 @@
 
 const constants = require("../constants");
 
-const sectionTypeLogic = require("./base-logic");
-
 module.exports = {
   generateLineThatIsObject,
 };
@@ -27,7 +25,7 @@ function generateLineThatIsObject(doc, x, y, text, value, lineType) {
         }
         if (!sectionHeaderPrinted) {
           const isFancyHeader = (lineType === constants.PDFDocumentLineType.COLUMN_INFO);
-          doc = sectionTypeLogic.populateLine(doc, constants.PDFColors.INDICATIVE_COLOR, text, null, x, 180, y);
+          doc.populateLine(constants.PDFColors.INDICATIVE_COLOR, text, null, x, 180, y);
           sectionHeaderPrinted = true;
           if (!isFancyHeader) {
             y += (lineType === constants.PDFDocumentLineType.COLUMN_INFO) ? constants.INCREMENT_MAIN_Y : constants.INCREMENT_SUB_Y;
@@ -47,8 +45,7 @@ function generateLineThatIsObject(doc, x, y, text, value, lineType) {
             if (column !== 0) { // I HATE THIS, might have had dual column before this, that only had one column in, so increment never took place
               y += incrementY;
             }
-            doc = sectionTypeLogic.populateLine(doc, constants.PDFColors.NORMAL_COLOR, subLine.text, subLine.value, 20, 140, y, subLine.font);
-            // doc = underline(doc, x, y); this was for testing
+            doc.populateLine(constants.PDFColors.NORMAL_COLOR, subLine.text, subLine.value, 20, 140, y, subLine.font);
             y += incrementY;
             singleColumns.push(true);
           } else {
@@ -61,9 +58,7 @@ function generateLineThatIsObject(doc, x, y, text, value, lineType) {
               x = 300;
               finalIncrementYRequired = false;
             }
-            // const headerColor = lineType === constants.PDFDocumentLineType.HEADER_LINE ? constants.PDFColors.INDICATIVE_COLOR : constants.PDFColors.NORMAL_COLOR;
-            doc = sectionTypeLogic.populateLine(doc, constants.PDFColors.NORMAL_COLOR, subLine.text, subLine.value, x, 140, y, subLine.font);
-            // doc = underline(doc, x, y); this was for testing
+            doc.populateLine(constants.PDFColors.NORMAL_COLOR, subLine.text, subLine.value, x, 140, y, subLine.font);
             if (column !== 0) {
               y += incrementY;
             }

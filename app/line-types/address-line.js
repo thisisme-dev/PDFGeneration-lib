@@ -2,8 +2,6 @@
 
 const constants = require("../constants");
 
-const sectionTypeLogic = require("./base-logic");
-
 module.exports = {
   generateAddressLine,
 };
@@ -19,15 +17,15 @@ function generateAddressLine(doc, text, value, x, y, headerColor, font) {
   doc = docY.doc;
   y = docY.y;
 
-  doc = sectionTypeLogic.populateLine(doc, headerColor, text, "", x, 180, y, font);
+  doc.populateLine(headerColor, text, "", x, 180, y, font);
   for (let i = 0; i < addressParts.length; i++) {
     const addressPart = addressParts[i];
-    doc = sectionTypeLogic.populateLine(doc, headerColor, "", addressPart, x, 180, y, font);
+    doc.populateLine(headerColor, "", addressPart, x, 180, y, font);
     if (i < addressParts.length - 1) {
-      doc = sectionTypeLogic.underline(doc, x, y);
+      doc.underline(x, y);
       y += incrementY;
     }
-    doc = sectionTypeLogic.underline(doc, x, y);
+    doc.underline(x, y);
   }
   y += incrementY;
   return doc.docYResponse(y);

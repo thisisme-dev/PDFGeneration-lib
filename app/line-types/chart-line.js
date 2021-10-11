@@ -1,7 +1,7 @@
 "use strict";
 
 const constants = require("../constants");
-const sectionTypeLogic = require("./base-logic");
+const utils = require("../utils");
 
 async function generateChart(doc, y, chartLabel, results) {
   if (!results.coords["isSameLine"]) {
@@ -24,7 +24,7 @@ async function addChart(doc, chartLabel, results, y) {
   const x = coords.incrementX;
   doc.rect(x, y, 275, 20).stroke();
 
-  const {fontSize, boldFont, lightFont} = sectionTypeLogic.setComponentFont("OpenSansSemiBitalic", "OpenSansLight", constants.NORMAL_FONT_SIZE);
+  const {fontSize, boldFont, lightFont} = utils.setComponentFont("OpenSansSemiBitalic", "OpenSansLight", constants.NORMAL_FONT_SIZE);
 
   doc.font(lightFont).fontSize(fontSize + 1).text(chartLabel, x, y + 4, {align: "center", width: 275});
   const stackedBarChartSpec = require("../../configs/stacked-bar-chart.spec.json");

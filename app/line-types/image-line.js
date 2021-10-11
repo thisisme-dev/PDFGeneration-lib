@@ -5,22 +5,22 @@ const Jimp = require("jimp");
 const constants = require("../constants");
 
 // WARNING: this is a WIP, need to break this so we can handle errors correctly
-const sectionTypeLogic = require("./base-logic");
+const utils = require("../utils");
 
 module.exports = {
   generateLineThatIsImage,
 };
 
-async function generateLineThatIsImage(doc, x, y, value, options = false) {
+async function generateLineThatIsImage(doc, x, y, value) {
   const docY = doc.getDocY(constants.PDFDocumentLineType.IMAGE_LINE, y, 1, false);
   doc = docY.doc;
   y = docY.y;
-  return await populateImage(doc, x, y, value, options);
+  return await populateImage(doc, x, y, value);
 }
 
 // Notes:
 // imageDescriptions are currently only available for single images
-async function populateImage(doc, x, y, imageOptions, options = false) {
+async function populateImage(doc, x, y, imageOptions) {
   const incrementY = constants.INCREMENT_MAIN_Y;
 
   if (Array.isArray(imageOptions.data)) {
@@ -32,7 +32,7 @@ async function populateImage(doc, x, y, imageOptions, options = false) {
       const imageWidth = imageOptions.imageRules[imgNumber].width;
       const imageHeight = imageOptions.imageRules[imgNumber].height;
       doc.image(pdfImage, runningWidth, y, {fit: [imageWidth, imageHeight]});
-      runningWidth = runningWidth + imageWidth;
+      runningWidth += imageWidth;
       if (heighestImage < imageHeight) {
         heighestImage = imageHeight;
       }
@@ -53,14 +53,14 @@ async function populateImage(doc, x, y, imageOptions, options = false) {
     doc = docIncrementY.doc;
     y = doc.y;
     if (docIncrementY.incrementY) {
-      y = y + incrementY;
+      y += incrementY;
     }
     return doc.docYResponse(y);
   }
 }
 
 function addDescriptionLine(doc, description, maxLabelWidth, y, x) {
-  const {fontSize, boldFont, lightFont} = sectionTypeLogic.setComponentFont("OpenSansSemiBold", "OpenSansLight", constants.NORMAL_FONT_SIZE - 1);
+  const {fontSize, boldFont, lightFont} = utils.setComponentFont("OpenSansSemiBold", "OpenSansLight", constants.NORMAL_FONT_SIZE - 1);
 
   doc.font(boldFont).fontSize(fontSize).fillColor(constants.PDFColors.NORMAL_COLOR).text(`${description.label}:`, x, y);
   doc.font(lightFont).fontSize(fontSize).text(`${description.value}`, x + maxLabelWidth + 12, y, {
