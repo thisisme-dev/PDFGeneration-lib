@@ -11,6 +11,7 @@ class PDFLimiter {
       bufferPages: true,
       size: "A4",
       margin: 0,
+      font: `${constants.PACKAGE_PATH}fonts/OpenSans-SemiBold.ttf`,
     });
     doc.fontSize(constants.NORMAL_FONT_SIZE);
 

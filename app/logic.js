@@ -37,6 +37,7 @@ function createPDFDocument(requestID, reportName, pageOfContents, coverPage) {
       Author: constants.PDF_TEXT.REPORT_AUTHOR,
     },
     margin: 0,
+    font: `${constants.PACKAGE_PATH}fonts/OpenSans-SemiBold.ttf`,
   });
 
   if (pageOfContents !== null) {
@@ -114,7 +115,6 @@ async function addPageDetail(docY, data, newPageHeaders, pageOfContents) {
       // if page headers object was set, go in the below piece
       if (newPageHeaders !== null && newPageHeaders !== undefined) {
         if ((row.lineType === constants.PDFDocumentLineType.HEADER_LINE) && (pageOfContents !== null && pageOfContents !== undefined)) {
-
           if (row.font?.headerLevel === constants.PDFHeaderType.H1_LINE || row.font?.headerLevel === constants.PDFHeaderType.H2_LINE) {
             pageOfContents.addPageDetails(row.header);
           }
@@ -127,7 +127,6 @@ async function addPageDetail(docY, data, newPageHeaders, pageOfContents) {
           }
           isNewPageHeader = true;
           text = row.header;
-
         }
       }
       docY = await addLine(docY, text, row.value, row.lineType, isNewPageHeader, row.font);
