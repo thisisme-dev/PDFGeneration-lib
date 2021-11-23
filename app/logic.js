@@ -46,6 +46,10 @@ function createPDFDocument(requestID, reportName, pageOfContents, coverPage) {
     });
   }
 
+  doc.registerFont("Arabic", `${constants.PACKAGE_PATH}fonts/NotoSansArabic-Regular.ttf`);
+  doc.registerFont("Japanese", `${constants.PACKAGE_PATH}fonts/NotoSansJP-Regular.otf`);
+  doc.registerFont("Chinese", `${constants.PACKAGE_PATH}fonts/NotoSansSC-Regular.otf`);
+
   doc.registerFont("OpenSans", `${constants.PACKAGE_PATH}fonts/OpenSans-Regular.ttf`);
   doc.registerFont("OpenSansLight", `${constants.PACKAGE_PATH}fonts/OpenSans-Light.ttf`);
   doc.registerFont("OpenSansBold", `${constants.PACKAGE_PATH}fonts/OpenSans-Bold.ttf`);

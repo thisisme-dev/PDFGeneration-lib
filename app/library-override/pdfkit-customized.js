@@ -14,7 +14,19 @@ class PDFDocumentCustomized extends PDFDocument {
   populateLine(headerColor, text, value, x, xAdditionalWidth, y, font) {
     const {fontSize, boldFont, lightFont} = utils.setComponentFont("OpenSansSemiBold", "OpenSansLight", constants.NORMAL_FONT_SIZE, font);
     this.font(lightFont).fontSize(fontSize).fillColor(headerColor).text(text, x, y);
-    this.font(boldFont).fontSize(fontSize).text(value, x + xAdditionalWidth, y, {
+
+    this.font(boldFont);
+    if (isArabic(value)) {
+      this.font("Arabic");
+    }
+    if (isJapanese(value)) {
+      this.font("Japanese");
+    }
+    if (isChinese(value)) {
+      this.font("Chinese");
+    }
+
+    this.fontSize(fontSize).text(value, x + xAdditionalWidth, y, {
       width: 370,
       lineGap: 10,
       ellipsis: true,
@@ -29,7 +41,7 @@ class PDFDocumentCustomized extends PDFDocument {
           .roundedRect(constants.PD.MARGIN, y, (constants.PD.WIDTH - (constants.PD.MARGIN) * 2), 26, 2)
           .fill(constants.PDColors.BG_LIGHT, "#000");
 
-      this.image(`${constants.PACKAGE_PATH}images/icon-clock.png`, (constants.PD.MARGIN + constants.PD.PADDING ), (y + 7), {height: 12});
+      this.image(`${constants.PACKAGE_PATH}images/icon-clock.png`, (constants.PD.MARGIN + constants.PD.PADDING), (y + 7), {height: 12});
 
       this
           .fillColor(constants.PDColors.TEXT_DARK)
@@ -97,8 +109,8 @@ class PDFDocumentCustomized extends PDFDocument {
     const rowSpacing = options.rowSpacing || 5;
     const usableWidth = options.width || (this.page.width - this.page.margins.left - this.page.margins.right);
 
-    const prepareHeader = options.prepareHeader || (() => {});
-    const prepareRow = options.prepareRow || (() => {});
+    const prepareHeader = options.prepareHeader || (() => { });
+    const prepareRow = options.prepareRow || (() => { });
     const computeRowHeight = (row) => {
       let result = 0;
 
@@ -399,4 +411,24 @@ class PDFDocumentCustomized extends PDFDocument {
   }
 }
 
+
+function isArabic(text) {
+  const pattern = /[\p{sc=Arabic}]/gu;
+  return pattern.test(text);
+}
+
+function isChinese(text) {
+  // const pattern = /[\u3000-\u303f]/;
+  const pattern = /[\p{sc=Hani}]/gu;
+  return pattern.test(text);
+}
+function isJapanese(text) {
+  // const pattern = /[\u3040-\u309f\u30A0-\u30FF\u4E00-\u9FBF]/;
+  const pattern = /[\p{sc=Kana}\p{sc=Hira}\p{sc=Hani}]/gu;
+  return pattern.test(text);
+}
+
+
 module.exports = PDFDocumentCustomized;
+
+
