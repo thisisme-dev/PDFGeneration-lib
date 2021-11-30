@@ -37,11 +37,18 @@ function generateLineThatIsGrid(doc, x, y, text, value, isNewPageHeader, headerC
   const {fontSize, boldFont, lightFont} = utils.setComponentFont("OpenSansSemiBold", "OpenSansLight", constants.NORMAL_FONT_SIZE, font);
 
   let index = 0;
+
+  const pageTotalSize = doc.page.width - (constants.PD.MARGIN * 2);
+  const leftOverSize = Object.keys(gridHeaders).reduce((acc, item) => {
+    return acc - gridHeaders[item].size;
+  }, pageTotalSize);
+
+  const amountToAddToColumns = leftOverSize / (Object.keys(gridHeaders).length - 1);
+
   for (const gridHeader in gridHeaders) {
     if (Object.prototype.hasOwnProperty.call(gridHeaders, gridHeader)) {
       const header = gridHeaders[gridHeader];
-      const width = (header.size + 100);
-      x = index === 0 ? x : x + width; // TODO: the + 100 can differ for size ranges perhaps
+      const width = (header.size + amountToAddToColumns);
       columnXStart[gridHeader] = x;
       columnWidth[gridHeader] = width;
       doc
@@ -53,6 +60,7 @@ function generateLineThatIsGrid(doc, x, y, text, value, isNewPageHeader, headerC
             align: "left",
           });
       index++;
+      x = index === 0 ? x : x + width;
     }
   }
   y += incrementY;

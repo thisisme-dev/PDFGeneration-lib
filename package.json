@@ -1,10 +1,10 @@
 {
   "name": "@thisisme/pdfgeneration-lib",
-  "version": "6.5.0",
+  "version": "6.6.0",
   "private": true,
   "main": "app.js",
   "dependencies": {
-    "aws-sdk": "2.978.0",
+    "aws-sdk": "2.1039.0",
     "bwip-js": "3.0.4",
     "cloc": "^2.8.0",
     "concat-stream": "2.0.0",

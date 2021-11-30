@@ -207,6 +207,29 @@ class PDFHelpers {
       pdfType: constants.PDFType.DEFAULT,
     };
   }
+
+  setColumnNameAndWidth(columns, key, value, pdfLimiter) { // ensure length more than actual column name
+    const keyValue = this.getDisplayableTextValue(key);
+    const keyDocWidth = pdfLimiter.getStringWidth(keyValue);
+    // console.log(`key width: ${keyDocWidth}`)
+    let length = !value ? 0 : pdfLimiter.getStringWidth(value);
+    // console.log(`value ${value}, width: ${length}`)
+    length = length > keyDocWidth ? length : keyDocWidth;
+    if (Object.prototype.hasOwnProperty.call(columns, key)) {
+      // just do value size check and ensure value is the largest one available
+      const size = pdfLimiter.getStringWidth(columns[key]);
+      if (length > size) {
+        columns[key].size = length;
+      }
+    } else {
+      // value size check and name
+      columns[key] = {
+        name: this.getDisplayableTextValue(key),
+        size: length,
+      };
+    }
+    return columns;
+  }
 }
 
 module.exports.PDFHelpers = PDFHelpers;
