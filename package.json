@@ -9,7 +9,7 @@
     "cloc": "^2.8.0",
     "concat-stream": "2.0.0",
     "fs": "0.0.1-security",
-    "jimp": "0.16.1",
+    "jimp": "0.22.12",
     "node-datetime": "2.1.2",
     "pdfkit": "0.12.3"
   },
