@@ -6,7 +6,7 @@
   "dependencies": {
     "aws-sdk": "2.1039.0",
     "bwip-js": "3.0.4",
-    "cloc": "^2.8.0",
+    "cloc": "^2.11.0",
     "concat-stream": "2.0.0",
     "fs": "0.0.1-security",
     "jimp": "0.16.1",
